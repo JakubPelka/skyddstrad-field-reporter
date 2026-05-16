@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
 
-  <!-- Leaflet CSS must load correctly. No SRI here during POC because a wrong hash breaks tile positioning. -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- MapLibre test build. If this works well on iPad/iPhone, we can vendor these files locally later. -->
+  <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles/main.css?v=20260516-leaflet-css-fix">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-maplibre-test">
 </head>
 <body>
   <header class="app-header">
@@ -154,8 +154,7 @@
     </article>
   </template>
 
-  <!-- Leaflet JS. No SRI during POC for the same reason as CSS above. -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script type="module" src="src/app.js?v=20260516-leaflet-css-fix"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
+  <script type="module" src="src/app.js?v=20260516-maplibre-test"></script>
 </body>
 </html>

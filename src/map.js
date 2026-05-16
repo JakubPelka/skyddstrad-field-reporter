@@ -2,36 +2,68 @@ import { APP_CONFIG } from "./config.js";
 import { escapeHtml } from "./util.js";
 
 let map;
-let existingLayer;
-let draftLayer;
+let existingMarkers = [];
+let draftMarkers = [];
 let positionMarker;
 let selectedMarker;
 let resizeObserver;
 let resizeTimer;
 
+function createMarkerElement(className = "") {
+  const element = document.createElement("div");
+  element.className = `map-marker ${className}`.trim();
+  return element;
+}
+
+function makePopup(html) {
+  return new maplibregl.Popup({
+    closeButton: true,
+    closeOnClick: true,
+    maxWidth: "280px"
+  }).setHTML(html);
+}
+
 export function initMap({ onMapClick }) {
-  map = L.map("map", {
-    zoomControl: true,
-    preferCanvas: true
-  }).setView(APP_CONFIG.defaultMapCenter, APP_CONFIG.defaultZoom);
+  map = new maplibregl.Map({
+    container: "map",
+    center: [APP_CONFIG.defaultMapCenter[1], APP_CONFIG.defaultMapCenter[0]],
+    zoom: APP_CONFIG.defaultZoom,
+    attributionControl: true,
+    style: {
+      version: 8,
+      sources: {
+        osm: {
+          type: "raster",
+          tiles: [
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          ],
+          tileSize: 256,
+          attribution: "© OpenStreetMap contributors"
+        }
+      },
+      layers: [
+        {
+          id: "osm",
+          type: "raster",
+          source: "osm"
+        }
+      ]
+    }
+  });
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 20,
-    detectRetina: true,
-    updateWhenIdle: true,
-    keepBuffer: 4,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-
-  existingLayer = L.layerGroup().addTo(map);
-  draftLayer = L.layerGroup().addTo(map);
+  map.addControl(new maplibregl.NavigationControl({
+    showCompass: false,
+    visualizePitch: false
+  }), "top-left");
 
   map.on("click", (event) => {
-    setSelectedPoint(event.latlng.lat, event.latlng.lng);
-    onMapClick?.({
-      lat: event.latlng.lat,
-      lng: event.latlng.lng
-    });
+    const point = {
+      lat: event.lngLat.lat,
+      lng: event.lngLat.lng
+    };
+
+    setSelectedPoint(point.lat, point.lng);
+    onMapClick?.(point);
   });
 
   setupResizeHandling();
@@ -76,10 +108,7 @@ export function refreshMapSize() {
   }
 
   requestAnimationFrame(() => {
-    map.invalidateSize({
-      animate: false,
-      pan: false
-    });
+    map.resize();
   });
 }
 
@@ -88,24 +117,52 @@ export function getMap() {
 }
 
 export function getBounds() {
-  return map.getBounds();
+  const bounds = map.getBounds();
+
+  return {
+    getWest: () => bounds.getWest(),
+    getSouth: () => bounds.getSouth(),
+    getEast: () => bounds.getEast(),
+    getNorth: () => bounds.getNorth()
+  };
 }
 
-export function setExistingLayer(layer) {
-  existingLayer.clearLayers();
-  layer.eachLayer((item) => existingLayer.addLayer(item));
+function clearMarkers(markers) {
+  for (const marker of markers) {
+    marker.remove();
+  }
+  markers.length = 0;
+}
+
+export function setExistingLayer(markerSpecs) {
+  clearMarkers(existingMarkers);
+
+  for (const spec of markerSpecs) {
+    const marker = new maplibregl.Marker({
+      element: createMarkerElement()
+    })
+      .setLngLat([spec.lng, spec.lat])
+      .setPopup(makePopup(spec.popupHtml))
+      .addTo(map);
+
+    existingMarkers.push(marker);
+  }
+
   forceSeveralMapRefreshes();
 }
 
 export function setSelectedPoint(lat, lng, label = "Selected observation point") {
   if (!selectedMarker) {
-    selectedMarker = L.marker([lat, lng], {
-      draggable: true,
-      title: label
-    }).addTo(map);
+    selectedMarker = new maplibregl.Marker({
+      element: createMarkerElement("selected"),
+      draggable: true
+    })
+      .setLngLat([lng, lat])
+      .setPopup(makePopup(escapeHtml(label)))
+      .addTo(map);
 
-    selectedMarker.on("dragend", (event) => {
-      const position = event.target.getLatLng();
+    selectedMarker.on("dragend", () => {
+      const position = selectedMarker.getLngLat();
       window.dispatchEvent(new CustomEvent("selected-point-moved", {
         detail: {
           lat: position.lat,
@@ -114,10 +171,10 @@ export function setSelectedPoint(lat, lng, label = "Selected observation point")
       }));
     });
   } else {
-    selectedMarker.setLatLng([lat, lng]);
+    selectedMarker.setLngLat([lng, lat]);
   }
 
-  selectedMarker.bindPopup(escapeHtml(label));
+  selectedMarker.setPopup(makePopup(escapeHtml(label)));
 }
 
 export function showCurrentPosition(lat, lng, accuracyM = null) {
@@ -126,49 +183,51 @@ export function showCurrentPosition(lat, lng, accuracyM = null) {
     : "Current GPS position";
 
   if (!positionMarker) {
-    positionMarker = L.circleMarker([lat, lng], {
-      radius: 8,
-      weight: 2,
-      color: "#0c4a8a",
-      fillColor: "#3b82c4",
-      fillOpacity: 0.85
-    }).addTo(map);
+    positionMarker = new maplibregl.Marker({
+      element: createMarkerElement("current")
+    })
+      .setLngLat([lng, lat])
+      .setPopup(makePopup(popup))
+      .addTo(map);
   } else {
-    positionMarker.setLatLng([lat, lng]);
+    positionMarker.setLngLat([lng, lat]);
+    positionMarker.setPopup(makePopup(popup));
   }
 
-  positionMarker.bindPopup(popup);
   setSelectedPoint(lat, lng);
-  map.setView([lat, lng], Math.max(map.getZoom(), 17));
+  map.easeTo({
+    center: [lng, lat],
+    zoom: Math.max(map.getZoom(), 17),
+    duration: 300
+  });
   forceSeveralMapRefreshes();
 }
 
 export function renderDraftMarkers(drafts) {
-  draftLayer.clearLayers();
+  clearMarkers(draftMarkers);
 
   for (const draft of drafts) {
     if (!Number.isFinite(draft.latitude) || !Number.isFinite(draft.longitude)) {
       continue;
     }
 
-    const marker = L.circleMarker([draft.latitude, draft.longitude], {
-      radius: 6,
-      weight: 2,
-      color: "#9b5f00",
-      fillColor: "#f2b84b",
-      fillOpacity: 0.85
-    });
-
-    marker.bindPopup(`
+    const popupHtml = `
       <p class="popup-title">${escapeHtml(draft.species || "Draft tree")}</p>
       <ul class="popup-list">
         <li><strong>Date:</strong> ${escapeHtml(draft.observationDate || "")}</li>
         <li><strong>Circumference:</strong> ${escapeHtml(draft.stemCircumferenceCm ?? "")} cm</li>
         <li><strong>Status:</strong> ${escapeHtml(draft.treeStatus || "")}</li>
       </ul>
-    `);
+    `;
 
-    draftLayer.addLayer(marker);
+    const marker = new maplibregl.Marker({
+      element: createMarkerElement("draft")
+    })
+      .setLngLat([draft.longitude, draft.latitude])
+      .setPopup(makePopup(popupHtml))
+      .addTo(map);
+
+    draftMarkers.push(marker);
   }
 
   forceSeveralMapRefreshes();

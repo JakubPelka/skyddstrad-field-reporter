@@ -93,18 +93,10 @@ export async function loadExistingTrees(bounds = null) {
 }
 
 export function createExistingTreesLayer(trees) {
-  return L.layerGroup(
-    trees.map((tree) => {
-      const marker = L.circleMarker([tree.lat, tree.lng], {
-        radius: 7,
-        weight: 2,
-        color: "#315f3d",
-        fillColor: "#7ea66a",
-        fillOpacity: 0.75
-      });
-
-      marker.bindPopup(propertiesToPopup(tree.properties));
-      return marker;
-    })
-  );
+  return trees.map((tree) => ({
+    id: tree.id,
+    lat: tree.lat,
+    lng: tree.lng,
+    popupHtml: propertiesToPopup(tree.properties)
+  }));
 }

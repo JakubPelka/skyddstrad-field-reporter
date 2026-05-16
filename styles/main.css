@@ -88,8 +88,6 @@ body {
   font-size: 0.92rem;
 }
 
-/* Keep the map container deliberately plain.
-   Leaflet itself handles the internal positioning. */
 #map {
   display: block;
   width: 100%;
@@ -99,7 +97,6 @@ body {
   padding: 0;
   background: #dfe8d8;
   border: 1px solid var(--border);
-  border-radius: 0;
   overflow: hidden;
 }
 
@@ -262,12 +259,28 @@ button.danger {
   color: var(--danger);
 }
 
-.leaflet-container {
-  font: inherit;
+.map-marker {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #315f3d;
+  border-radius: 50%;
+  background: #7ea66a;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
 }
 
-.leaflet-popup-content {
-  margin: 0.8rem;
+.map-marker.current {
+  border-color: #0c4a8a;
+  background: #3b82c4;
+}
+
+.map-marker.selected {
+  border-color: #8a4f00;
+  background: #f2b84b;
+}
+
+.map-marker.draft {
+  border-color: #9b5f00;
+  background: #f2b84b;
 }
 
 .popup-title {
