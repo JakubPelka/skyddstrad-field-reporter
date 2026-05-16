@@ -1,4 +1,4 @@
-export const APP_VERSION = "20260516-realdata-locality-v1";
+export const APP_VERSION = "20260516-tree-layers-reload-fix-v1";
 
 export const APP_CONFIG = {
   appName: "Fältrapportör för skyddsvärda träd",
@@ -12,7 +12,14 @@ export const APP_CONFIG = {
     // Runtime resolves the item's FeatureServer URL and queries the current map extent.
     mode: "arcgisItem",
     arcgisItemId: "3e9aa2c4fe1243d0afb181b8db1de1a4",
-    maxRecords: 1500,
+
+    // The ArcGIS item contains two point layers:
+    // 0 = SLU Skyddsvärda träd - Artportalen
+    // 1 = SLU Skyddsvärda träd - f.d. Trädportalen
+    // Both are needed to see all known skyddsvärda träd.
+    layerIds: [0, 1],
+
+    maxRecordsPerLayer: 1500,
     fallbackToSample: true,
     sampleUrl: "data/existing-trees.sample.geojson"
   },

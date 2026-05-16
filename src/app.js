@@ -1,19 +1,18 @@
-import { APP_CONFIG } from "./config.js?v=20260516-realdata-locality-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-realdata-locality-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-realdata-locality-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-realdata-locality-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260516-realdata-locality-v1";
-import { getCurrentPosition } from "./gps.js?v=20260516-realdata-locality-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-realdata-locality-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-realdata-locality-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-realdata-locality-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260516-realdata-locality-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260516-realdata-locality-v1";
+import { APP_CONFIG } from "./config.js?v=20260516-tree-layers-reload-fix-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-tree-layers-reload-fix-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-tree-layers-reload-fix-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-tree-layers-reload-fix-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260516-tree-layers-reload-fix-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-tree-layers-reload-fix-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-tree-layers-reload-fix-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-tree-layers-reload-fix-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-tree-layers-reload-fix-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260516-tree-layers-reload-fix-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260516-tree-layers-reload-fix-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
 let loadingExistingTrees = false;
-let reloadTimer = null;
 
 const elements = {
   form: document.querySelector("#tree-form"),
@@ -117,7 +116,13 @@ async function loadAndRenderExistingTrees() {
     setExistingLayer(layer);
     updateDuplicateWarning();
     renderLocalityCandidates();
-    setStatus(`Laddade ${existingTrees.length} befintliga trädposter.`);
+    const newCount = existingTrees.filter((tree) => tree.layerId === 0).length;
+    const oldCount = existingTrees.filter((tree) => tree.layerId === 1).length;
+    const otherCount = existingTrees.length - newCount - oldCount;
+    const sourceText = otherCount > 0
+      ? `${newCount} nya, ${oldCount} f.d. Trädportalen, ${otherCount} övriga`
+      : `${newCount} nya, ${oldCount} f.d. Trädportalen`;
+    setStatus(`Laddade ${existingTrees.length} trädposter (${sourceText}).`);
   } catch (error) {
     console.error(error);
     setStatus(error.message);
@@ -128,10 +133,6 @@ async function loadAndRenderExistingTrees() {
   }
 }
 
-function scheduleReloadExistingTrees() {
-  window.clearTimeout(reloadTimer);
-  reloadTimer = window.setTimeout(loadAndRenderExistingTrees, 700);
-}
 
 function renderDrafts() {
   const drafts = loadDrafts();
@@ -275,8 +276,7 @@ async function main() {
   await initForm();
 
   initMap({
-    onMapClick: updateSelectedPoint,
-    onMoveEnd: scheduleReloadExistingTrees
+    onMapClick: updateSelectedPoint
   });
 
   bindEvents();

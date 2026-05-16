@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260516-realdata-locality-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-tree-layers-reload-fix-v1">
 </head>
 <body>
   <header class="app-header">
@@ -34,7 +34,7 @@
         <h2>1. Position</h2>
         <div class="button-row">
           <button id="btn-use-gps" type="button">Använd GPS</button>
-          <button id="btn-load-existing" type="button">Ladda trädposter</button>
+          <button id="btn-load-existing" type="button">Ladda/uppdatera trädposter</button>
         </div>
         <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
         <p id="duplicate-warning" class="warning" hidden></p>
@@ -46,7 +46,7 @@
         <div class="field-grid">
           <div class="form-section full-width">
             <h3>Grunduppgifter</h3>
-            <p>Fyll i de viktigaste uppgifterna först. Lägg bara till extra projektparametrar när de behövs.</p>
+            <p>Fyll i de viktigaste uppgifterna först. Lägg bara till extra projektparametrar när de behövs. Trädposter laddas manuellt för aktuell kartvy.</p>
           </div>
 
           <label>
@@ -272,6 +272,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260516-realdata-locality-v1"></script>
+  <script type="module" src="src/app.js?v=20260516-tree-layers-reload-fix-v1"></script>
 </body>
 </html>

@@ -2,14 +2,36 @@
 
 ## Existing tree records
 
-The app can attempt to load existing tree records from the public ArcGIS item:
+The app attempts to load existing tree records from the public ArcGIS item:
 
 ```text
 Skyddsvärda Träd @ Sveriges Lantbruksuniversitet
 ArcGIS item id: 3e9aa2c4fe1243d0afb181b8db1de1a4
 ```
 
-If the service is unavailable or CORS fails, the app falls back to local sample GeoJSON.
+The item contains two point layers:
+
+```text
+0 = SLU Skyddsvärda träd - Artportalen
+1 = SLU Skyddsvärda träd - f.d. Trädportalen
+```
+
+Both layers are needed. SLU explains that all skyddsvärda träd are split between the old `Trädportalen` project and the newer `Skyddsvärda träd` project in Artportalen.
+
+## Network behaviour
+
+The app does not auto-refresh on every map movement.
+
+Current behaviour:
+
+```text
+open app
+→ initial load once
+button: Ladda/uppdatera trädposter
+→ manual reload for current map extent
+```
+
+This avoids repeated requests and button flickering on mobile devices.
 
 ## Lokalnamn candidates
 
@@ -17,13 +39,11 @@ Current MVP:
 
 ```text
 selected GPS/map point
-→ loaded existing tree records in current map extent
+→ loaded tree records in current map extent
 → group by lokalnamn
 → sort by inside accuracy / nearest distance
 → show selectable candidates
 ```
-
-This is only a first step.
 
 ## Important limitation
 
@@ -34,10 +54,3 @@ Many tree records may have no `lokalnamn`. Therefore candidate lists based only 
 Use SLU Species Observation System API to search nearby public Artportalen observations from all species groups, then extract nearby locality/fyndplats names from those observations.
 
 This should give a richer list of existing public localities near the selected GPS point.
-
-## Known open questions
-
-- Exact public field name for locality/fyndplats in SOS response.
-- Whether locality accuracy/radius is exposed in a stable way.
-- CORS behavior from GitHub Pages.
-- Query limits for small-radius mobile searches.

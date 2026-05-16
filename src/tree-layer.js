@@ -1,13 +1,13 @@
 import { APP_CONFIG } from "./config.js";
 import { escapeHtml } from "./util.js";
 
-let resolvedArcgisLayerUrl = "";
+let resolvedArcgisServiceUrl = "";
 
 function arcgisItemUrl(itemId) {
   return `https://www.arcgis.com/sharing/rest/content/items/${encodeURIComponent(itemId)}?f=json`;
 }
 
-function normalizeArcgisLayerUrl(itemUrl) {
+function normalizeArcgisServiceUrl(itemUrl) {
   if (!itemUrl) {
     return "";
   }
@@ -15,19 +15,15 @@ function normalizeArcgisLayerUrl(itemUrl) {
   const url = itemUrl.replace(/\/+$/, "");
 
   if (/\/(FeatureServer|MapServer)\/\d+$/i.test(url)) {
-    return url;
-  }
-
-  if (/\/(FeatureServer|MapServer)$/i.test(url)) {
-    return `${url}/0`;
+    return url.replace(/\/\d+$/i, "");
   }
 
   return url;
 }
 
-async function resolveArcgisLayerUrl() {
-  if (resolvedArcgisLayerUrl) {
-    return resolvedArcgisLayerUrl;
+async function resolveArcgisServiceUrl() {
+  if (resolvedArcgisServiceUrl) {
+    return resolvedArcgisServiceUrl;
   }
 
   const response = await fetch(arcgisItemUrl(APP_CONFIG.existingTrees.arcgisItemId));
@@ -37,14 +33,14 @@ async function resolveArcgisLayerUrl() {
   }
 
   const item = await response.json();
-  const layerUrl = normalizeArcgisLayerUrl(item.url);
+  const serviceUrl = normalizeArcgisServiceUrl(item.url);
 
-  if (!layerUrl) {
-    throw new Error("ArcGIS item saknar publik lager-URL.");
+  if (!serviceUrl) {
+    throw new Error("ArcGIS item saknar publik tjänste-URL.");
   }
 
-  resolvedArcgisLayerUrl = layerUrl;
-  return resolvedArcgisLayerUrl;
+  resolvedArcgisServiceUrl = serviceUrl;
+  return resolvedArcgisServiceUrl;
 }
 
 function boundsToArcgisGeometry(bounds) {
@@ -57,7 +53,7 @@ function boundsToArcgisGeometry(bounds) {
   });
 }
 
-function arcgisQueryUrl(layerUrl, bounds) {
+function arcgisQueryUrl(serviceUrl, layerId, bounds) {
   const params = new URLSearchParams({
     f: "json",
     where: "1=1",
@@ -68,10 +64,10 @@ function arcgisQueryUrl(layerUrl, bounds) {
     inSR: "4326",
     outSR: "4326",
     spatialRel: "esriSpatialRelIntersects",
-    resultRecordCount: String(APP_CONFIG.existingTrees.maxRecords || 1500)
+    resultRecordCount: String(APP_CONFIG.existingTrees.maxRecordsPerLayer || 1500)
   });
 
-  return `${layerUrl}/query?${params.toString()}`;
+  return `${serviceUrl}/${layerId}/query?${params.toString()}`;
 }
 
 function geoJsonFeatureToTree(feature) {
@@ -88,11 +84,12 @@ function geoJsonFeatureToTree(feature) {
     id: feature.id || feature.properties?.id_artportalen || feature.properties?.OBJECTID || `${lat},${lng}`,
     lat,
     lng,
+    layerId: "sample",
     properties: feature.properties || {}
   };
 }
 
-function arcgisFeatureToTree(feature) {
+function arcgisFeatureToTree(feature, layerId) {
   const geometry = feature.geometry || {};
   const attributes = feature.attributes || {};
   const lng = geometry.x;
@@ -103,10 +100,15 @@ function arcgisFeatureToTree(feature) {
   }
 
   return {
-    id: attributes.id_artportalen || attributes.OBJECTID || attributes.objectid || `${lat},${lng}`,
+    id: `${layerId}:${attributes.id_artportalen || attributes.OBJECTID || attributes.objectid || `${lat},${lng}`}`,
     lat,
     lng,
-    properties: attributes
+    layerId,
+    properties: {
+      ...attributes,
+      _sourceLayerId: layerId,
+      _sourceProject: layerId === 1 ? "f.d. Trädportalen" : "Artportalen"
+    }
   };
 }
 
@@ -121,21 +123,47 @@ async function loadSampleTrees() {
   return (geojson.features || []).map(geoJsonFeatureToTree).filter(Boolean);
 }
 
-async function loadArcgisTrees(bounds) {
-  const layerUrl = await resolveArcgisLayerUrl();
-  const response = await fetch(arcgisQueryUrl(layerUrl, bounds));
+async function loadArcgisLayer(serviceUrl, layerId, bounds) {
+  const response = await fetch(arcgisQueryUrl(serviceUrl, layerId, bounds));
 
   if (!response.ok) {
-    throw new Error(`Kunde inte hämta träddata: ${response.status} ${response.statusText}`);
+    throw new Error(`Kunde inte hämta träddata från lager ${layerId}: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
 
   if (data.error) {
-    throw new Error(data.error.message || "ArcGIS query misslyckades.");
+    throw new Error(data.error.message || `ArcGIS query misslyckades för lager ${layerId}.`);
   }
 
-  return (data.features || []).map(arcgisFeatureToTree).filter(Boolean);
+  return (data.features || []).map((feature) => arcgisFeatureToTree(feature, layerId)).filter(Boolean);
+}
+
+async function loadArcgisTrees(bounds) {
+  const serviceUrl = await resolveArcgisServiceUrl();
+  const layerIds = APP_CONFIG.existingTrees.layerIds || [0];
+
+  const layerResults = await Promise.allSettled(
+    layerIds.map((layerId) => loadArcgisLayer(serviceUrl, layerId, bounds))
+  );
+
+  const trees = [];
+  const errors = [];
+
+  for (const result of layerResults) {
+    if (result.status === "fulfilled") {
+      trees.push(...result.value);
+    } else {
+      errors.push(result.reason);
+      console.warn(result.reason);
+    }
+  }
+
+  if (trees.length === 0 && errors.length > 0) {
+    throw errors[0];
+  }
+
+  return trees;
 }
 
 function propertiesToPopup(properties) {
@@ -147,9 +175,11 @@ function propertiesToPopup(properties) {
   const management = properties.atgardsbehov || "";
   const id = properties.id_artportalen || properties.OBJECTID || "";
   const accuracy = properties.noggrannhet || "";
+  const project = properties._sourceProject || "";
 
   const rows = [
     ["Art", species],
+    ["Projekt/lager", project],
     ["Lokalnamn", localName],
     ["Omkrets", circumference ? `${circumference} cm` : ""],
     ["Status", status],
@@ -192,6 +222,7 @@ export function createExistingTreesLayer(trees) {
     id: tree.id,
     lat: tree.lat,
     lng: tree.lng,
+    layerId: tree.layerId,
     popupHtml: propertiesToPopup(tree.properties)
   }));
 }

@@ -105,3 +105,13 @@ Skyddsvärda Träd @ Sveriges Lantbruksuniversitet
 The first MVP for `Lokalnamn` suggestions derives candidate names from loaded existing tree records near the selected point.
 
 This is useful but incomplete: many tree records may not have `Lokalnamn`. A later step should use the open SLU Species Observation System API to search **all nearby public Artportalen observations**, not only tree-project records, and derive a better list of nearby locality/fyndplats names.
+
+
+## Tree data layers
+
+The public ArcGIS item contains two point layers and both are queried:
+
+- layer `0`: `SLU Skyddsvärda träd - Artportalen`
+- layer `1`: `SLU Skyddsvärda träd - f.d. Trädportalen`
+
+The app loads/refreshes tree records manually with the button `Ladda/uppdatera trädposter`. It does not automatically reload after every map movement, to avoid repeated network requests on mobile devices.
