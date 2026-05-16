@@ -6,6 +6,7 @@ let existingLayer;
 let draftLayer;
 let positionMarker;
 let selectedMarker;
+let resizeObserver;
 let resizeTimer;
 
 export function initMap({ onMapClick }) {
@@ -17,8 +18,9 @@ export function initMap({ onMapClick }) {
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 20,
     detectRetina: true,
-    updateWhenIdle: true,
-    keepBuffer: 4,
+    updateWhenIdle: false,
+    updateWhenZooming: false,
+    keepBuffer: 6,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
@@ -33,31 +35,40 @@ export function initMap({ onMapClick }) {
     });
   });
 
-  setupMapResizeFixes();
+  setupResizeHandling();
+  forceSeveralMapRefreshes();
 
   return map;
 }
 
-function setupMapResizeFixes() {
-  refreshMapSize();
+function setupResizeHandling() {
+  const mapElement = document.querySelector("#map");
 
-  window.addEventListener("load", refreshMapSize);
+  if (window.ResizeObserver && mapElement) {
+    resizeObserver = new ResizeObserver(() => debouncedRefreshMapSize());
+    resizeObserver.observe(mapElement);
+  }
+
+  window.addEventListener("load", forceSeveralMapRefreshes);
   window.addEventListener("resize", debouncedRefreshMapSize);
-  window.addEventListener("orientationchange", () => {
-    window.setTimeout(refreshMapSize, 250);
-    window.setTimeout(refreshMapSize, 700);
-  });
+  window.addEventListener("orientationchange", forceSeveralMapRefreshes);
 
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) {
-      refreshMapSize();
+      forceSeveralMapRefreshes();
     }
   });
 }
 
 function debouncedRefreshMapSize() {
   window.clearTimeout(resizeTimer);
-  resizeTimer = window.setTimeout(refreshMapSize, 120);
+  resizeTimer = window.setTimeout(refreshMapSize, 80);
+}
+
+export function forceSeveralMapRefreshes() {
+  [0, 80, 180, 400, 900].forEach((delay) => {
+    window.setTimeout(refreshMapSize, delay);
+  });
 }
 
 export function refreshMapSize() {
@@ -66,7 +77,10 @@ export function refreshMapSize() {
   }
 
   requestAnimationFrame(() => {
-    map.invalidateSize({ animate: false, pan: false });
+    map.invalidateSize({
+      animate: false,
+      pan: false
+    });
   });
 }
 
@@ -81,7 +95,7 @@ export function getBounds() {
 export function setExistingLayer(layer) {
   existingLayer.clearLayers();
   layer.eachLayer((item) => existingLayer.addLayer(item));
-  refreshMapSize();
+  forceSeveralMapRefreshes();
 }
 
 export function setSelectedPoint(lat, lng, label = "Selected observation point") {
@@ -127,7 +141,7 @@ export function showCurrentPosition(lat, lng, accuracyM = null) {
   positionMarker.bindPopup(popup);
   setSelectedPoint(lat, lng);
   map.setView([lat, lng], Math.max(map.getZoom(), 17));
-  refreshMapSize();
+  forceSeveralMapRefreshes();
 }
 
 export function renderDraftMarkers(drafts) {
@@ -159,5 +173,5 @@ export function renderDraftMarkers(drafts) {
     draftLayer.addLayer(marker);
   }
 
-  refreshMapSize();
+  forceSeveralMapRefreshes();
 }

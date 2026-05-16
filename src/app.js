@@ -1,13 +1,13 @@
-import { APP_CONFIG } from "./config.js?v=20260516-top-map";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-top-map";
-import { exportDraftsAsCsv } from "./export-csv.js?v=20260516-top-map";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-top-map";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-top-map";
-import { getCurrentPosition } from "./gps.js?v=20260516-top-map";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-top-map";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-top-map";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-top-map";
-import { formatDistance } from "./util.js?v=20260516-top-map";
+import { APP_CONFIG } from "./config.js?v=20260516-mapfix-v3";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-mapfix-v3";
+import { exportDraftsAsCsv } from "./export-csv.js?v=20260516-mapfix-v3";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-mapfix-v3";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-mapfix-v3";
+import { getCurrentPosition } from "./gps.js?v=20260516-mapfix-v3";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-mapfix-v3";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-mapfix-v3";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-mapfix-v3";
+import { formatDistance } from "./util.js?v=20260516-mapfix-v3";
 
 let existingTrees = [];
 let selectedPoint = null;
