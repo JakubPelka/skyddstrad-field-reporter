@@ -78,7 +78,7 @@ export async function loadExistingTrees(bounds = null) {
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Kunde inte ladda befintliga trädposter: ${response.status} ${response.statusText}`);
+    throw new Error(`Kunde inte ladda befintliga träd: ${response.status} ${response.statusText}`);
   }
 
   const geojson = await response.json();

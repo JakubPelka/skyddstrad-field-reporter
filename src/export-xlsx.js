@@ -113,7 +113,7 @@ function draftToObservationRow(draft) {
   row[28] = valueOrBlank(draft.vitalityPercent);
   row[29] = valueOrBlank(draft.stemCircumferenceCm);
   row[30] = valueOrBlank(draft.hollowStage);
-  row[31] = valueOrBlank(draft.holeSpecification || draft.hollowPosition);
+  row[31] = valueOrBlank(draft.holeSpecification);
   row[32] = valueOrBlank(draft.mulmVolume);
   row[33] = valueOrBlank(draft.managementNeed);
   row[34] = valueOrBlank(draft.characteristic1);
@@ -155,38 +155,6 @@ function buildParameterRows() {
   return rows;
 }
 
-function buildObservationColumnWidths() {
-  return ARTPORTALEN_OBSERVATION_HEADERS.map((header) => {
-    if (["Publik kommentar", "Intressant kommentar", "Privat kommentar"].includes(header)) {
-      return { wch: 32 };
-    }
-
-    if (header.startsWith("Vedartad")) {
-      return { wch: 28 };
-    }
-
-    if (["Lokalnamn", "Artnamn", "Trädstatus", "Hålstadium", "Specificering av hål", "Mulmvolym", "Åtgärdsbehov"].includes(header)) {
-      return { wch: 24 };
-    }
-
-    return { wch: 15 };
-  });
-}
-
-function buildParameterColumnWidths() {
-  return PARAMETER_SHEET_COLUMNS.map((header) => {
-    if (["Karaktärsdrag"].includes(header)) {
-      return { wch: 58 };
-    }
-
-    if (["Vedväxter och täckningsgrad", "Pågående markanvändning"].includes(header)) {
-      return { wch: 30 };
-    }
-
-    return { wch: 26 };
-  });
-}
-
 export function exportDraftsAsXlsx(drafts) {
   if (!window.XLSX) {
     throw new Error("XLSX-biblioteket kunde inte laddas. Kontrollera internetanslutning eller CDN-laddning.");
@@ -195,12 +163,11 @@ export function exportDraftsAsXlsx(drafts) {
   const workbook = window.XLSX.utils.book_new();
 
   const observationWorksheet = window.XLSX.utils.aoa_to_sheet(buildObservationRows(drafts));
-  observationWorksheet["!cols"] = buildObservationColumnWidths();
-  observationWorksheet["!freeze"] = { xSplit: 0, ySplit: 2 };
+  observationWorksheet["!cols"] = ARTPORTALEN_OBSERVATION_HEADERS.map(() => ({ wch: 18 }));
   window.XLSX.utils.book_append_sheet(workbook, observationWorksheet, ARTPORTALEN_TEMPLATE.observationSheetName);
 
   const parameterWorksheet = window.XLSX.utils.aoa_to_sheet(buildParameterRows());
-  parameterWorksheet["!cols"] = buildParameterColumnWidths();
+  parameterWorksheet["!cols"] = PARAMETER_SHEET_COLUMNS.map(() => ({ wch: 30 }));
   window.XLSX.utils.book_append_sheet(workbook, parameterWorksheet, ARTPORTALEN_TEMPLATE.parameterSheetName);
 
   const date = new Date().toISOString().slice(0, 10);

@@ -7,8 +7,8 @@ export function nowISO() {
 }
 
 export function uuid() {
-  if (crypto && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
   }
 
   return `draft-${Date.now()}-${Math.random().toString(16).slice(2)}`;

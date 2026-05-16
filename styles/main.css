@@ -67,9 +67,6 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
 }
 
 .map-header {
@@ -157,29 +154,43 @@ body {
   font-size: 0.98rem;
 }
 
-.form-section p {
+.form-section p,
+.field-help {
   margin: 0;
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.35;
 }
 
-.form-section code {
-  font-size: 0.82rem;
-}
-
-.field-help {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-label {
-  min-width: 0;
+.field-group {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.advanced-section {
+  margin: 1rem 0 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #f9fbf7;
+}
+
+.advanced-section summary {
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  font-weight: 750;
+  color: var(--accent-dark);
+}
+
+.advanced-grid {
+  padding: 0 1rem 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
   font-weight: 650;
   font-size: 0.9rem;
 }
@@ -188,14 +199,14 @@ input,
 select,
 textarea,
 button {
+  max-width: 100%;
+  min-width: 0;
   font: inherit;
 }
 
 input,
 select,
 textarea {
-  min-width: 0;
-  max-width: 100%;
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -205,50 +216,10 @@ textarea {
 }
 
 input[type="date"] {
-  min-height: 2.75rem;
-  line-height: 1.2;
+  width: 100%;
+  min-width: 0;
   -webkit-appearance: none;
   appearance: none;
-}
-
-input[type="date"]::-webkit-date-and-time-value {
-  min-height: 1.2rem;
-  text-align: left;
-}
-
-.field-group {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.compact-row {
-  margin-top: 0.2rem;
-}
-
-.locality-results {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-top: 0.2rem;
-}
-
-.locality-result {
-  width: 100%;
-  border-radius: 10px;
-  padding: 0.55rem 0.7rem;
-  color: var(--accent-dark);
-  background: #eef4eb;
-  text-align: left;
-  font-weight: 650;
-}
-
-.locality-result small {
-  display: block;
-  margin-top: 0.15rem;
-  color: var(--muted);
-  font-weight: 500;
 }
 
 textarea {
@@ -356,11 +327,7 @@ button.danger {
   background: #3b82c4;
 }
 
-.map-marker.selected {
-  border-color: #8a4f00;
-  background: #f2b84b;
-}
-
+.map-marker.selected,
 .map-marker.draft {
   border-color: #9b5f00;
   background: #f2b84b;
@@ -407,10 +374,6 @@ button.danger {
 
   .field-grid {
     grid-template-columns: 1fr;
-  }
-
-  .full-width {
-    grid-column: 1;
   }
 
   .card {

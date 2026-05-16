@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260516-template-mapping-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-stable-maplibre-template-ui-v2">
 </head>
 <body>
   <header class="app-header">
@@ -46,6 +46,7 @@
         <div class="field-grid">
           <div class="form-section full-width">
             <h3>Grunduppgifter</h3>
+            <p>Fyll i de viktigaste uppgifterna först. Lägg bara till extra projektparametrar när de behövs.</p>
           </div>
 
           <label>
@@ -62,12 +63,7 @@
             <label for="localName">Lokalnamn i Artportalen</label>
             <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Exakt lokalnamn enligt Artportalen">
             <input id="localityId" name="localityId" type="hidden">
-            <div class="button-row compact-row">
-              <button id="btn-search-locality" type="button" class="secondary">Sök lokalnamn</button>
-              <button id="btn-clear-locality" type="button" class="secondary">Rensa lokal</button>
-            </div>
-            <p id="locality-status" class="field-help">Lokalnamn ska motsvara en befintlig fyndplats/lokal i Artportalen. Sökning är förberedd men kräver verifierad endpoint.</p>
-            <div id="locality-results" class="locality-results" aria-live="polite"></div>
+            <p class="field-help">Lokalnamn ska motsvara en befintlig fyndplats/lokal i Artportalen. Automatisk sökning kommer senare.</p>
           </div>
 
           <label>
@@ -81,23 +77,8 @@
           </label>
 
           <label>
-            Koordinatnoggrannhet, m
+            Noggrannhet, m
             <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS-noggrannhet">
-          </label>
-
-          <div class="form-section full-width">
-            <h3>Projektparametrar enligt importmallen</h3>
-            <p>Värdelistorna kommer från bladet <code>Parametrar</code> i <code>docs/ap2_template_treeproject.xlsx</code>.</p>
-          </div>
-
-          <label>
-            Trädstatus
-            <select id="treeStatus" name="treeStatus"></select>
-          </label>
-
-          <label>
-            Vitalitet levande träd (%)
-            <input id="vitalityPercent" name="vitalityPercent" type="number" inputmode="decimal" min="0" max="100" step="1" placeholder="0-100">
           </label>
 
           <label>
@@ -111,18 +92,13 @@
           </label>
 
           <label>
+            Trädstatus
+            <select id="treeStatus" name="treeStatus"></select>
+          </label>
+
+          <label>
             Hålstadium
             <select id="hollowStage" name="hollowStage"></select>
-          </label>
-
-          <label>
-            Specificering av hål
-            <select id="holeSpecification" name="holeSpecification"></select>
-          </label>
-
-          <label>
-            Mulmvolym
-            <select id="mulmVolume" name="mulmVolume"></select>
           </label>
 
           <label>
@@ -131,102 +107,123 @@
           </label>
 
           <label>
-            Karaktärsdrag 1
-            <select id="characteristic1" name="characteristic1"></select>
-          </label>
-
-          <label>
-            Karaktärsdrag 2
-            <select id="characteristic2" name="characteristic2"></select>
-          </label>
-
-          <label>
-            Karaktärsdrag 3
-            <select id="characteristic3" name="characteristic3"></select>
-          </label>
-
-          <label>
-            Grendiameter på hamlingsträd
-            <input id="pollardBranchDiameterCm" name="pollardBranchDiameterCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="cm">
-          </label>
-
-          <div class="form-section full-width">
-            <h3>Vedartad vegetation under kronan</h3>
-          </div>
-
-          <label>
-            Buskar under kronan
-            <select id="woodyShrubsUnderCrown" name="woodyShrubsUnderCrown"></select>
-          </label>
-
-          <label>
-            Sly och ungträd under kronan
-            <select id="woodyYoungTreesUnderCrown" name="woodyYoungTreesUnderCrown"></select>
-          </label>
-
-          <label>
-            Lövträd och tall under kronan
-            <select id="woodyBroadleafPineUnderCrown" name="woodyBroadleafPineUnderCrown"></select>
-          </label>
-
-          <label>
-            Gran under kronan
-            <select id="woodySpruceUnderCrown" name="woodySpruceUnderCrown"></select>
-          </label>
-
-          <div class="form-section full-width">
-            <h3>Vedartad vegetation utanför kronan</h3>
-          </div>
-
-          <label>
-            Buskar utanför kronan
-            <select id="woodyShrubsOutsideCrown" name="woodyShrubsOutsideCrown"></select>
-          </label>
-
-          <label>
-            Sly och ungträd utanför kronan
-            <select id="woodyYoungTreesOutsideCrown" name="woodyYoungTreesOutsideCrown"></select>
-          </label>
-
-          <label>
-            Lövträd och tall utanför kronan
-            <select id="woodyBroadleafPineOutsideCrown" name="woodyBroadleafPineOutsideCrown"></select>
-          </label>
-
-          <label>
-            Gran utanför kronan
-            <select id="woodySpruceOutsideCrown" name="woodySpruceOutsideCrown"></select>
-          </label>
-
-          <div class="form-section full-width">
-            <h3>Omgivning och markanvändning</h3>
-          </div>
-
-          <label>
-            Omgivning 1
-            <select id="surrounding1" name="surrounding1"></select>
-          </label>
-
-          <label>
-            Omgivning 2
-            <select id="surrounding2" name="surrounding2"></select>
-          </label>
-
-          <label>
-            Omgivning 3
-            <select id="surrounding3" name="surrounding3"></select>
-          </label>
-
-          <label>
-            Pågående markanvändning
-            <select id="landUse" name="landUse"></select>
-          </label>
-
-          <label>
-            Observatör / fältanteckning
-            <input id="observer" name="observer" type="text" autocomplete="name" placeholder="Sparas i utkastet men mappas inte till importmall ännu">
+            Vitalitet levande träd (%)
+            <input id="vitalityPercent" name="vitalityPercent" type="number" inputmode="decimal" min="0" max="100" step="1" placeholder="0-100">
           </label>
         </div>
+
+        <details class="advanced-section">
+          <summary>Ytterligare attribut</summary>
+
+          <div class="field-grid advanced-grid">
+            <label>
+              Specificering av hål
+              <select id="holeSpecification" name="holeSpecification"></select>
+            </label>
+
+            <label>
+              Mulmvolym
+              <select id="mulmVolume" name="mulmVolume"></select>
+            </label>
+
+            <label>
+              Karaktärsdrag 1
+              <select id="characteristic1" name="characteristic1"></select>
+            </label>
+
+            <label>
+              Karaktärsdrag 2
+              <select id="characteristic2" name="characteristic2"></select>
+            </label>
+
+            <label>
+              Karaktärsdrag 3
+              <select id="characteristic3" name="characteristic3"></select>
+            </label>
+
+            <label>
+              Grendiameter på hamlingsträd
+              <input id="pollardBranchDiameterCm" name="pollardBranchDiameterCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="cm">
+            </label>
+
+            <div class="form-section full-width">
+              <h3>Vedartad vegetation under kronan</h3>
+            </div>
+
+            <label>
+              Buskar under kronan
+              <select id="woodyShrubsUnderCrown" name="woodyShrubsUnderCrown"></select>
+            </label>
+
+            <label>
+              Sly och ungträd under kronan
+              <select id="woodyYoungTreesUnderCrown" name="woodyYoungTreesUnderCrown"></select>
+            </label>
+
+            <label>
+              Lövträd och tall under kronan
+              <select id="woodyBroadleafPineUnderCrown" name="woodyBroadleafPineUnderCrown"></select>
+            </label>
+
+            <label>
+              Gran under kronan
+              <select id="woodySpruceUnderCrown" name="woodySpruceUnderCrown"></select>
+            </label>
+
+            <div class="form-section full-width">
+              <h3>Vedartad vegetation utanför kronan</h3>
+            </div>
+
+            <label>
+              Buskar utanför kronan
+              <select id="woodyShrubsOutsideCrown" name="woodyShrubsOutsideCrown"></select>
+            </label>
+
+            <label>
+              Sly och ungträd utanför kronan
+              <select id="woodyYoungTreesOutsideCrown" name="woodyYoungTreesOutsideCrown"></select>
+            </label>
+
+            <label>
+              Lövträd och tall utanför kronan
+              <select id="woodyBroadleafPineOutsideCrown" name="woodyBroadleafPineOutsideCrown"></select>
+            </label>
+
+            <label>
+              Gran utanför kronan
+              <select id="woodySpruceOutsideCrown" name="woodySpruceOutsideCrown"></select>
+            </label>
+
+            <div class="form-section full-width">
+              <h3>Omgivning och markanvändning</h3>
+            </div>
+
+            <label>
+              Omgivning 1
+              <select id="surrounding1" name="surrounding1"></select>
+            </label>
+
+            <label>
+              Omgivning 2
+              <select id="surrounding2" name="surrounding2"></select>
+            </label>
+
+            <label>
+              Omgivning 3
+              <select id="surrounding3" name="surrounding3"></select>
+            </label>
+
+            <label>
+              Pågående markanvändning
+              <select id="landUse" name="landUse"></select>
+            </label>
+
+            <label>
+              Observatör / fältanteckning
+              <input id="observer" name="observer" type="text" autocomplete="name" placeholder="Sparas i utkastet men mappas inte till importmall ännu">
+            </label>
+          </div>
+        </details>
 
         <label>
           Publik kommentar
@@ -254,7 +251,7 @@
         <h2>Obs</h2>
         <ul>
           <li>Detta är inte en officiell Artportalen-/SLU-applikation.</li>
-          <li>XLSX-exporten använder nu samma huvudkolumner som Artportalens trädmall, men måste testas i Artportalen innan verklig användning.</li>
+          <li>XLSX-exporten använder huvudkolumner från Artportalens trädmall, men måste testas i Artportalen innan verklig användning.</li>
           <li>Lokalnamn måste komma från Artportalen/fyndplatsflödet och ska inte hittas på fritt.</li>
         </ul>
       </div>
@@ -271,6 +268,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260516-template-mapping-v1"></script>
+  <script type="module" src="src/app.js?v=20260516-stable-maplibre-template-ui-v2"></script>
 </body>
 </html>

@@ -25,6 +25,14 @@ function fillSelect(select, options, placeholder = "Välj") {
   }
 }
 
+function getText(formData, name) {
+  return String(formData.get(name) || "");
+}
+
+function getNumber(formData, name) {
+  return asNumber(formData.get(name));
+}
+
 function formatQuickTreeMeasure(value) {
   if (!Number.isFinite(value)) {
     return "";
@@ -50,9 +58,7 @@ function setupCircumferenceDiameterSync() {
 
     const circumference = asNumber(circumferenceInput.value);
     syncing = true;
-    diameterInput.value = circumference === null
-      ? ""
-      : formatQuickTreeMeasure(circumference / Math.PI);
+    diameterInput.value = circumference === null ? "" : formatQuickTreeMeasure(circumference / Math.PI);
     syncing = false;
   });
 
@@ -63,19 +69,9 @@ function setupCircumferenceDiameterSync() {
 
     const diameter = asNumber(diameterInput.value);
     syncing = true;
-    circumferenceInput.value = diameter === null
-      ? ""
-      : formatQuickTreeMeasure(diameter * Math.PI);
+    circumferenceInput.value = diameter === null ? "" : formatQuickTreeMeasure(diameter * Math.PI);
     syncing = false;
   });
-}
-
-function getText(formData, name) {
-  return String(formData.get(name) || "");
-}
-
-function getNumber(formData, name) {
-  return asNumber(formData.get(name));
 }
 
 function validatePercent(value, label) {
@@ -98,16 +94,14 @@ export async function initForm() {
   const values = await valuesResponse.json();
 
   fillSelect(document.querySelector("#species"), species, "Välj art");
-  fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Okänt / ej valt");
-  fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Okänt / ej valt");
-  fillSelect(document.querySelector("#holeSpecification"), values.holeSpecification, "Okänt / ej valt");
-  fillSelect(document.querySelector("#mulmVolume"), values.mulmVolume, "Okänt / ej valt");
-  fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Okänt / ej valt");
-
+  fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Välj trädstatus");
+  fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Välj hålstadium");
+  fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Välj åtgärdsbehov");
+  fillSelect(document.querySelector("#holeSpecification"), values.holeSpecification, "Ej valt");
+  fillSelect(document.querySelector("#mulmVolume"), values.mulmVolume, "Ej valt");
   fillSelect(document.querySelector("#characteristic1"), values.characteristics, "Ej valt");
   fillSelect(document.querySelector("#characteristic2"), values.characteristics, "Ej valt");
   fillSelect(document.querySelector("#characteristic3"), values.characteristics, "Ej valt");
-
   fillSelect(document.querySelector("#woodyShrubsUnderCrown"), values.vegetationCoverage, "Ej valt");
   fillSelect(document.querySelector("#woodyYoungTreesUnderCrown"), values.vegetationCoverage, "Ej valt");
   fillSelect(document.querySelector("#woodyBroadleafPineUnderCrown"), values.vegetationCoverage, "Ej valt");
@@ -116,13 +110,16 @@ export async function initForm() {
   fillSelect(document.querySelector("#woodyYoungTreesOutsideCrown"), values.vegetationCoverage, "Ej valt");
   fillSelect(document.querySelector("#woodyBroadleafPineOutsideCrown"), values.vegetationCoverage, "Ej valt");
   fillSelect(document.querySelector("#woodySpruceOutsideCrown"), values.vegetationCoverage, "Ej valt");
-
   fillSelect(document.querySelector("#surrounding1"), values.surrounding, "Ej valt");
   fillSelect(document.querySelector("#surrounding2"), values.surrounding, "Ej valt");
   fillSelect(document.querySelector("#surrounding3"), values.surrounding, "Ej valt");
   fillSelect(document.querySelector("#landUse"), values.landUse, "Ej valt");
 
-  document.querySelector("#observationDate").value = todayISO();
+  const dateInput = document.querySelector("#observationDate");
+  if (dateInput && !dateInput.value) {
+    dateInput.value = todayISO();
+  }
+
   setupCircumferenceDiameterSync();
 }
 
@@ -200,5 +197,9 @@ export function resetTreeForm(form) {
   document.querySelector("#latitude").value = lat;
   document.querySelector("#longitude").value = lng;
   document.querySelector("#coordinateAccuracyM").value = accuracy;
-  document.querySelector("#localityId").value = "";
+
+  const localityId = document.querySelector("#localityId");
+  if (localityId) {
+    localityId.value = "";
+  }
 }

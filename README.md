@@ -1,146 +1,81 @@
 # Fältrapportör för skyddsvärda träd
 
 **Status:** Early proof of concept  
-**Repository type:** Experimental field-tool concept  
-**Target platform:** Mobile-first static web app / PWA  
-**Primary use case:** Field recording of potential *särskilt skyddsvärda träd* and preparation of structured data for later import into Artportalen.
-
----
+**Target platform:** Mobile-first web app / PWA  
+**Map engine:** MapLibre GL JS  
+**Primary use case:** Field recording of potential *särskilt skyddsvärda träd* and export of draft observations for later review/import into Artportalen.
 
 ## Purpose
 
-This repository contains an experimental mobile-first field tool for recording potential **särskilt skyddsvärda träd**.
+This project is an experimental mobile field helper for recording potential **särskilt skyddsvärda träd**.
 
-The app is intended to help users collect structured field notes, check nearby existing tree points, save local drafts and export the records for later processing/import.
+It is intended to help with:
 
-It is **not** intended to replace Artportalen and it does **not** publish observations directly to Artportalen.
+- GPS-based field positioning,
+- showing existing/sample tree points on a map,
+- recording tree observations in a Swedish UI,
+- warning about possible duplicates,
+- saving local drafts in the browser,
+- exporting drafts as XLSX and GeoJSON.
 
----
-
-## Current proof of concept
-
-The current app can:
-
-- display a mobile-friendly map using MapLibre GL JS,
-- use browser geolocation,
-- show sample existing tree records near Simlångsdalen,
-- let the user place a new tree point on the map,
-- fill in a Swedish field form,
-- use allowed project-parameter values copied from the Artportalen template,
-- warn about possible duplicate records near the selected point,
-- store drafts locally in the browser,
-- export drafts as XLSX using the `Observationer`/`Parametrar` sheet structure from the template,
-- export drafts as GeoJSON.
-
-The current value lists and export columns are still a working draft, but the app now uses the analysed `docs/ap2_template_treeproject.xlsx` structure for the first template-based XLSX export. The export creates an `Observationer` sheet with the same row-2 headers as the template and a `Parametrar` sheet with copied allowed values.
-
----
-
-## Display name
-
-The app currently uses the Swedish display name:
-
-```text
-Fältrapportör för skyddsvärda träd
-```
-
-The name should not imply that this is an official SLU, ArtDatabanken or Artportalen application.
-
----
+The project is not a replacement for Artportalen and does not publish observations directly.
 
 ## Important disclaimer
 
-This project is **not an official SLU, ArtDatabanken, Artportalen or Länsstyrelsen application**.
+This is **not an official SLU, ArtDatabanken, Artportalen or Länsstyrelsen application**.
 
-It is an independent experimental tool concept intended to support field data collection and preparation of import-ready data.
+All exported data must be reviewed before import into Artportalen.
 
-Any final implementation must respect:
+## Current implementation
 
-- Artportalen's official reporting rules,
-- current import template requirements,
-- relevant API terms and usage limits,
-- data licenses,
-- personal data and photo handling requirements,
-- quality requirements for biodiversity and tree inventory data.
+The app currently uses:
 
----
+- MapLibre GL JS for the map,
+- OpenStreetMap raster tiles for the background map,
+- local sample GeoJSON for existing tree records,
+- localStorage for drafts,
+- SheetJS/xlsx for XLSX export.
 
-## Artportalen import template
+## Field workflow
 
-A reference copy of the Artportalen tree project import template is stored in:
+The form is intentionally split into two parts:
+
+1. **Grunduppgifter** – the most important fields shown immediately.
+2. **Ytterligare attribut** – optional project parameters in a collapsible section.
+
+This keeps the mobile UI usable in the field while still supporting Artportalen project parameters when needed.
+
+## Artportalen template mapping
+
+Reference template:
 
 ```text
 docs/ap2_template_treeproject.xlsx
 ```
 
-This template should be treated as the **source of truth** for:
+The current XLSX export creates:
 
-- required columns,
-- accepted values,
-- controlled value classes,
-- import structure,
-- future XLSX mapping.
+- `Observationer`
+- `Parametrar`
 
-The current app does not parse the template automatically at runtime, but this repository now contains a first manual mapping based on the template. See `docs/template-analysis.md` for the analysed headers, allowed values and current field mapping.
+The export uses the same main column structure as the Artportalen tree-project template, but must still be tested with the real Artportalen import workflow.
 
----
+Known uncertainties:
+
+- `Ost` and `Nord` currently receive WGS84 decimal longitude/latitude.
+- `Lokalnamn` must refer to an existing Artportalen locality/fyndplats.
+- observer/med-observer handling is not finalized.
+- Excel validation rules from the original template are not fully reproduced.
 
 ## Lokalnamn
 
-`Lokalnamn` is a known challenge.
+`Lokalnamn` should not be invented by the app.
 
-In Artportalen, `Lokalnamn` should refer to an existing locality/site. It should not be invented freely by the app.
-
-Current MVP handling:
-
-- the app has a manual `Lokalnamn` field,
-- the user must enter the exact locality name expected by the later import workflow,
-- the app does not yet validate whether the locality exists in Artportalen,
-- the app does not auto-generate locality names from coordinates,
-- the UI has a prepared locality lookup button, but no verified Artportalen endpoint is configured yet.
-
-Future handling should investigate:
-
-- lookup/search of existing Artportalen localities,
-- a controlled local list for known project localities,
-- validation before export,
-- warning when `Lokalnamn` is empty or unknown.
-
----
-
-## Coordinates
-
-The UI uses more field-friendly Swedish labels:
-
-```text
-Norr (latitud)
-Öst (longitud)
-```
-
-Internally these are still stored as WGS84 decimal latitude and longitude. Final export mapping must verify whether the Artportalen template expects WGS84 decimal coordinates or projected east/north coordinates in another coordinate system.
-
----
-
-## Suggested workflow
-
-1. Open the app in the field.
-2. Use GPS or tap the map to set the observation point.
-3. Check if sample/existing tree records are nearby.
-4. Fill in the Swedish field form.
-5. Enter `Lokalnamn` according to the intended Artportalen import workflow.
-6. Save the observation as a local draft.
-7. Export drafts as XLSX or GeoJSON.
-8. Review and transform the XLSX against the official Artportalen template before import.
-
-The MVP does **not** publish directly to Artportalen.
-
----
+The field is currently manual. A future step should investigate whether Artportalen exposes a usable locality/fyndplats lookup endpoint that can be queried from the app.
 
 ## Running locally
 
-Because the app uses JavaScript modules and browser geolocation, it should be opened through a local web server, not directly as a `file://` path.
-
-Simple option:
+Use a local web server:
 
 ```bash
 python -m http.server 8000
@@ -152,119 +87,8 @@ Then open:
 http://localhost:8000
 ```
 
-For phone/iPad testing, GitHub Pages is usually more convenient because browser geolocation normally requires HTTPS.
-
----
-
-## Repository structure
-
-```text
-skyddstrad-field-reporter/
-  README.md
-  LICENSE
-  .gitignore
-  .gitattributes
-  index.html
-  manifest.webmanifest
-  src/
-    app.js
-    config.js
-    duplicate-check.js
-    export-csv.js
-    export-geojson.js
-    export-xlsx.js
-    form.js
-    gps.js
-    map.js
-    storage.js
-    tree-layer.js
-    util.js
-  styles/
-    main.css
-  data/
-    existing-trees.sample.geojson
-    form-values.json
-    species.json
-  docs/
-    ap2_template_treeproject.xlsx
-    architecture.md
-    artportalen-import.md
-    data-sources.md
-    limitations.md
-```
-
----
-
-## MVP scope
-
-### Included in the current scaffold
-
-| Feature | Status |
-|---|---|
-| Mobile-first map | Working with MapLibre GL JS |
-| GPS position | Basic implementation |
-| Existing tree layer | Sample GeoJSON only |
-| Swedish UI | Basic implementation |
-| Tree form | Basic placeholder fields |
-| Lokalnamn field | Manual field plus prepared lookup UI; no verified endpoint yet |
-| Duplicate warning | Basic distance-based check |
-| Local draft storage | Browser localStorage |
-| XLSX export | First template-based export using `Observationer` and `Parametrar` sheets; still needs Artportalen import testing |
-| GeoJSON export | Basic implementation |
-
-### Not included yet
-
-| Feature | Reason |
-|---|---|
-| Direct upload to Artportalen | Requires official write access/API workflow and should not be assumed. |
-| Exact template-based XLSX export | Requires mapping against `docs/ap2_template_treeproject.xlsx`. |
-| Automatic allowed-value extraction | The template needs to be parsed and mapped first. |
-| Lokalnamn lookup/validation | Needs a reliable source for existing Artportalen localities. |
-| Live Artportalen/geodata endpoint | Requires endpoint verification and CORS testing. |
-| Photo export | Needs a careful decision about file handling and privacy. |
-| User accounts | Avoided in the first proof of concept. |
-| Full offline map support | Useful later, but not needed for the first test. |
-
----
-
-## Data source strategy
-
-The app should eventually show existing *skyddsvärda träd* from a public and reliable data source.
-
-Potential data sources to verify:
-
-- SLU / ArtDatabanken open data and APIs,
-- SLU Species Observation System API / WFS,
-- Länsstyrelsernas Geodatakatalogen layer for **SLU Skyddsvärda träd - Artportalen**,
-- Artportalen reporting help and import templates.
-
-The current code uses only:
-
-```text
-data/existing-trees.sample.geojson
-```
-
-The real endpoint should be configured in `src/config.js` after testing.
-
----
-
-## Known limitations
-
-1. The existing-tree layer uses sample data.
-2. No direct reporting to Artportalen is implemented.
-3. Field names and value lists are placeholders.
-4. XLSX export is not yet guaranteed to match Artportalen's import template.
-5. `Lokalnamn` is not validated against Artportalen localities.
-6. Browser GPS accuracy varies.
-7. Duplicate detection is approximate.
-8. Photos are not handled in the first scaffold.
-9. Public data sources may hide or generalize sensitive observations.
-10. The app should be tested on real mobile devices before any field use.
-
----
+For GPS testing on iPad/iPhone, GitHub Pages over HTTPS is usually easier.
 
 ## License
 
-The code in this repository is released under the MIT License unless stated otherwise.
-
-Data sources, map tiles, APIs, Artportalen templates and external services may have their own licenses and terms.
+MIT.
