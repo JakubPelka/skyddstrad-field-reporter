@@ -51,8 +51,18 @@
           </label>
 
           <label>
+            Observation date
+            <input id="observationDate" name="observationDate" type="date" required>
+          </label>
+
+          <label>
             Stem circumference, cm
-            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="numeric" min="0" step="1" placeholder="e.g. 320">
+            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 320">
+          </label>
+
+          <label>
+            Stem diameter, cm
+            <input id="stemDiameterCm" name="stemDiameterCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="calculated from circumference">
           </label>
 
           <label>
@@ -68,11 +78,6 @@
           <label>
             Coordinate accuracy, m
             <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS accuracy">
-          </label>
-
-          <label>
-            Observation date
-            <input id="observationDate" name="observationDate" type="date" required>
           </label>
 
           <label>

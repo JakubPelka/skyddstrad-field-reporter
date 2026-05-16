@@ -1,7 +1,11 @@
 export const APP_CONFIG = {
   appName: "Skyddsträd Field Reporter",
-  defaultMapCenter: [57.49, 12.08],
-  defaultZoom: 12,
+
+  // Test area: Simlångsdalen, Halmstad municipality.
+  // Keep sample records close to this area during early mobile testing.
+  defaultMapCenter: [56.7182, 13.1292],
+  defaultZoom: 15,
+
   duplicateDistanceM: 20,
   storageKey: "skyddstrad-field-reporter:drafts:v1",
   existingTrees: {
@@ -28,6 +32,7 @@ export const FIELD_EXPORT_ORDER = [
   "longitude",
   "coordinateAccuracyM",
   "stemCircumferenceCm",
+  "stemDiameterCm",
   "treeStatus",
   "hollowStage",
   "hollowPosition",

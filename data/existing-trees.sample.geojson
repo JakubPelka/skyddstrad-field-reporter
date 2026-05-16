@@ -1,65 +1,68 @@
 {
   "type": "FeatureCollection",
-  "name": "existing_trees_sample",
+  "name": "existing_trees_sample_simlangsdalen",
   "features": [
     {
       "type": "Feature",
-      "id": "sample-1",
+      "id": "sample-simlangsdalen-1",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          12.07985,
-          57.49105
+          13.12905,
+          56.71842
         ]
       },
       "properties": {
         "species": "Ek",
         "scientificName": "Quercus robur",
         "stemCircumferenceCm": 365,
+        "stemDiameterCm": 116.2,
         "treeStatus": "Levande",
         "hollowStage": "Tydlig hålighet",
         "vitality": "God",
-        "source": "Sample data"
+        "source": "Sample data - Simlångsdalen"
       }
     },
     {
       "type": "Feature",
-      "id": "sample-2",
+      "id": "sample-simlangsdalen-2",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          12.08302,
-          57.48974
+          13.13325,
+          56.71695
         ]
       },
       "properties": {
         "species": "Ask",
         "scientificName": "Fraxinus excelsior",
         "stemCircumferenceCm": 240,
+        "stemDiameterCm": 76.4,
         "treeStatus": "Levande",
         "hollowStage": "Ingen hålighet observerad",
         "vitality": "Nedsatt",
-        "source": "Sample data"
+        "source": "Sample data - Simlångsdalen"
       }
     },
     {
       "type": "Feature",
-      "id": "sample-3",
+      "id": "sample-simlangsdalen-3",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          12.07551,
-          57.48792
+          13.12385,
+          56.72005
         ]
       },
       "properties": {
         "species": "Lind",
         "scientificName": "Tilia cordata",
         "stemCircumferenceCm": 290,
+        "stemDiameterCm": 92.3,
         "treeStatus": "Levande",
         "hollowStage": "Stor hålighet",
         "vitality": "God",
-        "source": "Sample data"
+        "source": "Sample data - Simlångsdalen"
       }
     }
   ]

@@ -90,7 +90,8 @@ function renderDrafts() {
     title.textContent = draft.species || "Unnamed tree";
     meta.textContent = [
       draft.observationDate,
-      Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm` : "",
+      Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm circumference` : "",
+      Number.isFinite(draft.stemDiameterCm) ? `${draft.stemDiameterCm} cm diameter` : "",
       `${draft.latitude?.toFixed?.(6) ?? ""}, ${draft.longitude?.toFixed?.(6) ?? ""}`
     ].filter(Boolean).join(" · ");
 

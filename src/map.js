@@ -6,14 +6,19 @@ let existingLayer;
 let draftLayer;
 let positionMarker;
 let selectedMarker;
+let resizeTimer;
 
 export function initMap({ onMapClick }) {
   map = L.map("map", {
-    zoomControl: true
+    zoomControl: true,
+    preferCanvas: true
   }).setView(APP_CONFIG.defaultMapCenter, APP_CONFIG.defaultZoom);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 20,
+    detectRetina: true,
+    updateWhenIdle: true,
+    keepBuffer: 4,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
@@ -28,7 +33,41 @@ export function initMap({ onMapClick }) {
     });
   });
 
+  setupMapResizeFixes();
+
   return map;
+}
+
+function setupMapResizeFixes() {
+  refreshMapSize();
+
+  window.addEventListener("load", refreshMapSize);
+  window.addEventListener("resize", debouncedRefreshMapSize);
+  window.addEventListener("orientationchange", () => {
+    window.setTimeout(refreshMapSize, 250);
+    window.setTimeout(refreshMapSize, 700);
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      refreshMapSize();
+    }
+  });
+}
+
+function debouncedRefreshMapSize() {
+  window.clearTimeout(resizeTimer);
+  resizeTimer = window.setTimeout(refreshMapSize, 120);
+}
+
+export function refreshMapSize() {
+  if (!map) {
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    map.invalidateSize({ animate: false, pan: false });
+  });
 }
 
 export function getMap() {
@@ -42,6 +81,7 @@ export function getBounds() {
 export function setExistingLayer(layer) {
   existingLayer.clearLayers();
   layer.eachLayer((item) => existingLayer.addLayer(item));
+  refreshMapSize();
 }
 
 export function setSelectedPoint(lat, lng, label = "Selected observation point") {
@@ -87,6 +127,7 @@ export function showCurrentPosition(lat, lng, accuracyM = null) {
   positionMarker.bindPopup(popup);
   setSelectedPoint(lat, lng);
   map.setView([lat, lng], Math.max(map.getZoom(), 17));
+  refreshMapSize();
 }
 
 export function renderDraftMarkers(drafts) {
@@ -110,10 +151,13 @@ export function renderDraftMarkers(drafts) {
       <ul class="popup-list">
         <li><strong>Date:</strong> ${escapeHtml(draft.observationDate || "")}</li>
         <li><strong>Circumference:</strong> ${escapeHtml(draft.stemCircumferenceCm ?? "")} cm</li>
+        <li><strong>Diameter:</strong> ${escapeHtml(draft.stemDiameterCm ?? "")} cm</li>
         <li><strong>Status:</strong> ${escapeHtml(draft.treeStatus || "")}</li>
       </ul>
     `);
 
     draftLayer.addLayer(marker);
   }
+
+  refreshMapSize();
 }

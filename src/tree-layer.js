@@ -19,13 +19,15 @@ function buildUrlFromBounds(bounds) {
 function propertiesToPopup(properties) {
   const species = properties.species || properties.artnamn || properties.vernacularName || "Existing tree";
   const circumference = properties.stemCircumferenceCm || properties.stamomkrets || properties.omkrets || "";
+  const diameter = properties.stemDiameterCm || properties.diameter || "";
   const status = properties.treeStatus || properties.tradstatus || "";
   const vitality = properties.vitality || properties.vitalitet || properties.vitalitet_levande_trad || "";
   const url = properties.url || properties.recordUrl || "";
 
   const rows = [
     ["Species", species],
-    ["Circumference", circumference],
+    ["Circumference", circumference ? `${circumference} cm` : ""],
+    ["Diameter", diameter ? `${diameter} cm` : ""],
     ["Status", status],
     ["Vitality", vitality]
   ].filter(([, value]) => value !== null && value !== undefined && value !== "");

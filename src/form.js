@@ -21,6 +21,51 @@ function fillSelect(select, options, placeholder = "Select") {
   }
 }
 
+function formatQuickTreeMeasure(value) {
+  if (!Number.isFinite(value)) {
+    return "";
+  }
+
+  return value.toFixed(1);
+}
+
+function setupCircumferenceDiameterSync() {
+  const circumferenceInput = document.querySelector("#stemCircumferenceCm");
+  const diameterInput = document.querySelector("#stemDiameterCm");
+
+  if (!circumferenceInput || !diameterInput) {
+    return;
+  }
+
+  let syncing = false;
+
+  circumferenceInput.addEventListener("input", () => {
+    if (syncing) {
+      return;
+    }
+
+    const circumference = asNumber(circumferenceInput.value);
+    syncing = true;
+    diameterInput.value = circumference === null
+      ? ""
+      : formatQuickTreeMeasure(circumference / Math.PI);
+    syncing = false;
+  });
+
+  diameterInput.addEventListener("input", () => {
+    if (syncing) {
+      return;
+    }
+
+    const diameter = asNumber(diameterInput.value);
+    syncing = true;
+    circumferenceInput.value = diameter === null
+      ? ""
+      : formatQuickTreeMeasure(diameter * Math.PI);
+    syncing = false;
+  });
+}
+
 export async function initForm() {
   const [speciesResponse, valuesResponse] = await Promise.all([
     fetch("data/species.json"),
@@ -38,6 +83,7 @@ export async function initForm() {
   fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Unknown / not selected");
 
   document.querySelector("#observationDate").value = todayISO();
+  setupCircumferenceDiameterSync();
 }
 
 export function setFormPosition({ lat, lng, accuracyM = null }) {
@@ -70,6 +116,7 @@ export function getDraftFromForm(form) {
     longitude,
     coordinateAccuracyM: asNumber(formData.get("coordinateAccuracyM")),
     stemCircumferenceCm: asNumber(formData.get("stemCircumferenceCm")),
+    stemDiameterCm: asNumber(formData.get("stemDiameterCm")),
     treeStatus: String(formData.get("treeStatus") || ""),
     hollowStage: String(formData.get("hollowStage") || ""),
     hollowPosition: String(formData.get("hollowPosition") || ""),
