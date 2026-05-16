@@ -5,7 +5,7 @@
 **Target platform:** Mobile-first web app / PWA  
 **Primary use case:** Field recording of potential *särskilt skyddsvärda träd* and preparation of structured data for later import into Artportalen.
 
----
+—
 
 ## Purpose
 
@@ -22,17 +22,7 @@ The main goal is to make field collection easier by combining:
 
 The project is intended as a practical helper tool, not as a replacement for Artportalen.
 
----
-
-## Background
-
-Today, reporting *särskilt skyddsvärda träd* with project-specific parameters is mainly handled through Artportalen and its dedicated reporting/import workflows.
-
-For field users, especially on mobile devices, this can be less convenient when recording many trees outdoors. A small mobile-first tool could reduce friction by allowing users to collect structured observations directly in the field and prepare them for later import.
-
-A key idea is also to show already reported trees nearby, so users can avoid creating duplicate records.
-
----
+—
 
 ## Important disclaimer
 
@@ -42,337 +32,238 @@ It is an independent experimental tool concept intended to support field data co
 
 Any final implementation must respect:
 
-- Artportalen's official reporting rules,
+- Artportalen’s official reporting rules,
 - relevant API terms and usage limits,
 - data licenses,
 - personal data and photo handling requirements,
 - quality requirements for biodiversity and tree inventory data.
 
----
+—
 
-## Core concept
+## Current proof-of-concept
 
-The intended workflow is:
+This repository currently contains a minimal static web app scaffold.
 
-1. The user opens the mobile web app in the field.
-2. The app reads the user's GPS position.
-3. The map displays already reported *skyddsvärda träd* nearby.
-4. The user checks whether the tree is already known.
-5. The user records a new tree or prepares an update/comment.
-6. The observation is stored locally on the device as a draft.
-7. The user exports the collected records as CSV/XLSX/GeoJSON.
-8. The exported file is reviewed and imported into Artportalen using the official workflow.
+It can already:
 
----
+- display a mobile-friendly map,
+- use browser geolocation,
+- show sample existing tree records,
+- let the user place a new tree point on the map,
+- fill in a basic tree form,
+- warn about possible duplicates near the selected point,
+- store draft observations locally in the browser,
+- export drafts as CSV,
+- export drafts as GeoJSON.
 
-## MVP scope
+The sample data and form values are placeholders. They must be replaced or aligned with official Artportalen import templates and confirmed data sources before real use.
 
-The first version should be deliberately small.
+—
 
-### Included in MVP
+## Suggested workflow
 
-| Feature | Description |
-|---|---|
-| Mobile-first map | Simple map optimized for phone use in the field. |
-| GPS position | Show current user position and GPS accuracy. |
-| Existing tree layer | Display nearby already reported *skyddsvärda träd*. |
-| Tree form | Basic structured form for recording a tree. |
-| Duplicate warning | Warn if another tree exists within a configurable distance. |
-| Local draft storage | Store observations locally before export. |
-| Export | Export records to CSV/XLSX and GeoJSON. |
-| Basic validation | Check required fields and obvious value errors. |
+1. Open the app in the field.
+2. Let the app read the GPS position.
+3. Check if nearby *skyddsvärda träd* are already shown on the map.
+4. Place or adjust the point for a new observation.
+5. Fill in the form.
+6. Save the observation as a local draft.
+7. Export drafts to CSV or GeoJSON.
+8. Review and transform the file before import into Artportalen.
 
-### Not included in MVP
+The MVP does **not** publish directly to Artportalen.
 
-| Feature | Reason |
-|---|---|
-| Direct upload to Artportalen | Requires official write access/API workflow and should not be assumed. |
-| User accounts | Avoid unnecessary complexity in the first version. |
-| Full offline map support | Useful later, but not needed for a first proof of concept. |
-| Automatic species identification | Interesting future feature, but not needed for MVP. |
-| Editing official Artportalen records | Outside the scope of an independent MVP. |
+—
 
----
+## Running locally
 
-## Suggested data sources
+Because the app uses JavaScript modules and browser geolocation, it should be opened through a local web server, not directly as a `file://` path.
 
-The application should investigate and use official or reliable public data sources where possible.
+Simple option:
 
-Potential sources include:
-
-- SLU / ArtDatabanken open data and APIs  
-  <https://www.slu.se/artdatabanken/rapportering-och-fynd/oppna-data-och-apier/>
-
-- SLU Species Observation System API / WFS  
-  <https://github.com/biodiversitydata-se/SOS>
-
-- Länsstyrelsernas Geodatakatalogen layer for **SLU Skyddsvärda träd - Artportalen**  
-  <https://ext-geodatakatalog.lansstyrelsen.se/>
-
-- Artportalen reporting help and import templates  
-  <https://www.slu.se/artdatabanken/rapportering-och-fynd/artportalen/>
-
-The exact endpoint, layer name, request format, license text, update frequency and attribute structure must be verified during implementation.
-
----
-
-## Existing records on the map
-
-A central feature is to display already reported trees near the user's position.
-
-The map should support:
-
-- loading existing trees within the current map extent or search radius,
-- clustering points if many records are visible,
-- showing a popup with key attributes,
-- linking to the original record if a public URL is available,
-- filtering by tree species or status if supported by the data source.
-
-The app should treat existing records as context data only. It should not assume that the displayed layer is complete, fully up to date, or editable.
-
----
-
-## Duplicate detection
-
-When the user creates a new observation, the app should check for nearby existing trees.
-
-Example logic:
-
-```text
-If an existing tree is found within 20 metres:
-    Show a warning.
-    Display the nearby existing records.
-    Let the user decide whether:
-        - this is a new tree,
-        - this is probably the same tree,
-        - this should be handled as an update/comment instead.
+```bash
+python -m http.server 8000
 ```
 
-The duplicate threshold should be configurable, for example:
+Then open:
 
-- 10 m for high-accuracy GPS,
-- 20 m as default,
-- 30–50 m when GPS accuracy is poor.
+```text
+http://localhost:8000
+```
 
-Duplicate detection should be treated as a warning, not as an automatic block.
+For phone testing, GitHub Pages is usually more convenient because browser geolocation normally requires HTTPS.
 
----
+—
 
-## Suggested form fields
-
-The exact field list must be adjusted to the official Artportalen import template and the current structure for the *Skyddsvärda träd* project.
-
-Possible MVP fields:
-
-| Field | Notes |
-|---|---|
-| Species | Swedish name and/or scientific name. |
-| Latitude | From GPS or manually adjusted map point. |
-| Longitude | From GPS or manually adjusted map point. |
-| Coordinate accuracy | GPS accuracy in metres. |
-| Stem circumference | Usually recorded in centimetres. |
-| Tree status | Living, dead, fallen, etc. depending on official values. |
-| Hollow stage / hålstadium | Should follow official value list. |
-| Hollow position / hålets placering | Should follow official value list. |
-| Vitality | Especially relevant for living trees. |
-| Management need / åtgärdsbehov | Should follow official value list. |
-| Comment | Free text. |
-| Photo reference | Local photo filename or attachment reference. |
-| Observer | Optional, depending on workflow. |
-| Date | Observation date. |
-
-The app should avoid inventing its own classification system if Artportalen already has controlled values.
-
----
-
-## Exports
-
-The app should support at least two export formats.
-
-### CSV/XLSX
-
-Primary export format for later import or manual processing.
-
-The column names and allowed values should be aligned with the official Artportalen import template for *skyddsvärda träd*.
-
-### GeoJSON
-
-Useful for GIS review in QGIS, ArcGIS, FME, PostGIS or municipal GIS workflows.
-
-GeoJSON export should include geometry and all relevant attributes.
-
----
-
-## Privacy and data handling
-
-The first version should avoid server-side storage.
-
-Recommended MVP approach:
-
-- observations are stored locally in the browser,
-- photos stay on the user's device unless exported,
-- no user tracking,
-- no analytics by default,
-- no login,
-- no central database.
-
-If server-side storage is added later, the project must handle:
-
-- personal data,
-- observer names,
-- photo metadata,
-- GPS locations,
-- access control,
-- deletion routines,
-- backup and retention.
-
----
-
-## Technical direction
-
-Recommended MVP technology:
-
-- static web app / PWA,
-- HTML, CSS and JavaScript or TypeScript,
-- Leaflet or MapLibre for map display,
-- IndexedDB or local storage for drafts,
-- client-side CSV/GeoJSON export,
-- optional XLSX export library,
-- optional small proxy service if CORS or API limitations require it.
-
-Possible later backend options:
-
-- Cloudflare Worker,
-- Netlify Function,
-- Vercel Function,
-- small Python/FastAPI service,
-- Node.js/Express service.
-
-The first version should avoid backend complexity unless it is required for data access.
-
----
-
-## Possible repository structure
+## Repository structure
 
 ```text
 skyddstrad-field-reporter/
   README.md
   LICENSE
   .gitignore
+  .gitattributes
   index.html
+  manifest.webmanifest
   src/
     app.js
-    map.js
-    gps.js
-    tree-layer.js
+    config.js
     duplicate-check.js
-    form.js
-    storage.js
     export-csv.js
     export-geojson.js
+    form.js
+    gps.js
+    map.js
+    storage.js
+    tree-layer.js
+    util.js
+  styles/
+    main.css
   data/
-    species.json
+    existing-trees.sample.geojson
     form-values.json
+    species.json
   docs/
-    data-sources.md
+    architecture.md
     artportalen-import.md
+    data-sources.md
     limitations.md
 ```
 
----
+—
+
+## MVP scope
+
+### Included in the current scaffold
+
+| Feature | Status |
+|—|—|
+| Mobile-first map | Basic implementation |
+| GPS position | Basic implementation |
+| Existing tree layer | Sample GeoJSON only |
+| Tree form | Basic placeholder fields |
+| Duplicate warning | Basic distance-based check |
+| Local draft storage | Browser localStorage |
+| CSV export | Basic implementation |
+| GeoJSON export | Basic implementation |
+
+### Not included yet
+
+| Feature | Reason |
+|—|—|
+| Direct upload to Artportalen | Requires official write access/API workflow and should not be assumed. |
+| Official import template mapping | Must be verified against the current Artportalen template. |
+| Live Artportalen/geodata endpoint | Requires endpoint verification and CORS testing. |
+| Photo export | Needs a careful decision about file handling and privacy. |
+| User accounts | Avoided in the first proof of concept. |
+| Full offline map support | Useful later, but not needed for the first test. |
+
+—
+
+## Data source strategy
+
+The app should eventually show existing *skyddsvärda träd* from a public and reliable data source.
+
+Potential data sources to verify:
+
+- SLU / ArtDatabanken open data and APIs
+- SLU Species Observation System API / WFS
+- Länsstyrelsernas Geodatakatalogen layer for **SLU Skyddsvärda träd - Artportalen**
+- Artportalen reporting help and import templates
+
+The current code uses only `data/existing-trees.sample.geojson`.
+
+The real endpoint should be configured in `src/config.js` after testing.
+
+—
+
+## Duplicate detection
+
+When the user selects a location, the app compares it with loaded existing tree points.
+
+Default threshold:
+
+```text
+20 metres
+```
+
+This is only a warning. It should not block the user from saving a record.
+
+Possible future logic:
+
+- use 10 m for high-accuracy GPS,
+- use 20 m as default,
+- use 30–50 m when GPS accuracy is poor,
+- compare species and stem circumference when available.
+
+—
+
+## Suggested form fields
+
+The exact field list must be adjusted to the official Artportalen import template and the current structure for the *Skyddsvärda träd* project.
+
+Current placeholder fields:
+
+- species,
+- latitude,
+- longitude,
+- coordinate accuracy,
+- stem circumference,
+- tree status,
+- hollow stage / `hålstadium`,
+- hollow position / `hålets placering`,
+- vitality,
+- management need / `åtgärdsbehov`,
+- observer,
+- observation date,
+- comment.
+
+The app should avoid inventing its own classification system if Artportalen already has controlled values.
+
+—
+
+## Privacy and local storage
+
+The current scaffold stores drafts locally in the browser using `localStorage`.
+
+This means:
+
+- no server-side storage,
+- no login,
+- no central database,
+- no automatic upload,
+- data remains on the current device/browser until exported or cleared.
+
+This is useful for a simple MVP, but not a complete long-term data management solution.
+
+—
 
 ## Known limitations
 
-This project has several important limitations.
+1. The existing-tree layer uses sample data.
+2. No direct reporting to Artportalen is implemented.
+3. Field names and value lists are placeholders.
+4. Browser GPS accuracy varies.
+5. Duplicate detection is approximate.
+6. CSV export is not yet guaranteed to match Artportalen’s import template.
+7. Photos are not handled in the first scaffold.
+8. Public data sources may hide or generalize sensitive observations.
+9. The app should be tested on real mobile devices before any field use.
 
-1. **No direct reporting in the first version**  
-   The MVP should not publish directly to Artportalen. It should only prepare data for later import.
+See `docs/limitations.md` for more details.
 
-2. **Public data may be incomplete**  
-   Not all records may be visible through public APIs or public geodata services.
-
-3. **Sensitive records may be hidden or generalized**  
-   Some biodiversity data may be protected, filtered or spatially generalized.
-
-4. **GPS accuracy varies**  
-   Mobile GPS can be unreliable under tree canopy, near buildings or in poor weather conditions.
-
-5. **Duplicate detection is uncertain**  
-   A nearby point does not always mean the same tree, and missing nearby points do not guarantee that the tree is new.
-
-6. **Official import format may change**  
-   The export module must be updated if Artportalen changes its import template or allowed values.
-
-7. **Data source availability may change**  
-   APIs, WFS services, geodata layers and CORS behaviour may change over time.
-
-8. **Not a validation authority**  
-   The app can help structure field data, but it cannot guarantee ecological, taxonomic or legal correctness.
-
----
-
-## Future ideas
-
-Potential future development:
-
-- offline basemaps,
-- automatic background sync,
-- photo attachment export,
-- direct integration with a municipal GIS database,
-- QGIS import workflow,
-- FME workflow for validation and transformation,
-- AI-assisted species suggestions from photos,
-- AI-assisted form completion from voice notes,
-- local checklist of valuable tree criteria,
-- comparison with historical records,
-- support for updating existing records,
-- role-based workflows for municipalities,
-- Swedish user interface,
-- English user interface,
-- Polish developer notes if useful.
-
----
-
-## Suggested first implementation steps
-
-1. Verify the current official import template for *Skyddsvärda träd*.
-2. Identify the best public endpoint for existing tree records.
-3. Build a minimal map page with GPS.
-4. Load nearby existing tree points.
-5. Add a simple form for one new tree.
-6. Store drafts locally.
-7. Export GeoJSON.
-8. Export CSV compatible with the import template.
-9. Add duplicate warning.
-10. Test in the field.
-
----
-
-## Project status
-
-Current status: **idea / proof of concept planned**.
-
-This README describes the intended direction and design assumptions. The technical implementation has not yet been completed.
-
----
+—
 
 ## License
 
-License not decided yet.
+The code in this repository is released under the MIT License unless stated otherwise.
 
-For an open public helper tool, a permissive license such as MIT may be suitable. However, the final license should be selected after checking dependencies, data source terms and intended reuse.
+Data sources, map tiles, APIs and external services may have their own licenses and terms.
 
----
+—
 
 ## Working title
 
 **Skyddsträd Field Reporter**
-
-Alternative names:
-
-- `skyddstrad-field-reporter`
-- `skyddstrad-reporter`
-- `tree-field-reporter`
-- `valuable-tree-field-reporter`
 
 The name should avoid implying that the tool is an official Artportalen or SLU product.
