@@ -104,13 +104,14 @@ export function getDraftFromForm(form) {
   const longitude = asNumber(formData.get("longitude"));
 
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-    throw new Error("Latitud och longitud måste anges.");
+    throw new Error("Norr/latitud och Öst/longitud måste anges.");
   }
 
   return {
     id: uuid(),
     observationDate: String(formData.get("observationDate") || todayISO()),
     localName: String(formData.get("localName") || ""),
+    localityId: String(formData.get("localityId") || ""),
     species: String(formData.get("species") || ""),
     scientificName: selectedSpecies?.dataset?.scientificName || "",
     latitude,
@@ -139,4 +140,5 @@ export function resetTreeForm(form) {
   document.querySelector("#latitude").value = lat;
   document.querySelector("#longitude").value = lng;
   document.querySelector("#coordinateAccuracyM").value = accuracy;
+  document.querySelector("#localityId").value = "";
 }

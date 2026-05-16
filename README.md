@@ -31,7 +31,7 @@ The current app can:
 - export drafts as XLSX,
 - export drafts as GeoJSON.
 
-The current value lists and export columns are still a working draft. They must be aligned with the official Artportalen import template before real use.
+The current value lists and export columns are still a working draft. This patch starts a first field-to-export mapping by using Swedish labels such as `Lokalnamn`, `Norr (latitud, WGS84)` and `Öst (longitud, WGS84)`, but the final XLSX must still be aligned with the official Artportalen import template before real use.
 
 ---
 
@@ -95,7 +95,8 @@ Current MVP handling:
 - the app has a manual `Lokalnamn` field,
 - the user must enter the exact locality name expected by the later import workflow,
 - the app does not yet validate whether the locality exists in Artportalen,
-- the app does not auto-generate locality names from coordinates.
+- the app does not auto-generate locality names from coordinates,
+- the UI has a prepared locality lookup button, but no verified Artportalen endpoint is configured yet.
 
 Future handling should investigate:
 
@@ -103,6 +104,19 @@ Future handling should investigate:
 - a controlled local list for known project localities,
 - validation before export,
 - warning when `Lokalnamn` is empty or unknown.
+
+---
+
+## Coordinates
+
+The UI uses more field-friendly Swedish labels:
+
+```text
+Norr (latitud)
+Öst (longitud)
+```
+
+Internally these are still stored as WGS84 decimal latitude and longitude. Final export mapping must verify whether the Artportalen template expects WGS84 decimal coordinates or projected east/north coordinates in another coordinate system.
 
 ---
 
@@ -191,10 +205,10 @@ skyddstrad-field-reporter/
 | Existing tree layer | Sample GeoJSON only |
 | Swedish UI | Basic implementation |
 | Tree form | Basic placeholder fields |
-| Lokalnamn field | Manual field, no validation yet |
+| Lokalnamn field | Manual field plus prepared lookup UI; no verified endpoint yet |
 | Duplicate warning | Basic distance-based check |
 | Local draft storage | Browser localStorage |
-| XLSX export | Basic implementation, not yet exact Artportalen template mapping |
+| XLSX export | Basic implementation with Swedish headers; not yet exact Artportalen template mapping |
 | GeoJSON export | Basic implementation |
 
 ### Not included yet

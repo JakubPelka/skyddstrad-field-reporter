@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260516-sv-xlsx-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-locality-mapping-v1">
 </head>
 <body>
   <header class="app-header">
@@ -54,11 +54,17 @@
             <input id="observationDate" name="observationDate" type="date" required>
           </label>
 
-          <label class="full-width">
-            Lokalnamn i Artportalen
-            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Exakt lokalnamn enligt Artportalen/importflödet">
-            <span class="field-help">Måste motsvara en befintlig/avsedd lokal. Appen validerar inte detta ännu.</span>
-          </label>
+          <div class="field-group full-width">
+            <label for="localName">Lokalnamn i Artportalen</label>
+            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Exakt lokalnamn enligt Artportalen">
+            <input id="localityId" name="localityId" type="hidden">
+            <div class="button-row compact-row">
+              <button id="btn-search-locality" type="button" class="secondary">Sök lokalnamn</button>
+              <button id="btn-clear-locality" type="button" class="secondary">Rensa lokal</button>
+            </div>
+            <p id="locality-status" class="field-help">Lokalnamn ska motsvara en befintlig fyndplats/lokal i Artportalen. Sökning är förberedd men kräver verifierad endpoint.</p>
+            <div id="locality-results" class="locality-results" aria-live="polite"></div>
+          </div>
 
           <label>
             Stamomkrets, cm
@@ -71,12 +77,12 @@
           </label>
 
           <label>
-            Latitud
+            Norr (latitud)
             <input id="latitude" name="latitude" type="number" inputmode="decimal" step="0.000001" required>
           </label>
 
           <label>
-            Longitud
+            Öst (longitud)
             <input id="longitude" name="longitude" type="number" inputmode="decimal" step="0.000001" required>
           </label>
 
@@ -143,7 +149,7 @@
         <ul>
           <li>Detta är inte en officiell Artportalen-/SLU-applikation.</li>
           <li>Värdelistor och export ska senare stämmas av mot Artportalens importmall.</li>
-          <li>Befintliga träd visas endast som stöd vid fältarbete.</li>
+          <li>Lokalnamn måste komma från Artportalen/fyndplatsflödet och ska inte hittas på fritt.</li>
         </ul>
       </div>
     </section>
@@ -159,6 +165,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260516-sv-xlsx-v1"></script>
+  <script type="module" src="src/app.js?v=20260516-locality-mapping-v1"></script>
 </body>
 </html>

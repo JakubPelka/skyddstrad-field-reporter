@@ -42,8 +42,8 @@ export function exportDraftsAsXlsx(drafts) {
   worksheet["!cols"] = buildColumnWidths();
 
   const workbook = window.XLSX.utils.book_new();
-  window.XLSX.utils.book_append_sheet(workbook, worksheet, "Fältdata");
+  window.XLSX.utils.book_append_sheet(workbook, worksheet, "Artportalen-utkast");
 
   const date = new Date().toISOString().slice(0, 10);
-  window.XLSX.writeFile(workbook, `skyddsvarda_trad_utkast_${date}.xlsx`);
+  window.XLSX.writeFile(workbook, `skyddsvarda_trad_artportalen_utkast_${date}.xlsx`);
 }

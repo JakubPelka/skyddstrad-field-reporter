@@ -58,3 +58,17 @@ stemCircumference  → official tree-parameter column
 ```
 
 After this mapping is confirmed, the XLSX export should be changed from a generic draft export to a template-compatible export.
+
+
+## Mapping status after first Swedish XLSX patch
+
+The current app export is still a working draft. It now uses Swedish field labels and stores the following coordinate labels:
+
+```text
+Norr (latitud, WGS84)
+Öst (longitud, WGS84)
+```
+
+This is intentionally explicit: the app still stores WGS84 decimal latitude/longitude. Before real import use, verify whether the official Artportalen template expects WGS84 decimal values or another coordinate system with projected `Ost`/`Norr` values.
+
+`Lokalnamn` is treated as a controlled Artportalen locality/fyndplats name. The app must not invent it from coordinates. A lookup UI has been prepared, but `APP_CONFIG.localitySearch.urlTemplate` is empty until a stable endpoint and response schema have been verified.

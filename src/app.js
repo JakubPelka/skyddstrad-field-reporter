@@ -1,13 +1,14 @@
-import { APP_CONFIG } from "./config.js?v=20260516-sv-xlsx-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-sv-xlsx-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-sv-xlsx-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-sv-xlsx-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-sv-xlsx-v1";
-import { getCurrentPosition } from "./gps.js?v=20260516-sv-xlsx-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-sv-xlsx-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-sv-xlsx-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-sv-xlsx-v1";
-import { formatDistance } from "./util.js?v=20260516-sv-xlsx-v1";
+import { APP_CONFIG } from "./config.js?v=20260516-locality-mapping-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-locality-mapping-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-locality-mapping-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-locality-mapping-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-locality-mapping-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-locality-mapping-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-locality-mapping-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-locality-mapping-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-locality-mapping-v1";
+import { searchLocalities } from "./locality-search.js?v=20260516-locality-mapping-v1";
+import { formatDistance } from "./util.js?v=20260516-locality-mapping-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -24,7 +25,13 @@ const elements = {
   resetFormButton: document.querySelector("#btn-reset-form"),
   exportXlsxButton: document.querySelector("#btn-export-xlsx"),
   exportGeoJsonButton: document.querySelector("#btn-export-geojson"),
-  clearDraftsButton: document.querySelector("#btn-clear-drafts")
+  clearDraftsButton: document.querySelector("#btn-clear-drafts"),
+  searchLocalityButton: document.querySelector("#btn-search-locality"),
+  clearLocalityButton: document.querySelector("#btn-clear-locality"),
+  localityStatus: document.querySelector("#locality-status"),
+  localityResults: document.querySelector("#locality-results"),
+  localNameInput: document.querySelector("#localName"),
+  localityIdInput: document.querySelector("#localityId")
 };
 
 function setStatus(message) {
@@ -93,7 +100,7 @@ function renderDrafts() {
       draft.localName ? `Lokal: ${draft.localName}` : "Lokalnamn saknas",
       Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm omkrets` : "",
       Number.isFinite(draft.stemDiameterCm) ? `${draft.stemDiameterCm} cm diameter` : "",
-      `${draft.latitude?.toFixed?.(6) ?? ""}, ${draft.longitude?.toFixed?.(6) ?? ""}`
+      `Norr ${draft.latitude?.toFixed?.(6) ?? ""}, Öst ${draft.longitude?.toFixed?.(6) ?? ""}`
     ].filter(Boolean).join(" · ");
 
     deleteButton.addEventListener("click", () => {
@@ -105,6 +112,54 @@ function renderDrafts() {
   }
 
   renderDraftMarkers(drafts);
+}
+
+
+function renderLocalityResults(items) {
+  elements.localityResults.innerHTML = "";
+
+  for (const item of items) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "locality-result";
+
+    const name = document.createElement("span");
+    name.textContent = item.name;
+
+    const meta = document.createElement("small");
+    meta.textContent = [item.description, item.id ? `ID: ${item.id}` : "", item.source].filter(Boolean).join(" · ");
+
+    button.appendChild(name);
+    button.appendChild(meta);
+
+    button.addEventListener("click", () => {
+      elements.localNameInput.value = item.name;
+      elements.localityIdInput.value = item.id || "";
+      elements.localityStatus.textContent = item.id
+        ? `Valt lokalnamn: ${item.name} (ID: ${item.id}).`
+        : `Valt lokalnamn: ${item.name}.`;
+      elements.localityResults.innerHTML = "";
+    });
+    elements.localityResults.appendChild(button);
+  }
+}
+
+async function handleLocalitySearch() {
+  const query = elements.localNameInput.value;
+  elements.localityStatus.textContent = "Söker lokalnamn...";
+  elements.localityResults.innerHTML = "";
+
+  try {
+    const result = await searchLocalities({
+      query,
+      point: selectedPoint
+    });
+    elements.localityStatus.textContent = result.status;
+    renderLocalityResults(result.items);
+  } catch (error) {
+    console.error(error);
+    elements.localityStatus.textContent = error.message;
+  }
 }
 
 function bindEvents() {
@@ -136,6 +191,15 @@ function bindEvents() {
   });
 
   elements.loadExistingButton.addEventListener("click", loadAndRenderExistingTrees);
+
+  elements.searchLocalityButton.addEventListener("click", handleLocalitySearch);
+
+  elements.clearLocalityButton.addEventListener("click", () => {
+    elements.localNameInput.value = "";
+    elements.localityIdInput.value = "";
+    elements.localityStatus.textContent = "Lokalnamn har rensats.";
+    elements.localityResults.innerHTML = "";
+  });
 
   elements.resetFormButton.addEventListener("click", () => {
     resetTreeForm(elements.form);

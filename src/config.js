@@ -12,6 +12,15 @@ export const APP_CONFIG = {
     mode: "sample",
     sampleUrl: "data/existing-trees.sample.geojson",
     urlTemplate: ""
+  },
+
+  localitySearch: {
+    // Prepared for later Artportalen/fyndplats lookup.
+    // Keep disabled until a stable public endpoint and response schema have been verified.
+    mode: "disabled",
+    minQueryLength: 2,
+    radiusM: 1000,
+    urlTemplate: ""
   }
 };
 
@@ -19,6 +28,7 @@ export const FIELD_EXPORT_ORDER = [
   "id",
   "observationDate",
   "localName",
+  "localityId",
   "species",
   "scientificName",
   "latitude",
@@ -40,10 +50,11 @@ export const FIELD_LABELS_SV = {
   id: "Internt ID",
   observationDate: "Observationsdatum",
   localName: "Lokalnamn",
+  localityId: "Lokal-ID (om tillgängligt)",
   species: "Art",
   scientificName: "Vetenskapligt namn",
-  latitude: "Latitud",
-  longitude: "Longitud",
+  latitude: "Norr (latitud, WGS84)",
+  longitude: "Öst (longitud, WGS84)",
   coordinateAccuracyM: "Koordinatnoggrannhet (m)",
   stemCircumferenceCm: "Stamomkrets (cm)",
   stemDiameterCm: "Stamdiameter (cm)",
