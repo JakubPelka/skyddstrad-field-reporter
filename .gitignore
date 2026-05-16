@@ -1,0 +1,39 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local temporary files
+TEMP/
+tmp/
+*.tmp
+*.bak
+*.old
+
+# Logs
+*.log
+
+# Node / frontend tooling, if added later
+node_modules/
+dist/
+build/
+.cache/
+
+# Python local server / tooling, if used later
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Exports and generated files
+exports/
+output/
+*.csv
+*.xlsx
+*.geojson.backup
+
+# Secrets / local config
+.env
+.env.*
+local.config.js
