@@ -1,0 +1,10 @@
+{
+  "name": "Skyddsträd Field Reporter",
+  "short_name": "Skyddsträd",
+  "description": "Mobile-first field tool concept for recording potential särskilt skyddsvärda träd.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f6ef",
+  "theme_color": "#315f3d",
+  "icons": []
+}

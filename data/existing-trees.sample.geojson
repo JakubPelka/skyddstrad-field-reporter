@@ -1,0 +1,66 @@
+{
+  "type": "FeatureCollection",
+  "name": "existing_trees_sample",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "sample-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.07985,
+          57.49105
+        ]
+      },
+      "properties": {
+        "species": "Ek",
+        "scientificName": "Quercus robur",
+        "stemCircumferenceCm": 365,
+        "treeStatus": "Levande",
+        "hollowStage": "Tydlig hålighet",
+        "vitality": "God",
+        "source": "Sample data"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.08302,
+          57.48974
+        ]
+      },
+      "properties": {
+        "species": "Ask",
+        "scientificName": "Fraxinus excelsior",
+        "stemCircumferenceCm": 240,
+        "treeStatus": "Levande",
+        "hollowStage": "Ingen hålighet observerad",
+        "vitality": "Nedsatt",
+        "source": "Sample data"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.07551,
+          57.48792
+        ]
+      },
+      "properties": {
+        "species": "Lind",
+        "scientificName": "Tilia cordata",
+        "stemCircumferenceCm": 290,
+        "treeStatus": "Levande",
+        "hollowStage": "Stor hålighet",
+        "vitality": "God",
+        "source": "Sample data"
+      }
+    }
+  ]
+}

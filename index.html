@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Skyddsträd Field Reporter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#315f3d">
+  <meta name="description" content="Mobile-first field tool concept for recording potential särskilt skyddsvärda träd.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIINfQdLsaOm8zS9JY2rXZcxgT2FEOsJv2I="
+        crossorigin="">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Proof of concept</p>
+      <h1>Skyddsträd Field Reporter</h1>
+      <p class="subtitle">Field notes for potential <em>särskilt skyddsvärda träd</em>. Export only. No direct Artportalen upload.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="map-panel" aria-label="Map">
+      <div id="map"></div>
+      <div class="map-hint">
+        Tap the map to set the observation point. Use GPS to centre on your current position.
+      </div>
+    </section>
+
+    <section class="tool-panel" aria-label="Field form and exports">
+      <div class="card">
+        <h2>1. Position</h2>
+        <div class="button-row">
+          <button id="btn-use-gps" type="button">Use GPS</button>
+          <button id="btn-load-existing" type="button">Load sample existing trees</button>
+        </div>
+        <p id="gps-status" class="status-text">GPS not used yet.</p>
+        <p id="duplicate-warning" class="warning" hidden></p>
+      </div>
+
+      <form id="tree-form" class="card">
+        <h2>2. Tree observation</h2>
+
+        <div class="field-grid">
+          <label>
+            Species
+            <select id="species" name="species" required></select>
+          </label>
+
+          <label>
+            Stem circumference, cm
+            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="numeric" min="0" step="1" placeholder="e.g. 320">
+          </label>
+
+          <label>
+            Latitude
+            <input id="latitude" name="latitude" type="number" inputmode="decimal" step="0.000001" required>
+          </label>
+
+          <label>
+            Longitude
+            <input id="longitude" name="longitude" type="number" inputmode="decimal" step="0.000001" required>
+          </label>
+
+          <label>
+            Coordinate accuracy, m
+            <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS accuracy">
+          </label>
+
+          <label>
+            Observation date
+            <input id="observationDate" name="observationDate" type="date" required>
+          </label>
+
+          <label>
+            Tree status
+            <select id="treeStatus" name="treeStatus"></select>
+          </label>
+
+          <label>
+            Hålstadium
+            <select id="hollowStage" name="hollowStage"></select>
+          </label>
+
+          <label>
+            Hålets placering
+            <select id="hollowPosition" name="hollowPosition"></select>
+          </label>
+
+          <label>
+            Vitality
+            <select id="vitality" name="vitality"></select>
+          </label>
+
+          <label>
+            Åtgärdsbehov
+            <select id="managementNeed" name="managementNeed"></select>
+          </label>
+
+          <label>
+            Observer
+            <input id="observer" name="observer" type="text" autocomplete="name" placeholder="Optional">
+          </label>
+        </div>
+
+        <label>
+          Comment
+          <textarea id="comment" name="comment" rows="4" placeholder="Short field note, visible damage, access, uncertainty, etc."></textarea>
+        </label>
+
+        <div class="button-row">
+          <button type="submit">Save draft</button>
+          <button id="btn-reset-form" type="button" class="secondary">Reset form</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <h2>3. Drafts and export</h2>
+        <p id="draft-count" class="status-text">No drafts saved.</p>
+        <div class="button-row">
+          <button id="btn-export-csv" type="button">Export CSV</button>
+          <button id="btn-export-geojson" type="button">Export GeoJSON</button>
+          <button id="btn-clear-drafts" type="button" class="danger">Clear drafts</button>
+        </div>
+        <div id="draft-list" class="draft-list" aria-live="polite"></div>
+      </div>
+
+      <div class="card subtle">
+        <h2>Notes</h2>
+        <ul>
+          <li>This is not an official Artportalen/SLU application.</li>
+          <li>Sample values must be replaced with official import-template values before real use.</li>
+          <li>Existing tree records are shown as context only.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <template id="draft-item-template">
+    <article class="draft-item">
+      <strong class="draft-title"></strong>
+      <span class="draft-meta"></span>
+      <button type="button" class="draft-delete">Delete</button>
+    </article>
+  </template>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

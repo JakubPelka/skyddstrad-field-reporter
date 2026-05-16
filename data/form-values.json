@@ -1,0 +1,116 @@
+{
+  "treeStatus": [
+    {
+      "value": "Levande",
+      "label": "Levande"
+    },
+    {
+      "value": "Dött stående träd",
+      "label": "Dött stående träd"
+    },
+    {
+      "value": "Liggande dött träd",
+      "label": "Liggande dött träd"
+    },
+    {
+      "value": "Högstubbe",
+      "label": "Högstubbe"
+    },
+    {
+      "value": "Osäker",
+      "label": "Osäker"
+    }
+  ],
+  "hollowStage": [
+    {
+      "value": "Ingen hålighet observerad",
+      "label": "Ingen hålighet observerad"
+    },
+    {
+      "value": "Liten hålighet",
+      "label": "Liten hålighet"
+    },
+    {
+      "value": "Tydlig hålighet",
+      "label": "Tydlig hålighet"
+    },
+    {
+      "value": "Stor hålighet",
+      "label": "Stor hålighet"
+    },
+    {
+      "value": "Osäker",
+      "label": "Osäker"
+    }
+  ],
+  "hollowPosition": [
+    {
+      "value": "Stam",
+      "label": "Stam"
+    },
+    {
+      "value": "Bas",
+      "label": "Bas"
+    },
+    {
+      "value": "Gren",
+      "label": "Gren"
+    },
+    {
+      "value": "Flera lägen",
+      "label": "Flera lägen"
+    },
+    {
+      "value": "Ej relevant",
+      "label": "Ej relevant"
+    },
+    {
+      "value": "Osäker",
+      "label": "Osäker"
+    }
+  ],
+  "vitality": [
+    {
+      "value": "God",
+      "label": "God"
+    },
+    {
+      "value": "Nedsatt",
+      "label": "Nedsatt"
+    },
+    {
+      "value": "Dålig",
+      "label": "Dålig"
+    },
+    {
+      "value": "Dött träd",
+      "label": "Dött träd"
+    },
+    {
+      "value": "Osäker",
+      "label": "Osäker"
+    }
+  ],
+  "managementNeed": [
+    {
+      "value": "Inget uppenbart åtgärdsbehov",
+      "label": "Inget uppenbart åtgärdsbehov"
+    },
+    {
+      "value": "Behöver frihuggas",
+      "label": "Behöver frihuggas"
+    },
+    {
+      "value": "Risk/säkerhet bör bedömas",
+      "label": "Risk/säkerhet bör bedömas"
+    },
+    {
+      "value": "Uppföljning behövs",
+      "label": "Uppföljning behövs"
+    },
+    {
+      "value": "Osäker",
+      "label": "Osäker"
+    }
+  ]
+}
