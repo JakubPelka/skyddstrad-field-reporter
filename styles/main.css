@@ -63,54 +63,44 @@ body {
   padding: 1rem;
 }
 
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1rem;
-  box-shadow: var(--shadow);
-}
-
-.card h2 {
-  margin: 0 0 0.85rem;
-  font-size: 1.05rem;
-}
-
-.card.subtle {
-  background: rgba(255, 255, 255, 0.72);
+.map-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
   box-shadow: none;
 }
 
-.map-card {
-  padding: 0.75rem;
+.map-header {
+  margin: 0 0 0.5rem;
+  padding: 0;
 }
 
-.section-heading-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.section-heading-row h2 {
+.map-header h2 {
   margin: 0 0 0.2rem;
+  font-size: 1.05rem;
 }
 
-.map-hint {
+.map-header p {
+  margin: 0;
   color: var(--muted);
   font-size: 0.92rem;
-  margin: 0;
 }
 
+/* Keep the map container deliberately plain.
+   Leaflet itself handles the internal positioning. */
 #map {
   display: block;
   width: 100%;
   height: 440px;
   min-height: 440px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  overflow: hidden;
+  margin: 0;
+  padding: 0;
   background: #dfe8d8;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  overflow: hidden;
 }
 
 .workflow-grid {
@@ -129,6 +119,24 @@ body {
 .form-card {
   grid-column: 2;
   grid-row: 1 / span 3;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 0.85rem;
+  font-size: 1.05rem;
+}
+
+.card.subtle {
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: none;
 }
 
 .field-grid {

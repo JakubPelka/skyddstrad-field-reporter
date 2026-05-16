@@ -18,9 +18,8 @@ export function initMap({ onMapClick }) {
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 20,
     detectRetina: true,
-    updateWhenIdle: false,
-    updateWhenZooming: false,
-    keepBuffer: 6,
+    updateWhenIdle: true,
+    keepBuffer: 4,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
@@ -165,7 +164,6 @@ export function renderDraftMarkers(drafts) {
       <ul class="popup-list">
         <li><strong>Date:</strong> ${escapeHtml(draft.observationDate || "")}</li>
         <li><strong>Circumference:</strong> ${escapeHtml(draft.stemCircumferenceCm ?? "")} cm</li>
-        <li><strong>Diameter:</strong> ${escapeHtml(draft.stemDiameterCm ?? "")} cm</li>
         <li><strong>Status:</strong> ${escapeHtml(draft.treeStatus || "")}</li>
       </ul>
     `);
