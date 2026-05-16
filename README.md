@@ -92,3 +92,16 @@ For GPS testing on iPad/iPhone, GitHub Pages over HTTPS is usually easier.
 ## License
 
 MIT.
+
+
+## Real data and Lokalnamn candidates
+
+The app can now try to load real existing tree records from the public ArcGIS item:
+
+```text
+Skyddsvärda Träd @ Sveriges Lantbruksuniversitet
+```
+
+The first MVP for `Lokalnamn` suggestions derives candidate names from loaded existing tree records near the selected point.
+
+This is useful but incomplete: many tree records may not have `Lokalnamn`. A later step should use the open SLU Species Observation System API to search **all nearby public Artportalen observations**, not only tree-project records, and derive a better list of nearby locality/fyndplats names.

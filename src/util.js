@@ -19,6 +19,12 @@ export function asNumber(value) {
     return null;
   }
 
+  if (typeof value === "string") {
+    const normalized = value.replace(",", ".").replace(/[^\d.-]/g, "");
+    const number = Number(normalized);
+    return Number.isFinite(number) ? number : null;
+  }
+
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }

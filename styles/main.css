@@ -257,6 +257,38 @@ button.danger {
   background: var(--danger);
 }
 
+.compact-row {
+  margin-top: 0.25rem;
+}
+
+.locality-results {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.locality-result {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: #e7eee5;
+  color: var(--text);
+  text-align: left;
+}
+
+.locality-result:hover,
+.locality-result:focus {
+  background: #d8e4d5;
+}
+
+.locality-result span,
+.locality-result small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;

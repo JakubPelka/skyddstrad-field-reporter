@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260516-stable-maplibre-template-ui-v2">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-realdata-locality-v1">
 </head>
 <body>
   <header class="app-header">
@@ -34,7 +34,7 @@
         <h2>1. Position</h2>
         <div class="button-row">
           <button id="btn-use-gps" type="button">Använd GPS</button>
-          <button id="btn-load-existing" type="button">Ladda testträd</button>
+          <button id="btn-load-existing" type="button">Ladda trädposter</button>
         </div>
         <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
         <p id="duplicate-warning" class="warning" hidden></p>
@@ -61,9 +61,13 @@
 
           <div class="field-group full-width">
             <label for="localName">Lokalnamn i Artportalen</label>
-            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Exakt lokalnamn enligt Artportalen">
+            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Välj från förslag eller skriv exakt lokalnamn">
             <input id="localityId" name="localityId" type="hidden">
-            <p class="field-help">Lokalnamn ska motsvara en befintlig fyndplats/lokal i Artportalen. Automatisk sökning kommer senare.</p>
+            <div class="button-row compact-row">
+              <button id="btn-refresh-localities" type="button" class="secondary">Uppdatera lokalnamnsförslag</button>
+            </div>
+            <p id="locality-status" class="field-help">Välj punkt i kartan eller använd GPS för att föreslå lokalnamn.</p>
+            <div id="locality-results" class="locality-results" aria-live="polite"></div>
           </div>
 
           <label>
@@ -268,6 +272,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260516-stable-maplibre-template-ui-v2"></script>
+  <script type="module" src="src/app.js?v=20260516-realdata-locality-v1"></script>
 </body>
 </html>

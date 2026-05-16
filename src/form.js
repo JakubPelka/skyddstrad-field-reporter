@@ -132,6 +132,19 @@ export function setFormPosition({ lat, lng, accuracyM = null }) {
   }
 }
 
+export function setLocalName(localName, localityId = "") {
+  const localNameInput = document.querySelector("#localName");
+  const localityIdInput = document.querySelector("#localityId");
+
+  if (localNameInput) {
+    localNameInput.value = localName || "";
+  }
+
+  if (localityIdInput) {
+    localityIdInput.value = localityId || "";
+  }
+}
+
 export function getDraftFromForm(form) {
   const formData = new FormData(form);
   const speciesSelect = document.querySelector("#species");

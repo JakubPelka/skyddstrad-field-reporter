@@ -23,7 +23,7 @@ function makePopup(html) {
   }).setHTML(html);
 }
 
-export function initMap({ onMapClick }) {
+export function initMap({ onMapClick, onMoveEnd }) {
   map = new maplibregl.Map({
     container: "map",
     center: [APP_CONFIG.defaultMapCenter[1], APP_CONFIG.defaultMapCenter[0]],
@@ -62,6 +62,10 @@ export function initMap({ onMapClick }) {
 
     setSelectedPoint(point.lat, point.lng);
     onMapClick?.(point);
+  });
+
+  map.on("moveend", () => {
+    onMoveEnd?.();
   });
 
   setupResizeHandling();

@@ -1,16 +1,19 @@
-import { APP_CONFIG } from "./config.js?v=20260516-stable-maplibre-template-ui-v2";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-stable-maplibre-template-ui-v2";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-stable-maplibre-template-ui-v2";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-stable-maplibre-template-ui-v2";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-stable-maplibre-template-ui-v2";
-import { getCurrentPosition } from "./gps.js?v=20260516-stable-maplibre-template-ui-v2";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-stable-maplibre-template-ui-v2";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-stable-maplibre-template-ui-v2";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-stable-maplibre-template-ui-v2";
-import { formatDistance } from "./util.js?v=20260516-stable-maplibre-template-ui-v2";
+import { APP_CONFIG } from "./config.js?v=20260516-realdata-locality-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-realdata-locality-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-realdata-locality-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-realdata-locality-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260516-realdata-locality-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-realdata-locality-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-realdata-locality-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-realdata-locality-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-realdata-locality-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260516-realdata-locality-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260516-realdata-locality-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
+let loadingExistingTrees = false;
+let reloadTimer = null;
 
 const elements = {
   form: document.querySelector("#tree-form"),
@@ -24,7 +27,10 @@ const elements = {
   resetFormButton: document.querySelector("#btn-reset-form"),
   exportXlsxButton: document.querySelector("#btn-export-xlsx"),
   exportGeoJsonButton: document.querySelector("#btn-export-geojson"),
-  clearDraftsButton: document.querySelector("#btn-clear-drafts")
+  clearDraftsButton: document.querySelector("#btn-clear-drafts"),
+  localityStatus: document.querySelector("#locality-status"),
+  localityResults: document.querySelector("#locality-results"),
+  refreshLocalitiesButton: document.querySelector("#btn-refresh-localities")
 };
 
 function setStatus(message) {
@@ -47,13 +53,61 @@ function updateDuplicateWarning() {
   }
 
   const closest = nearby[0];
-  const species = closest.properties.species || closest.properties.artnamn || closest.properties.vernacularName || "befintligt träd";
+  const species = closest.properties.artnamn || closest.properties.species || closest.properties.vernacularName || "befintligt träd";
 
   elements.duplicateWarning.hidden = false;
   elements.duplicateWarning.textContent = `Möjlig dubblett: ${nearby.length} befintlig(a) post(er) inom ${APP_CONFIG.duplicateDistanceM} m. Närmast: ${species}, ${formatDistance(closest.distanceM)} bort.`;
 }
 
+function renderLocalityCandidates() {
+  if (!elements.localityResults || !elements.localityStatus) {
+    return;
+  }
+
+  elements.localityResults.innerHTML = "";
+
+  if (!selectedPoint) {
+    elements.localityStatus.textContent = "Välj punkt i kartan eller använd GPS för att föreslå lokalnamn.";
+    return;
+  }
+
+  if (existingTrees.length === 0) {
+    elements.localityStatus.textContent = "Inga befintliga trädposter är laddade ännu.";
+    return;
+  }
+
+  const candidates = findLocalityCandidates(selectedPoint, existingTrees);
+
+  if (candidates.length === 0) {
+    elements.localityStatus.textContent = `Inga lokalnamn hittades inom ${APP_CONFIG.localityCandidates.searchRadiusM} m.`;
+    return;
+  }
+
+  elements.localityStatus.textContent = `Hittade ${candidates.length} kandidat(er) från laddade trädposter.`;
+
+  for (const candidate of candidates) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "locality-result";
+    button.innerHTML = `
+      <strong>${escapeHtml(candidate.localName)}</strong>
+      <span>${escapeHtml(candidateStatusText(candidate))}</span>
+      <small>${candidate.treeCount} trädpost(er)${candidate.species ? ` · ${escapeHtml(candidate.species)}` : ""}</small>
+    `;
+    button.addEventListener("click", () => {
+      setLocalName(candidate.localName, candidate.sourceRecordId || "");
+      elements.localityStatus.textContent = `Valt lokalnamn: ${candidate.localName}`;
+    });
+    elements.localityResults.appendChild(button);
+  }
+}
+
 async function loadAndRenderExistingTrees() {
+  if (loadingExistingTrees) {
+    return;
+  }
+
+  loadingExistingTrees = true;
   elements.loadExistingButton.disabled = true;
   elements.loadExistingButton.textContent = "Laddar...";
 
@@ -62,14 +116,21 @@ async function loadAndRenderExistingTrees() {
     const layer = createExistingTreesLayer(existingTrees);
     setExistingLayer(layer);
     updateDuplicateWarning();
-    setStatus(`Laddade ${existingTrees.length} befintliga trädposter. Läge: ${APP_CONFIG.existingTrees.mode}.`);
+    renderLocalityCandidates();
+    setStatus(`Laddade ${existingTrees.length} befintliga trädposter.`);
   } catch (error) {
     console.error(error);
     setStatus(error.message);
   } finally {
+    loadingExistingTrees = false;
     elements.loadExistingButton.disabled = false;
-    elements.loadExistingButton.textContent = "Ladda testträd";
+    elements.loadExistingButton.textContent = "Ladda trädposter";
   }
+}
+
+function scheduleReloadExistingTrees() {
+  window.clearTimeout(reloadTimer);
+  reloadTimer = window.setTimeout(loadAndRenderExistingTrees, 700);
 }
 
 function renderDrafts() {
@@ -107,6 +168,13 @@ function renderDrafts() {
   renderDraftMarkers(drafts);
 }
 
+function updateSelectedPoint(point) {
+  selectedPoint = point;
+  setFormPosition(point);
+  updateDuplicateWarning();
+  renderLocalityCandidates();
+}
+
 function bindEvents() {
   elements.useGpsButton.addEventListener("click", async () => {
     setStatus("Läser GPS-position...");
@@ -128,6 +196,7 @@ function bindEvents() {
       });
 
       updateDuplicateWarning();
+      renderLocalityCandidates();
       setStatus(`GPS-position satt. Noggrannhet: ${Math.round(accuracy)} m.`);
     } catch (error) {
       console.error(error);
@@ -136,9 +205,11 @@ function bindEvents() {
   });
 
   elements.loadExistingButton.addEventListener("click", loadAndRenderExistingTrees);
+  elements.refreshLocalitiesButton?.addEventListener("click", renderLocalityCandidates);
 
   elements.resetFormButton.addEventListener("click", () => {
     resetTreeForm(elements.form);
+    renderLocalityCandidates();
   });
 
   elements.form.addEventListener("submit", (event) => {
@@ -154,6 +225,7 @@ function bindEvents() {
       resetTreeForm(elements.form);
       renderDrafts();
       updateDuplicateWarning();
+      renderLocalityCandidates();
     } catch (error) {
       alert(error.message);
     }
@@ -195,9 +267,7 @@ function bindEvents() {
   });
 
   window.addEventListener("selected-point-moved", (event) => {
-    selectedPoint = event.detail;
-    setFormPosition(event.detail);
-    updateDuplicateWarning();
+    updateSelectedPoint(event.detail);
   });
 }
 
@@ -205,11 +275,8 @@ async function main() {
   await initForm();
 
   initMap({
-    onMapClick: (point) => {
-      selectedPoint = point;
-      setFormPosition(point);
-      updateDuplicateWarning();
-    }
+    onMapClick: updateSelectedPoint,
+    onMoveEnd: scheduleReloadExistingTrees
   });
 
   bindEvents();
