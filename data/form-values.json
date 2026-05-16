@@ -1,116 +1,252 @@
 {
+  "source": {
+    "template": "docs/ap2_template_treeproject.xlsx",
+    "templateSheets": [
+      "Observationer",
+      "Parametrar"
+    ],
+    "note": "Values copied from the Parametrar sheet in the Artportalen tree project import template."
+  },
   "treeStatus": [
     {
       "value": "Levande",
       "label": "Levande"
     },
     {
-      "value": "Dött stående träd",
-      "label": "Dött stående träd"
+      "value": "Dött stående",
+      "label": "Dött stående"
     },
     {
-      "value": "Liggande dött träd",
-      "label": "Liggande dött träd"
+      "value": "Dött liggande",
+      "label": "Dött liggande"
     },
     {
-      "value": "Högstubbe",
-      "label": "Högstubbe"
-    },
-    {
-      "value": "Osäker",
-      "label": "Osäker"
+      "value": "Träd saknas",
+      "label": "Träd saknas"
     }
   ],
   "hollowStage": [
     {
-      "value": "Ingen hålighet observerad",
-      "label": "Ingen hålighet observerad"
+      "value": "Inga hål synliga",
+      "label": "Inga hål synliga"
     },
     {
-      "value": "Liten hålighet",
-      "label": "Liten hålighet"
+      "value": "Ingångshål <10 cm i diameter",
+      "label": "Ingångshål <10 cm i diameter"
     },
     {
-      "value": "Tydlig hålighet",
-      "label": "Tydlig hålighet"
+      "value": "Ingångshål 10-19 cm i diameter",
+      "label": "Ingångshål 10-19 cm i diameter"
     },
     {
-      "value": "Stor hålighet",
-      "label": "Stor hålighet"
+      "value": "Ingångshål 20-29 cm i diameter",
+      "label": "Ingångshål 20-29 cm i diameter"
     },
     {
-      "value": "Osäker",
-      "label": "Osäker"
+      "value": "Ingångshål >= 30 cm i diameter",
+      "label": "Ingångshål >= 30 cm i diameter"
     }
   ],
-  "hollowPosition": [
+  "holeSpecification": [
     {
-      "value": "Stam",
-      "label": "Stam"
+      "value": "I stam ovan mark",
+      "label": "I stam ovan mark"
     },
     {
-      "value": "Bas",
-      "label": "Bas"
-    },
-    {
-      "value": "Gren",
-      "label": "Gren"
-    },
-    {
-      "value": "Flera lägen",
-      "label": "Flera lägen"
-    },
-    {
-      "value": "Ej relevant",
-      "label": "Ej relevant"
-    },
-    {
-      "value": "Osäker",
-      "label": "Osäker"
+      "value": "I stam med markkontakt",
+      "label": "I stam med markkontakt"
     }
   ],
-  "vitality": [
+  "mulmVolume": [
     {
-      "value": "God",
-      "label": "God"
+      "value": "Mulmvolym ej bedömningsbar",
+      "label": "Mulmvolym ej bedömningsbar"
     },
     {
-      "value": "Nedsatt",
-      "label": "Nedsatt"
+      "value": "<10 liter mulm",
+      "label": "<10 liter mulm"
     },
     {
-      "value": "Dålig",
-      "label": "Dålig"
+      "value": "10 liter - 1 m3 mulm",
+      "label": "10 liter - 1 m3 mulm"
     },
     {
-      "value": "Dött träd",
-      "label": "Dött träd"
-    },
-    {
-      "value": "Osäker",
-      "label": "Osäker"
+      "value": "> 1 m3 mulm",
+      "label": "> 1 m3 mulm"
     }
   ],
   "managementNeed": [
     {
-      "value": "Inget uppenbart åtgärdsbehov",
-      "label": "Inget uppenbart åtgärdsbehov"
+      "value": "Akut (inom 2 år)",
+      "label": "Akut (inom 2 år)"
     },
     {
-      "value": "Behöver frihuggas",
-      "label": "Behöver frihuggas"
+      "value": "Snart (inom 3 -10 år)",
+      "label": "Snart (inom 3 -10 år)"
     },
     {
-      "value": "Risk/säkerhet bör bedömas",
-      "label": "Risk/säkerhet bör bedömas"
+      "value": "Framtida (>10 år)",
+      "label": "Framtida (>10 år)"
     },
     {
-      "value": "Uppföljning behövs",
-      "label": "Uppföljning behövs"
+      "value": "Inget",
+      "label": "Inget"
+    }
+  ],
+  "characteristics": [
+    {
+      "value": "Ej bedömt",
+      "label": "Ej bedömt"
     },
     {
-      "value": "Osäker",
-      "label": "Osäker"
+      "value": "Stackmyror (endast Formica rufa-gruppen)",
+      "label": "Stackmyror (endast Formica rufa-gruppen)"
+    },
+    {
+      "value": "Brandspår",
+      "label": "Brandspår"
+    },
+    {
+      "value": "Spärrgrenigt träd",
+      "label": "Spärrgrenigt träd"
+    },
+    {
+      "value": "Barklös stamved",
+      "label": "Barklös stamved"
+    },
+    {
+      "value": "Savflöde",
+      "label": "Savflöde"
+    },
+    {
+      "value": "Övrigt",
+      "label": "Övrigt"
+    },
+    {
+      "value": "Askskottsjuka",
+      "label": "Askskottsjuka"
+    },
+    {
+      "value": "Almsjuka",
+      "label": "Almsjuka"
+    },
+    {
+      "value": "Toppbrott/toppkapat (när huvudstammen är av)",
+      "label": "Toppbrott/toppkapat (när huvudstammen är av)"
+    },
+    {
+      "value": "Stora delar av kronan beskuren eller avbruten (när flera huvudgrenar är av)",
+      "label": "Stora delar av kronan beskuren eller avbruten (när flera huvudgrenar är av)"
+    }
+  ],
+  "vegetationCoverage": [
+    {
+      "value": "Ingen vegetation",
+      "label": "Ingen vegetation"
+    },
+    {
+      "value": "< 25%",
+      "label": "< 25%"
+    },
+    {
+      "value": "25 - 75%",
+      "label": "25 - 75%"
+    },
+    {
+      "value": "> 75%",
+      "label": "> 75%"
+    },
+    {
+      "value": "Täckning okänd",
+      "label": "Täckning okänd"
+    }
+  ],
+  "surrounding": [
+    {
+      "value": "Allé",
+      "label": "Allé"
+    },
+    {
+      "value": "Vägkant",
+      "label": "Vägkant"
+    },
+    {
+      "value": "Kyrkogård",
+      "label": "Kyrkogård"
+    },
+    {
+      "value": "Park",
+      "label": "Park"
+    },
+    {
+      "value": "Tomt",
+      "label": "Tomt"
+    },
+    {
+      "value": "Lövskog",
+      "label": "Lövskog"
+    },
+    {
+      "value": "Barrskog",
+      "label": "Barrskog"
+    },
+    {
+      "value": "Blandskog",
+      "label": "Blandskog"
+    },
+    {
+      "value": "Hygge",
+      "label": "Hygge"
+    },
+    {
+      "value": "Gräsmark",
+      "label": "Gräsmark"
+    },
+    {
+      "value": "Åker/vall",
+      "label": "Åker/vall"
+    },
+    {
+      "value": "Vatten",
+      "label": "Vatten"
+    },
+    {
+      "value": "Bebyggelse",
+      "label": "Bebyggelse"
+    },
+    {
+      "value": "Övrigt",
+      "label": "Övrigt"
+    }
+  ],
+  "landUse": [
+    {
+      "value": "Avverkning",
+      "label": "Avverkning"
+    },
+    {
+      "value": "Bete",
+      "label": "Bete"
+    },
+    {
+      "value": "Röjning / gallring",
+      "label": "Röjning / gallring"
+    },
+    {
+      "value": "Markarbete",
+      "label": "Markarbete"
+    },
+    {
+      "value": "Slåtter",
+      "label": "Slåtter"
+    },
+    {
+      "value": "Inget",
+      "label": "Inget"
+    },
+    {
+      "value": "Övrigt",
+      "label": "Övrigt"
     }
   ]
 }

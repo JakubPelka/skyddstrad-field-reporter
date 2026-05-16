@@ -1,14 +1,14 @@
-import { APP_CONFIG } from "./config.js?v=20260516-locality-mapping-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-locality-mapping-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-locality-mapping-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-locality-mapping-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-locality-mapping-v1";
-import { getCurrentPosition } from "./gps.js?v=20260516-locality-mapping-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-locality-mapping-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-locality-mapping-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-locality-mapping-v1";
-import { searchLocalities } from "./locality-search.js?v=20260516-locality-mapping-v1";
-import { formatDistance } from "./util.js?v=20260516-locality-mapping-v1";
+import { APP_CONFIG } from "./config.js?v=20260516-template-mapping-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-template-mapping-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-template-mapping-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-template-mapping-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-template-mapping-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-template-mapping-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-template-mapping-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-template-mapping-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-template-mapping-v1";
+import { searchLocalities } from "./locality-search.js?v=20260516-template-mapping-v1";
+import { formatDistance } from "./util.js?v=20260516-template-mapping-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -100,6 +100,8 @@ function renderDrafts() {
       draft.localName ? `Lokal: ${draft.localName}` : "Lokalnamn saknas",
       Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm omkrets` : "",
       Number.isFinite(draft.stemDiameterCm) ? `${draft.stemDiameterCm} cm diameter` : "",
+      draft.treeStatus ? `Status: ${draft.treeStatus}` : "",
+      draft.hollowStage ? `Hål: ${draft.hollowStage}` : "",
       `Norr ${draft.latitude?.toFixed?.(6) ?? ""}, Öst ${draft.longitude?.toFixed?.(6) ?? ""}`
     ].filter(Boolean).join(" · ");
 

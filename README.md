@@ -26,12 +26,13 @@ The current app can:
 - show sample existing tree records near Simlångsdalen,
 - let the user place a new tree point on the map,
 - fill in a Swedish field form,
+- use allowed project-parameter values copied from the Artportalen template,
 - warn about possible duplicate records near the selected point,
 - store drafts locally in the browser,
-- export drafts as XLSX,
+- export drafts as XLSX using the `Observationer`/`Parametrar` sheet structure from the template,
 - export drafts as GeoJSON.
 
-The current value lists and export columns are still a working draft. This patch starts a first field-to-export mapping by using Swedish labels such as `Lokalnamn`, `Norr (latitud, WGS84)` and `Öst (longitud, WGS84)`, but the final XLSX must still be aligned with the official Artportalen import template before real use.
+The current value lists and export columns are still a working draft, but the app now uses the analysed `docs/ap2_template_treeproject.xlsx` structure for the first template-based XLSX export. The export creates an `Observationer` sheet with the same row-2 headers as the template and a `Parametrar` sheet with copied allowed values.
 
 ---
 
@@ -80,7 +81,7 @@ This template should be treated as the **source of truth** for:
 - import structure,
 - future XLSX mapping.
 
-The current app does not yet parse the template automatically. The next development step should be to map the app's internal fields to the exact template columns and allowed values.
+The current app does not parse the template automatically at runtime, but this repository now contains a first manual mapping based on the template. See `docs/template-analysis.md` for the analysed headers, allowed values and current field mapping.
 
 ---
 
@@ -208,7 +209,7 @@ skyddstrad-field-reporter/
 | Lokalnamn field | Manual field plus prepared lookup UI; no verified endpoint yet |
 | Duplicate warning | Basic distance-based check |
 | Local draft storage | Browser localStorage |
-| XLSX export | Basic implementation with Swedish headers; not yet exact Artportalen template mapping |
+| XLSX export | First template-based export using `Observationer` and `Parametrar` sheets; still needs Artportalen import testing |
 | GeoJSON export | Basic implementation |
 
 ### Not included yet
