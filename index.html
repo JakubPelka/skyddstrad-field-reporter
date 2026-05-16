@@ -1,89 +1,92 @@
 <!doctype html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="utf-8">
-  <title>Skyddsträd Field Reporter</title>
+  <title>Fältrapportör för skyddsvärda träd</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#315f3d">
-  <meta name="description" content="Mobile-first field tool concept for recording potential särskilt skyddsvärda träd.">
+  <meta name="description" content="Mobil fältapp för registrering av potentiellt särskilt skyddsvärda träd.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
-
-  <!-- MapLibre test build. If this works well on iPad/iPhone, we can vendor these files locally later. -->
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles/main.css?v=20260516-maplibre-test">
+  <link rel="stylesheet" href="styles/main.css?v=20260516-sv-xlsx-v1">
 </head>
 <body>
   <header class="app-header">
     <div>
       <p class="eyebrow">Proof of concept</p>
-      <h1>Skyddsträd Field Reporter</h1>
-      <p class="subtitle">Field notes for potential <em>särskilt skyddsvärda träd</em>. Export only. No direct Artportalen upload.</p>
+      <h1>Fältrapportör för skyddsvärda träd</h1>
+      <p class="subtitle">Fältstöd för potentiellt <em>särskilt skyddsvärda träd</em>. Endast export. Ingen direktpublicering till Artportalen.</p>
     </div>
   </header>
 
   <main class="layout">
-    <section class="map-section" aria-label="Map">
+    <section class="map-section" aria-label="Karta">
       <div class="map-header">
-        <h2>Map</h2>
-        <p>Tap the map to set the observation point. Use GPS to centre on your current position.</p>
+        <h2>Karta</h2>
+        <p>Tryck i kartan för att sätta observationspunkten. Använd GPS för att centrera på din position.</p>
       </div>
       <div id="map"></div>
     </section>
 
-    <section class="workflow-grid" aria-label="Field workflow">
+    <section class="workflow-grid" aria-label="Fältflöde">
       <div class="card position-card">
         <h2>1. Position</h2>
         <div class="button-row">
-          <button id="btn-use-gps" type="button">Use GPS</button>
-          <button id="btn-load-existing" type="button">Load sample existing trees</button>
+          <button id="btn-use-gps" type="button">Använd GPS</button>
+          <button id="btn-load-existing" type="button">Ladda testträd</button>
         </div>
-        <p id="gps-status" class="status-text">GPS not used yet.</p>
+        <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
         <p id="duplicate-warning" class="warning" hidden></p>
       </div>
 
       <form id="tree-form" class="card form-card">
-        <h2>2. Tree observation</h2>
+        <h2>2. Träduppgift</h2>
 
         <div class="field-grid">
           <label>
-            Species
+            Art
             <select id="species" name="species" required></select>
           </label>
 
           <label>
-            Observation date
+            Observationsdatum
             <input id="observationDate" name="observationDate" type="date" required>
           </label>
 
-          <label>
-            Stem circumference, cm
-            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 320">
+          <label class="full-width">
+            Lokalnamn i Artportalen
+            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Exakt lokalnamn enligt Artportalen/importflödet">
+            <span class="field-help">Måste motsvara en befintlig/avsedd lokal. Appen validerar inte detta ännu.</span>
           </label>
 
           <label>
-            Stem diameter, cm
-            <input id="stemDiameterCm" name="stemDiameterCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="calculated from circumference">
+            Stamomkrets, cm
+            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="t.ex. 320">
           </label>
 
           <label>
-            Latitude
+            Stamdiameter, cm
+            <input id="stemDiameterCm" name="stemDiameterCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="beräknas från omkrets">
+          </label>
+
+          <label>
+            Latitud
             <input id="latitude" name="latitude" type="number" inputmode="decimal" step="0.000001" required>
           </label>
 
           <label>
-            Longitude
+            Longitud
             <input id="longitude" name="longitude" type="number" inputmode="decimal" step="0.000001" required>
           </label>
 
           <label>
-            Coordinate accuracy, m
-            <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS accuracy">
+            Koordinatnoggrannhet, m
+            <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS-noggrannhet">
           </label>
 
           <label>
-            Tree status
+            Trädstatus
             <select id="treeStatus" name="treeStatus"></select>
           </label>
 
@@ -98,7 +101,7 @@
           </label>
 
           <label>
-            Vitality
+            Vitalitet
             <select id="vitality" name="vitality"></select>
           </label>
 
@@ -108,39 +111,39 @@
           </label>
 
           <label>
-            Observer
-            <input id="observer" name="observer" type="text" autocomplete="name" placeholder="Optional">
+            Observatör
+            <input id="observer" name="observer" type="text" autocomplete="name" placeholder="Valfritt">
           </label>
         </div>
 
         <label>
-          Comment
-          <textarea id="comment" name="comment" rows="4" placeholder="Short field note, visible damage, access, uncertainty, etc."></textarea>
+          Kommentar
+          <textarea id="comment" name="comment" rows="4" placeholder="Kort fältanteckning, skador, osäkerhet, tillgänglighet m.m."></textarea>
         </label>
 
         <div class="button-row">
-          <button type="submit">Save draft</button>
-          <button id="btn-reset-form" type="button" class="secondary">Reset form</button>
+          <button type="submit">Spara utkast</button>
+          <button id="btn-reset-form" type="button" class="secondary">Rensa formulär</button>
         </div>
       </form>
 
       <div class="card drafts-card">
-        <h2>3. Drafts and export</h2>
-        <p id="draft-count" class="status-text">No drafts saved.</p>
+        <h2>3. Utkast och export</h2>
+        <p id="draft-count" class="status-text">Inga utkast sparade.</p>
         <div class="button-row">
-          <button id="btn-export-csv" type="button">Export CSV</button>
-          <button id="btn-export-geojson" type="button">Export GeoJSON</button>
-          <button id="btn-clear-drafts" type="button" class="danger">Clear drafts</button>
+          <button id="btn-export-xlsx" type="button">Exportera XLSX</button>
+          <button id="btn-export-geojson" type="button">Exportera GeoJSON</button>
+          <button id="btn-clear-drafts" type="button" class="danger">Radera utkast</button>
         </div>
         <div id="draft-list" class="draft-list" aria-live="polite"></div>
       </div>
 
       <div class="card subtle notes-card">
-        <h2>Notes</h2>
+        <h2>Obs</h2>
         <ul>
-          <li>This is not an official Artportalen/SLU application.</li>
-          <li>Sample values must be replaced with official import-template values before real use.</li>
-          <li>Existing tree records are shown as context only.</li>
+          <li>Detta är inte en officiell Artportalen-/SLU-applikation.</li>
+          <li>Värdelistor och export ska senare stämmas av mot Artportalens importmall.</li>
+          <li>Befintliga träd visas endast som stöd vid fältarbete.</li>
         </ul>
       </div>
     </section>
@@ -150,11 +153,12 @@
     <article class="draft-item">
       <strong class="draft-title"></strong>
       <span class="draft-meta"></span>
-      <button type="button" class="draft-delete">Delete</button>
+      <button type="button" class="draft-delete">Ta bort</button>
     </article>
   </template>
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
-  <script type="module" src="src/app.js?v=20260516-maplibre-test"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module" src="src/app.js?v=20260516-sv-xlsx-v1"></script>
 </body>
 </html>

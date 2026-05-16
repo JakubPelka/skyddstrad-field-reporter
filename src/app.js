@@ -1,13 +1,13 @@
-import { APP_CONFIG } from "./config.js?v=20260516-mapfix-v3";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-mapfix-v3";
-import { exportDraftsAsCsv } from "./export-csv.js?v=20260516-mapfix-v3";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-mapfix-v3";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-mapfix-v3";
-import { getCurrentPosition } from "./gps.js?v=20260516-mapfix-v3";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-mapfix-v3";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-mapfix-v3";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-mapfix-v3";
-import { formatDistance } from "./util.js?v=20260516-mapfix-v3";
+import { APP_CONFIG } from "./config.js?v=20260516-sv-xlsx-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-sv-xlsx-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-sv-xlsx-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-sv-xlsx-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition } from "./form.js?v=20260516-sv-xlsx-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-sv-xlsx-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-sv-xlsx-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-sv-xlsx-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-sv-xlsx-v1";
+import { formatDistance } from "./util.js?v=20260516-sv-xlsx-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -22,7 +22,7 @@ const elements = {
   useGpsButton: document.querySelector("#btn-use-gps"),
   loadExistingButton: document.querySelector("#btn-load-existing"),
   resetFormButton: document.querySelector("#btn-reset-form"),
-  exportCsvButton: document.querySelector("#btn-export-csv"),
+  exportXlsxButton: document.querySelector("#btn-export-xlsx"),
   exportGeoJsonButton: document.querySelector("#btn-export-geojson"),
   clearDraftsButton: document.querySelector("#btn-clear-drafts")
 };
@@ -47,28 +47,28 @@ function updateDuplicateWarning() {
   }
 
   const closest = nearby[0];
-  const species = closest.properties.species || closest.properties.artnamn || closest.properties.vernacularName || "existing tree";
+  const species = closest.properties.species || closest.properties.artnamn || closest.properties.vernacularName || "befintligt träd";
 
   elements.duplicateWarning.hidden = false;
-  elements.duplicateWarning.textContent = `Possible duplicate: ${nearby.length} existing record(s) within ${APP_CONFIG.duplicateDistanceM} m. Closest: ${species}, ${formatDistance(closest.distanceM)} away.`;
+  elements.duplicateWarning.textContent = `Möjlig dubblett: ${nearby.length} befintlig(a) post(er) inom ${APP_CONFIG.duplicateDistanceM} m. Närmast: ${species}, ${formatDistance(closest.distanceM)} bort.`;
 }
 
 async function loadAndRenderExistingTrees() {
   elements.loadExistingButton.disabled = true;
-  elements.loadExistingButton.textContent = "Loading...";
+  elements.loadExistingButton.textContent = "Laddar...";
 
   try {
     existingTrees = await loadExistingTrees(getBounds());
     const layer = createExistingTreesLayer(existingTrees);
     setExistingLayer(layer);
     updateDuplicateWarning();
-    setStatus(`Loaded ${existingTrees.length} existing tree record(s). Current mode: ${APP_CONFIG.existingTrees.mode}.`);
+    setStatus(`Laddade ${existingTrees.length} befintliga trädposter. Läge: ${APP_CONFIG.existingTrees.mode}.`);
   } catch (error) {
     console.error(error);
     setStatus(error.message);
   } finally {
     elements.loadExistingButton.disabled = false;
-    elements.loadExistingButton.textContent = "Load sample existing trees";
+    elements.loadExistingButton.textContent = "Ladda testträd";
   }
 }
 
@@ -76,8 +76,8 @@ function renderDrafts() {
   const drafts = loadDrafts();
 
   elements.draftCount.textContent = drafts.length === 1
-    ? "1 draft saved."
-    : `${drafts.length} drafts saved.`;
+    ? "1 utkast sparat."
+    : `${drafts.length} utkast sparade.`;
 
   elements.draftList.innerHTML = "";
 
@@ -87,10 +87,11 @@ function renderDrafts() {
     const meta = item.querySelector(".draft-meta");
     const deleteButton = item.querySelector(".draft-delete");
 
-    title.textContent = draft.species || "Unnamed tree";
+    title.textContent = draft.species || "Träd utan art";
     meta.textContent = [
       draft.observationDate,
-      Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm circumference` : "",
+      draft.localName ? `Lokal: ${draft.localName}` : "Lokalnamn saknas",
+      Number.isFinite(draft.stemCircumferenceCm) ? `${draft.stemCircumferenceCm} cm omkrets` : "",
       Number.isFinite(draft.stemDiameterCm) ? `${draft.stemDiameterCm} cm diameter` : "",
       `${draft.latitude?.toFixed?.(6) ?? ""}, ${draft.longitude?.toFixed?.(6) ?? ""}`
     ].filter(Boolean).join(" · ");
@@ -108,7 +109,7 @@ function renderDrafts() {
 
 function bindEvents() {
   elements.useGpsButton.addEventListener("click", async () => {
-    setStatus("Reading GPS position...");
+    setStatus("Läser GPS-position...");
 
     try {
       const position = await getCurrentPosition();
@@ -127,10 +128,10 @@ function bindEvents() {
       });
 
       updateDuplicateWarning();
-      setStatus(`GPS position set. Accuracy: ${Math.round(accuracy)} m.`);
+      setStatus(`GPS-position satt. Noggrannhet: ${Math.round(accuracy)} m.`);
     } catch (error) {
       console.error(error);
-      setStatus(`GPS error: ${error.message}`);
+      setStatus(`GPS-fel: ${error.message}`);
     }
   });
 
@@ -158,22 +159,26 @@ function bindEvents() {
     }
   });
 
-  elements.exportCsvButton.addEventListener("click", () => {
+  elements.exportXlsxButton.addEventListener("click", () => {
     const drafts = loadDrafts();
 
     if (drafts.length === 0) {
-      alert("No drafts to export.");
+      alert("Det finns inga utkast att exportera.");
       return;
     }
 
-    exportDraftsAsCsv(drafts);
+    try {
+      exportDraftsAsXlsx(drafts);
+    } catch (error) {
+      alert(error.message);
+    }
   });
 
   elements.exportGeoJsonButton.addEventListener("click", () => {
     const drafts = loadDrafts();
 
     if (drafts.length === 0) {
-      alert("No drafts to export.");
+      alert("Det finns inga utkast att exportera.");
       return;
     }
 
@@ -181,7 +186,7 @@ function bindEvents() {
   });
 
   elements.clearDraftsButton.addEventListener("click", () => {
-    const confirmed = confirm("Clear all locally stored drafts in this browser?");
+    const confirmed = confirm("Vill du radera alla lokalt sparade utkast i den här webbläsaren?");
 
     if (confirmed) {
       clearDrafts();
@@ -214,5 +219,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
-  setStatus(`Startup error: ${error.message}`);
+  setStatus(`Startfel: ${error.message}`);
 });

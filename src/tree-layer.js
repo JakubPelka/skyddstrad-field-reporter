@@ -17,7 +17,7 @@ function buildUrlFromBounds(bounds) {
 }
 
 function propertiesToPopup(properties) {
-  const species = properties.species || properties.artnamn || properties.vernacularName || "Existing tree";
+  const species = properties.species || properties.artnamn || properties.vernacularName || "Befintligt träd";
   const circumference = properties.stemCircumferenceCm || properties.stamomkrets || properties.omkrets || "";
   const diameter = properties.stemDiameterCm || properties.diameter || "";
   const status = properties.treeStatus || properties.tradstatus || "";
@@ -25,11 +25,11 @@ function propertiesToPopup(properties) {
   const url = properties.url || properties.recordUrl || "";
 
   const rows = [
-    ["Species", species],
-    ["Circumference", circumference ? `${circumference} cm` : ""],
+    ["Art", species],
+    ["Omkrets", circumference ? `${circumference} cm` : ""],
     ["Diameter", diameter ? `${diameter} cm` : ""],
     ["Status", status],
-    ["Vitality", vitality]
+    ["Vitalitet", vitality]
   ].filter(([, value]) => value !== null && value !== undefined && value !== "");
 
   const list = rows
@@ -37,7 +37,7 @@ function propertiesToPopup(properties) {
     .join("");
 
   const link = url
-    ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open source record</a></p>`
+    ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Öppna källpost</a></p>`
     : "";
 
   return `
@@ -78,7 +78,7 @@ export async function loadExistingTrees(bounds = null) {
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Could not load existing tree records: ${response.status} ${response.statusText}`);
+    throw new Error(`Kunde inte ladda befintliga trädposter: ${response.status} ${response.statusText}`);
   }
 
   const geojson = await response.json();

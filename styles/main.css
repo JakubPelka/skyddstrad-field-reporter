@@ -142,6 +142,17 @@ body {
   gap: 0.85rem;
 }
 
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-help {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 label {
   display: flex;
   flex-direction: column;
@@ -324,6 +335,10 @@ button.danger {
 
   .field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: 1;
   }
 
   .card {

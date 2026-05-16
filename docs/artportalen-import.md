@@ -1,45 +1,60 @@
-# Artportalen import concept
+# Artportalen import and XLSX export
 
-The MVP should not publish directly to Artportalen.
+The MVP does not publish directly to Artportalen.
 
-Instead, the app should export structured data that can be reviewed and transformed into an import file compatible with the official Artportalen workflow for *skyddsvärda träd*.
+Instead, the app exports locally saved field drafts to XLSX and GeoJSON. The XLSX export is currently a simple structured export from the app's internal fields.
+
+## Source of truth
+
+The current Artportalen tree project import template is stored as:
+
+```text
+docs/ap2_template_treeproject.xlsx
+```
+
+This template should be treated as the source of truth for:
+
+- required columns,
+- column names,
+- accepted value classes,
+- controlled parameter values,
+- import structure,
+- future export mapping.
 
 ## Current status
 
-The current CSV export is only a technical placeholder.
+Current XLSX export:
 
-It is not yet guaranteed to match:
+- writes one worksheet named `Fältdata`,
+- uses Swedish field labels,
+- includes internal draft ID and creation timestamp,
+- includes `Lokalnamn`, coordinates, species, tree parameters and comment,
+- is not yet guaranteed to match the official Artportalen import template exactly.
 
-- official column names,
-- official controlled values,
-- required fields,
-- accepted coordinate format,
-- photo handling rules,
-- observer/project requirements.
+## Lokalnamn
 
-## Next step
+`Lokalnamn` must not be invented automatically by the app.
 
-Download or verify the latest official import template for *Skyddsvärda träd*.
+In the current MVP, `Lokalnamn` is a manual text field. The user must enter the locality name expected by the later Artportalen import workflow.
 
-Then update:
+Future work should investigate:
 
-- `src/config.js` export column order,
-- `data/form-values.json`,
-- `data/species.json`,
-- `src/export-csv.js`,
-- README documentation.
+- lookup of existing Artportalen localities,
+- project-specific allowed locality lists,
+- validation of `Lokalnamn` before export,
+- warning if the field is empty or unknown.
 
-## Recommended design principle
+## Next implementation step
 
-Keep internal field names stable and add a dedicated export mapping layer later.
-
-Example:
+The next technical step is to read/analyze `docs/ap2_template_treeproject.xlsx` and create a mapping such as:
 
 ```text
-internal app field → Artportalen import column
-species            → official species column
-latitude           → official latitude column
-longitude          → official longitude column
+internal app field → Artportalen template column
+localName          → Lokalnamn / official template column
+species            → Art / official template column
+latitude           → coordinate column
+longitude          → coordinate column
+stemCircumference  → official tree-parameter column
 ```
 
-This prevents the UI and storage model from breaking every time the import template changes.
+After this mapping is confirmed, the XLSX export should be changed from a generic draft export to a template-compatible export.

@@ -151,7 +151,7 @@ export function setExistingLayer(markerSpecs) {
   forceSeveralMapRefreshes();
 }
 
-export function setSelectedPoint(lat, lng, label = "Selected observation point") {
+export function setSelectedPoint(lat, lng, label = "Vald observationspunkt") {
   if (!selectedMarker) {
     selectedMarker = new maplibregl.Marker({
       element: createMarkerElement("selected"),
@@ -179,8 +179,8 @@ export function setSelectedPoint(lat, lng, label = "Selected observation point")
 
 export function showCurrentPosition(lat, lng, accuracyM = null) {
   const popup = accuracyM
-    ? `Current GPS position<br>Accuracy: ${Math.round(accuracyM)} m`
-    : "Current GPS position";
+    ? `Aktuell GPS-position<br>Noggrannhet: ${Math.round(accuracyM)} m`
+    : "Aktuell GPS-position";
 
   if (!positionMarker) {
     positionMarker = new maplibregl.Marker({
@@ -212,10 +212,11 @@ export function renderDraftMarkers(drafts) {
     }
 
     const popupHtml = `
-      <p class="popup-title">${escapeHtml(draft.species || "Draft tree")}</p>
+      <p class="popup-title">${escapeHtml(draft.species || "Trädutkast")}</p>
       <ul class="popup-list">
-        <li><strong>Date:</strong> ${escapeHtml(draft.observationDate || "")}</li>
-        <li><strong>Circumference:</strong> ${escapeHtml(draft.stemCircumferenceCm ?? "")} cm</li>
+        <li><strong>Datum:</strong> ${escapeHtml(draft.observationDate || "")}</li>
+        <li><strong>Lokalnamn:</strong> ${escapeHtml(draft.localName || "saknas")}</li>
+        <li><strong>Omkrets:</strong> ${escapeHtml(draft.stemCircumferenceCm ?? "")} cm</li>
         <li><strong>Status:</strong> ${escapeHtml(draft.treeStatus || "")}</li>
       </ul>
     `;

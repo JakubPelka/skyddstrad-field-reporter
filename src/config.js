@@ -1,5 +1,5 @@
 export const APP_CONFIG = {
-  appName: "Skyddsträd Field Reporter",
+  appName: "Fältrapportör för skyddsvärda träd",
 
   // Test area: Simlångsdalen, Halmstad municipality.
   // Keep sample records close to this area during early mobile testing.
@@ -18,6 +18,7 @@ export const APP_CONFIG = {
 export const FIELD_EXPORT_ORDER = [
   "id",
   "observationDate",
+  "localName",
   "species",
   "scientificName",
   "latitude",
@@ -34,3 +35,24 @@ export const FIELD_EXPORT_ORDER = [
   "comment",
   "createdAt"
 ];
+
+export const FIELD_LABELS_SV = {
+  id: "Internt ID",
+  observationDate: "Observationsdatum",
+  localName: "Lokalnamn",
+  species: "Art",
+  scientificName: "Vetenskapligt namn",
+  latitude: "Latitud",
+  longitude: "Longitud",
+  coordinateAccuracyM: "Koordinatnoggrannhet (m)",
+  stemCircumferenceCm: "Stamomkrets (cm)",
+  stemDiameterCm: "Stamdiameter (cm)",
+  treeStatus: "Trädstatus",
+  hollowStage: "Hålstadium",
+  hollowPosition: "Hålets placering",
+  vitality: "Vitalitet",
+  managementNeed: "Åtgärdsbehov",
+  observer: "Observatör",
+  comment: "Kommentar",
+  createdAt: "Skapad i appen"
+};

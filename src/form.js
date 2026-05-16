@@ -1,6 +1,6 @@
 import { asNumber, nowISO, todayISO, uuid } from "./util.js";
 
-function fillSelect(select, options, placeholder = "Select") {
+function fillSelect(select, options, placeholder = "Välj") {
   select.innerHTML = "";
 
   const empty = document.createElement("option");
@@ -75,12 +75,12 @@ export async function initForm() {
   const species = await speciesResponse.json();
   const values = await valuesResponse.json();
 
-  fillSelect(document.querySelector("#species"), species, "Select species");
-  fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Unknown / not selected");
-  fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Unknown / not selected");
-  fillSelect(document.querySelector("#hollowPosition"), values.hollowPosition, "Unknown / not selected");
-  fillSelect(document.querySelector("#vitality"), values.vitality, "Unknown / not selected");
-  fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Unknown / not selected");
+  fillSelect(document.querySelector("#species"), species, "Välj art");
+  fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Okänt / ej valt");
+  fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Okänt / ej valt");
+  fillSelect(document.querySelector("#hollowPosition"), values.hollowPosition, "Okänt / ej valt");
+  fillSelect(document.querySelector("#vitality"), values.vitality, "Okänt / ej valt");
+  fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Okänt / ej valt");
 
   document.querySelector("#observationDate").value = todayISO();
   setupCircumferenceDiameterSync();
@@ -104,12 +104,13 @@ export function getDraftFromForm(form) {
   const longitude = asNumber(formData.get("longitude"));
 
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-    throw new Error("Latitude and longitude are required.");
+    throw new Error("Latitud och longitud måste anges.");
   }
 
   return {
     id: uuid(),
     observationDate: String(formData.get("observationDate") || todayISO()),
+    localName: String(formData.get("localName") || ""),
     species: String(formData.get("species") || ""),
     scientificName: selectedSpecies?.dataset?.scientificName || "",
     latitude,
