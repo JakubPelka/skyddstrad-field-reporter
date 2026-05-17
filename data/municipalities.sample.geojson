@@ -1,0 +1,42 @@
+{
+  "type": "FeatureCollection",
+  "name": "municipalities_sample_fallback",
+  "description": "Tiny fallback polygon for testing around Halmstad/Simlångsdalen. Generate data/municipalities.scb.geojson from SCB before broader use.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "kommunnamn": "Halmstads kommun",
+        "kommunkod": "1380",
+        "source": "Fallback test polygon only; replace with generated SCB data"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.55,
+              56.5
+            ],
+            [
+              13.38,
+              56.5
+            ],
+            [
+              13.38,
+              57.02
+            ],
+            [
+              12.55,
+              57.02
+            ],
+            [
+              12.55,
+              56.5
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

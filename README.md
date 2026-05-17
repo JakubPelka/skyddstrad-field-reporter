@@ -117,8 +117,41 @@ The public ArcGIS item contains two point layers and both are queried:
 The app loads/refreshes tree records manually with the button `Ladda/uppdatera trädposter`. It does not automatically reload after every map movement, to avoid repeated network requests on mobile devices.
 
 
-## Municipality fallback for Lokalnamn
+## Municipality boundary fallback
 
-If no locality candidate is found from nearby tree records, the app can suggest the municipality name from the selected point, for example `Halmstads kommun`.
+The app can add the municipality name as the last `Lokalnamn` candidate by intersecting the selected point with a local GeoJSON boundary file.
 
-This is a manual fallback, not an automatic request. It uses reverse geocoding and should only be used when no better `Lokalnamn` is available.
+Current sample file:
+
+```text
+data/municipalities.sample.geojson
+```
+
+This is only a test sample. Replace with simplified SCB/Lantmäteriet municipal boundaries before broader use.
+
+
+## SCB municipality boundaries
+
+Municipality fallback is configured to load generated SCB municipality boundaries from:
+
+```text
+data/municipalities.scb.geojson
+```
+
+If that file is missing, the app falls back to:
+
+```text
+data/municipalities.sample.geojson
+```
+
+Generate the SCB file with:
+
+```bash
+python scripts/build_scb_municipalities.py
+```
+
+Source: SCB Digitala gränser, ArcView-shape ZIP:
+
+```text
+https://www.scb.se/contentassets/3443fea3fa6640f7a57ea15d9a372d33/shape_svenska_260225.zip
+```

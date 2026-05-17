@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260516-municipality-fallback-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-municipality-intersect-v1">
 </head>
 <body>
   <header class="app-header">
@@ -66,18 +66,8 @@
             <div class="button-row compact-row">
               <button id="btn-refresh-localities" type="button" class="secondary">Uppdatera lokalnamnsförslag</button>
             </div>
-            <p id="locality-status" class="field-help">Välj punkt i kartan eller använd GPS för att föreslå lokalnamn från laddade trädposter.</p>
+            <p id="locality-status" class="field-help">Välj punkt i kartan eller använd GPS för att föreslå lokalnamn.</p>
             <div id="locality-results" class="locality-results" aria-live="polite"></div>
-
-            <div class="municipality-fallback">
-              <h4>Fallback om inga lokalnamn hittas</h4>
-              <p class="field-help">Hämta kommunnamn från vald position, t.ex. Halmstads kommun. Använd bara om inget bättre lokalnamn finns i närheten.</p>
-              <div class="button-row compact-row">
-                <button id="btn-municipality-fallback" type="button" class="secondary">Föreslå kommunnamn</button>
-              </div>
-              <p id="municipality-status" class="field-help">Inte hämtat ännu.</p>
-              <div id="municipality-results" class="locality-results" aria-live="polite"></div>
-            </div>
           </div>
 
           <label>
@@ -282,6 +272,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260516-municipality-fallback-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-municipality-intersect-v1"></script>
 </body>
 </html>
