@@ -468,3 +468,19 @@ button.danger {
 .was-validated label:has(textarea:invalid) {
   color: #b3261e;
 }
+
+
+button.is-active {
+  background: #0c4a8a;
+  color: #fff;
+}
+
+#sst-status[data-variant="ok"] {
+  color: #315f3d;
+  font-weight: 650;
+}
+
+#sst-status[data-variant="warning"] {
+  color: #9b5f00;
+  font-weight: 650;
+}

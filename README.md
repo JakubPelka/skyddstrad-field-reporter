@@ -183,3 +183,30 @@ Required core fields currently include:
 - Vitalitet levande träd (%)
 
 Existing tree popups also show date information when a recognizable date field is present in the loaded source attributes.
+
+
+## XLSX sharing
+
+The app has two XLSX actions:
+
+- `Exportera XLSX` downloads the file.
+- `Dela XLSX` tries to share the generated XLSX through the device share sheet.
+
+If file sharing is not supported by the browser, the app downloads the file and asks the user to attach it manually.
+
+## GPS tracking
+
+`Använd GPS` reads the current location once.
+
+`GPS på` starts continuous GPS tracking and updates the selected observation point as the user moves. Use `Stoppa GPS` to stop tracking.
+
+## SST validation
+
+Before saving a draft, the app checks field-verifiable criteria for särskilt skyddsvärda träd.
+
+The app currently accepts:
+
+- `Jätteträd`: stem circumference above about 314 cm, corresponding to diameter above 100 cm.
+- `Grovt hålträd`: stem circumference above about 126 cm, corresponding to diameter above 40 cm, and a visible/developed cavity.
+
+The age criterion is intentionally not checked in the app.

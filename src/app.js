@@ -1,19 +1,20 @@
-import { APP_CONFIG } from "./config.js?v=20260517-save-required-popup-date-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-save-required-popup-date-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260517-save-required-popup-date-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-save-required-popup-date-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-save-required-popup-date-v1";
-import { getCurrentPosition } from "./gps.js?v=20260517-save-required-popup-date-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-save-required-popup-date-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-save-required-popup-date-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-save-required-popup-date-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-save-required-popup-date-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-save-required-popup-date-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-save-required-popup-date-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-share-gps-sst-validation-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-share-gps-sst-validation-v1";
+import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-share-gps-sst-validation-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-share-gps-sst-validation-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-share-gps-sst-validation-v1";
+import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-share-gps-sst-validation-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-share-gps-sst-validation-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-share-gps-sst-validation-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-share-gps-sst-validation-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-share-gps-sst-validation-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-share-gps-sst-validation-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-share-gps-sst-validation-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
 let loadingExistingTrees = false;
+let stopGpsWatch = null;
 
 const elements = {
   form: document.querySelector("#tree-form"),
@@ -23,9 +24,11 @@ const elements = {
   draftList: document.querySelector("#draft-list"),
   draftTemplate: document.querySelector("#draft-item-template"),
   useGpsButton: document.querySelector("#btn-use-gps"),
+  watchGpsButton: document.querySelector("#btn-watch-gps"),
   loadExistingButton: document.querySelector("#btn-load-existing"),
   resetFormButton: document.querySelector("#btn-reset-form"),
   exportXlsxButton: document.querySelector("#btn-export-xlsx"),
+  shareXlsxButton: document.querySelector("#btn-share-xlsx"),
   exportGeoJsonButton: document.querySelector("#btn-export-geojson"),
   clearDraftsButton: document.querySelector("#btn-clear-drafts"),
   localityStatus: document.querySelector("#locality-status"),
@@ -209,32 +212,82 @@ function updateSelectedPoint(point) {
   void renderLocalityCandidates();
 }
 
+function applyGpsPosition(position, modeLabel = "GPS-position") {
+  const { latitude, longitude, accuracy } = position.coords;
+
+  selectedPoint = {
+    lat: latitude,
+    lng: longitude
+  };
+
+  showCurrentPosition(latitude, longitude, accuracy);
+  setFormPosition({
+    lat: latitude,
+    lng: longitude,
+    accuracyM: accuracy
+  });
+
+  updateDuplicateWarning();
+  void renderLocalityCandidates();
+  setStatus(`${modeLabel}. Noggrannhet: ${Math.round(accuracy)} m.`);
+}
+
+function setGpsWatchActive(isActive) {
+  if (!elements.watchGpsButton) {
+    return;
+  }
+
+  elements.watchGpsButton.classList.toggle("is-active", isActive);
+  elements.watchGpsButton.setAttribute("aria-pressed", isActive ? "true" : "false");
+  elements.watchGpsButton.textContent = isActive ? "Stoppa GPS" : "GPS på";
+}
+
+function stopGpsTracking() {
+  if (stopGpsWatch) {
+    stopGpsWatch();
+    stopGpsWatch = null;
+  }
+
+  setGpsWatchActive(false);
+}
+
+function startGpsTracking() {
+  setStatus("Startar GPS-följning...");
+
+  try {
+    stopGpsWatch = watchCurrentPosition({
+      onPosition: (position) => applyGpsPosition(position, "GPS uppdaterad"),
+      onError: (error) => {
+        console.error(error);
+        setStatus(`GPS-fel: ${error.message}`);
+      }
+    });
+    setGpsWatchActive(true);
+  } catch (error) {
+    console.error(error);
+    setStatus(`GPS-fel: ${error.message}`);
+  }
+}
+
 function bindEvents() {
   elements.useGpsButton.addEventListener("click", async () => {
     setStatus("Läser GPS-position...");
 
     try {
       const position = await getCurrentPosition();
-      const { latitude, longitude, accuracy } = position.coords;
-
-      selectedPoint = {
-        lat: latitude,
-        lng: longitude
-      };
-
-      showCurrentPosition(latitude, longitude, accuracy);
-      setFormPosition({
-        lat: latitude,
-        lng: longitude,
-        accuracyM: accuracy
-      });
-
-      updateDuplicateWarning();
-      void renderLocalityCandidates();
-      setStatus(`GPS-position satt. Noggrannhet: ${Math.round(accuracy)} m.`);
+      applyGpsPosition(position, "GPS-position satt");
     } catch (error) {
       console.error(error);
       setStatus(`GPS-fel: ${error.message}`);
+    }
+  });
+
+  elements.watchGpsButton?.addEventListener("click", () => {
+    if (stopGpsWatch) {
+      stopGpsTracking();
+      setStatus("GPS-följning stoppad.");
+    } else {
+      startGpsTracking();
     }
   });
 
@@ -296,6 +349,21 @@ function bindEvents() {
     }
   });
 
+  elements.shareXlsxButton?.addEventListener("click", async () => {
+    const drafts = loadDrafts();
+
+    if (drafts.length === 0) {
+      alert("Det finns inga utkast att dela.");
+      return;
+    }
+
+    try {
+      await shareDraftsAsXlsx(drafts);
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
   elements.exportGeoJsonButton.addEventListener("click", () => {
     const drafts = loadDrafts();
 
@@ -319,6 +387,8 @@ function bindEvents() {
   window.addEventListener("selected-point-moved", (event) => {
     updateSelectedPoint(event.detail);
   });
+
+  window.addEventListener("pagehide", stopGpsTracking);
 }
 
 async function main() {

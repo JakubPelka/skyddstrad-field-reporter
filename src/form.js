@@ -1,4 +1,4 @@
-import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-save-required-popup-date-v1";
+import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-share-gps-sst-validation-v1";
 import { asNumber, nowISO, todayISO, uuid } from "./util.js";
 
 let taxonList = [];
@@ -59,6 +59,7 @@ function setupCircumferenceDiameterSync() {
     syncing = true;
     diameterInput.value = circumference === null ? "" : formatQuickTreeMeasure(circumference / Math.PI);
     syncing = false;
+    updateSstStatus();
   });
 
   diameterInput.addEventListener("input", () => {
@@ -70,6 +71,7 @@ function setupCircumferenceDiameterSync() {
     syncing = true;
     circumferenceInput.value = diameter === null ? "" : formatQuickTreeMeasure(diameter * Math.PI);
     syncing = false;
+    updateSstStatus();
   });
 }
 
@@ -82,6 +84,30 @@ function setTaxonStatus(message, variant = "info") {
 
   status.textContent = message;
   status.dataset.variant = variant;
+}
+
+function updateSstStatus() {
+  const status = document.querySelector("#sst-status");
+  const circumference = asNumber(document.querySelector("#stemCircumferenceCm")?.value);
+  const hollowStage = document.querySelector("#hollowStage")?.value || "";
+
+  if (!status) {
+    return;
+  }
+
+  if (circumference === null && !hollowStage) {
+    status.textContent = "SST-kontroll görs när stamomkrets och hålstadium är ifyllda. Ålderskriteriet kontrolleras inte i appen.";
+    status.dataset.variant = "info";
+    return;
+  }
+
+  const draftLike = {
+    stemCircumferenceCm: circumference,
+    hollowStage
+  };
+  const result = evaluateSstCandidate(draftLike);
+  status.textContent = sstStatusText(draftLike);
+  status.dataset.variant = result.passes ? "ok" : "warning";
 }
 
 function fillTaxonDatalists(taxa) {
@@ -249,6 +275,7 @@ export async function initForm() {
 
   fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Välj trädstatus");
   fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Välj hålstadium");
+  document.querySelector("#hollowStage")?.addEventListener("change", updateSstStatus);
   fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Välj åtgärdsbehov");
   fillSelect(document.querySelector("#holeSpecification"), values.holeSpecification, "Ej valt");
   fillSelect(document.querySelector("#mulmVolume"), values.mulmVolume, "Ej valt");
@@ -274,6 +301,7 @@ export async function initForm() {
   }
 
   setupCircumferenceDiameterSync();
+  updateSstStatus();
 }
 
 export function setFormPosition({ lat, lng, accuracyM = null }) {
@@ -314,6 +342,15 @@ export function getDraftFromForm(form) {
   const vitalityPercent = requireNumber(formData, "vitalityPercent", "Vitalitet levande träd (%)");
 
   validatePercent(vitalityPercent, "Vitalitet levande träd (%)");
+
+  const sstCheck = evaluateSstCandidate({
+    stemCircumferenceCm,
+    hollowStage
+  });
+
+  if (!sstCheck.passes) {
+    throw new Error(`SST-kontrollen stoppar sparande: ${sstCheck.reason}`);
+  }
 
   return {
     id: uuid(),
@@ -373,4 +410,5 @@ export function resetTreeForm(form) {
   }
 
   setTaxonStatus(`Artlistan laddad: ${taxonList.length} poster från TaxonList.csv.`, "ok");
+  updateSstStatus();
 }

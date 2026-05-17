@@ -155,10 +155,14 @@ function buildParameterRows() {
   return rows;
 }
 
-export function exportDraftsAsXlsx(drafts) {
+function ensureXlsxLibrary() {
   if (!window.XLSX) {
     throw new Error("XLSX-biblioteket kunde inte laddas. Kontrollera internetanslutning eller CDN-laddning.");
   }
+}
+
+function buildWorkbook(drafts) {
+  ensureXlsxLibrary();
 
   const workbook = window.XLSX.utils.book_new();
 
@@ -170,6 +174,46 @@ export function exportDraftsAsXlsx(drafts) {
   parameterWorksheet["!cols"] = PARAMETER_SHEET_COLUMNS.map(() => ({ wch: 30 }));
   window.XLSX.utils.book_append_sheet(workbook, parameterWorksheet, ARTPORTALEN_TEMPLATE.parameterSheetName);
 
+  return workbook;
+}
+
+function xlsxFileName() {
   const date = new Date().toISOString().slice(0, 10);
-  window.XLSX.writeFile(workbook, `skyddsvarda_trad_artportalen_observationer_${date}.xlsx`);
+  return `skyddsvarda_trad_artportalen_observationer_${date}.xlsx`;
+}
+
+export function buildDraftsXlsxBlob(drafts) {
+  const workbook = buildWorkbook(drafts);
+  const arrayBuffer = window.XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+  });
+
+  return new Blob([arrayBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+}
+
+export function exportDraftsAsXlsx(drafts) {
+  const workbook = buildWorkbook(drafts);
+  window.XLSX.writeFile(workbook, xlsxFileName());
+}
+
+export async function shareDraftsAsXlsx(drafts) {
+  const blob = buildDraftsXlsxBlob(drafts);
+  const file = new File([blob], xlsxFileName(), {
+    type: blob.type
+  });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+    await navigator.share({
+      files: [file],
+      title: "Skyddsvärda träd – XLSX",
+      text: "XLSX-export från Fältrapportör för skyddsvärda träd."
+    });
+    return;
+  }
+
+  exportDraftsAsXlsx(drafts);
+  throw new Error("Den här webbläsaren kan inte dela XLSX som fil. Filen laddades ned – bifoga den manuellt i mejl.");
 }

@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260517-save-required-popup-date-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-share-gps-sst-validation-v1">
 </head>
 <body>
   <header class="app-header">
@@ -34,6 +34,7 @@
         <h2>1. Position</h2>
         <div class="button-row">
           <button id="btn-use-gps" type="button">Använd GPS</button>
+          <button id="btn-watch-gps" type="button" class="secondary" aria-pressed="false">GPS på</button>
           <button id="btn-load-existing" type="button">Ladda/uppdatera trädposter</button>
         </div>
         <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
@@ -126,6 +127,8 @@
             Vitalitet levande träd (%)
             <input id="vitalityPercent" name="vitalityPercent" type="number" inputmode="decimal" min="0" max="100" required step="1" placeholder="0-100">
           </label>
+
+          <p id="sst-status" class="field-help full-width" data-variant="info">SST-kontroll görs när stamomkrets och hålstadium är ifyllda. Ålderskriteriet kontrolleras inte i appen.</p>
         </div>
 
         <details class="advanced-section">
@@ -257,6 +260,7 @@
         <p id="draft-count" class="status-text">Inga utkast sparade.</p>
         <div class="button-row">
           <button id="btn-export-xlsx" type="button">Exportera XLSX</button>
+          <button id="btn-share-xlsx" type="button">Dela XLSX</button>
           <button id="btn-export-geojson" type="button">Exportera GeoJSON</button>
           <button id="btn-clear-drafts" type="button" class="danger">Radera utkast</button>
         </div>
@@ -284,6 +288,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260517-save-required-popup-date-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-share-gps-sst-validation-v1"></script>
 </body>
 </html>
