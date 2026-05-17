@@ -1,15 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-gps-treepoint-lock-fix-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-position-three-buttons-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-position-three-buttons-v1";
+import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-position-three-buttons-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-position-three-buttons-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-position-three-buttons-v1";
+import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-position-three-buttons-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-position-three-buttons-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-position-three-buttons-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-position-three-buttons-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-position-three-buttons-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-position-three-buttons-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-position-three-buttons-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -26,7 +26,6 @@ const elements = {
   draftCount: document.querySelector("#draft-count"),
   draftList: document.querySelector("#draft-list"),
   draftTemplate: document.querySelector("#draft-item-template"),
-  useGpsButton: document.querySelector("#btn-use-gps"),
   useGpsTreeButton: document.querySelector("#btn-use-gps-tree"),
   watchGpsButton: document.querySelector("#btn-watch-gps"),
   loadExistingButton: document.querySelector("#btn-load-existing"),
@@ -175,7 +174,7 @@ async function loadAndRenderExistingTrees() {
   } finally {
     loadingExistingTrees = false;
     elements.loadExistingButton.disabled = false;
-    elements.loadExistingButton.textContent = "Ladda trädposter";
+    elements.loadExistingButton.textContent = "Ladda/uppdatera trädposter";
   }
 }
 
@@ -335,17 +334,6 @@ function startGpsTracking() {
 }
 
 function bindEvents() {
-  elements.useGpsButton.addEventListener("click", async () => {
-    setStatus("Läser GPS-position...");
-
-    try {
-      const position = await getCurrentPosition();
-      applyGpsPosition(position, "GPS-position hämtad");
-    } catch (error) {
-      console.error(error);
-      setStatus(`GPS-fel: ${error.message}`);
-    }
-  });
 
   elements.useGpsTreeButton?.addEventListener("click", useGpsAsTreePoint);
 

@@ -489,3 +489,23 @@ button.is-active {
 #tree-position-status {
   font-size: 0.86rem;
 }
+
+
+.position-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.position-actions button {
+  width: 100%;
+}
+
+#btn-watch-gps.is-active {
+  background: #9b5f00;
+}
+
+@media (min-width: 720px) {
+  .position-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

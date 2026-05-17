@@ -219,8 +219,19 @@ The app separates two positions:
 - the user's current GPS position,
 - the reported tree point.
 
-`GPS på` can continue updating the user's current position.
+`GPS på` / `Stoppa GPS` can continue updating the user's current position.
 
 When the user clicks the map, drags the tree marker, or uses `Använd GPS som trädpunkt`, the reported tree point is locked. After that, continued GPS updates do not overwrite `Norr`, `Öst` or `Noggrannhet` in the form.
 
 After `Spara utkast`, the tree point is unlocked for the next record.
+
+
+## Position section buttons
+
+The Position section uses three main actions:
+
+1. `GPS på` / `Stoppa GPS` – start or stop continuous GPS tracking.
+2. `Använd GPS som trädpunkt` – use the current GPS position as the locked tree point.
+3. `Ladda/uppdatera trädposter` – load existing tree records for the current map view.
+
+This keeps GPS tracking, tree-point locking and context-data loading separate.
