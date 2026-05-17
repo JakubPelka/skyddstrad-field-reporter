@@ -1,9 +1,30 @@
-
-
-# Local source downloads for boundary preprocessing
+# Local source downloads and temporary working files
 downloads/
+TEMP/
+tmp/
 *.zip
 
-# Keep processed app-ready SCB boundary GeoJSON
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs/cache
+*.log
+.cache/
+__pycache__/
+
+# Generated/exported field data
+exports/
+output/
+*.xlsx
+*.csv
+*.geojson.backup
+
+# Keep reference/app data in docs and data
+!docs/**/*.xlsx
+!docs/**/*.ods
+!data/TaxonList.csv
 !data/municipalities.scb.geojson
 !data/municipalities.sample.geojson

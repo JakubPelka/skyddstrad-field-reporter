@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260517-municipality-intersect-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-taxon-autocomplete-v1">
 </head>
 <body>
   <header class="app-header">
@@ -49,10 +49,22 @@
             <p>Fyll i de viktigaste uppgifterna först. Lägg bara till extra projektparametrar när de behövs. Trädposter laddas manuellt för aktuell kartvy.</p>
           </div>
 
-          <label>
-            Art
-            <select id="species" name="species" required></select>
-          </label>
+          <div class="taxon-field full-width">
+            <div class="field-grid">
+              <label>
+                Artnamn
+                <input id="species" name="species" list="taxon-art-options" autocomplete="off" required placeholder="Börja skriva, t.ex. Skogsek">
+                <datalist id="taxon-art-options"></datalist>
+              </label>
+
+              <label>
+                Vetenskapligt namn
+                <input id="scientificName" name="scientificName" list="taxon-scientific-options" autocomplete="off" placeholder="Fylls automatiskt, t.ex. Quercus robur">
+                <datalist id="taxon-scientific-options"></datalist>
+              </label>
+            </div>
+            <p id="taxon-status" class="field-help">Artlistan laddas från lokal TaxonList.csv.</p>
+          </div>
 
           <label>
             Observationsdatum
@@ -272,6 +284,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260517-municipality-intersect-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-taxon-autocomplete-v1"></script>
 </body>
 </html>

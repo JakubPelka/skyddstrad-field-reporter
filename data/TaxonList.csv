@@ -1,366 +1,77 @@
-﻿Ekar;Quercus;L.;;189406
-Skogsek;Quercus robur;L.;;179059
-Ask;Fraxinus excelsior;L.;EN;126545
-Bok;Fagus sylvatica;L.;;116701
-Asp;Populus tremula;L.;;89220
-Skogslönn;Acer platanoides;L.;;87443
-Tall;Pinus sylvestris;L.;;70920
-Lindar;Tilia;L.;;66464
-Björkar;Betula;L.;;55009
-Gran;Picea abies;(L.) H. Karst.;;47310
-Klibbal;Alnus glutinosa;(L.) Gaertn.;;44920
-Vårtbjörk;Betula pendula;Roth;;35984
-Sälg;Salix caprea;L.;;34667
-Skogsalm;Ulmus glabra;Huds.;EN;32431
-Rönn;Sorbus aucuparia;L.;;32394
-Skogslind;Tilia cordata;Mill.;;29260
-Hassel;Corylus avellana;L.;;26363
-Oxel;Sorbus intermedia;(Ehrh.) Pers.;;25980
-Glasbjörk;Betula pubescens;Ehrh.;;22094
-En;Juniperus communis;L.;;20609
-Sötkörsbär;Prunus avium;(L.) L.;;20576
-Almar;Ulmus;L.;;17332
-Vanlig gran;Picea abies subsp. abies;;;13839
-Apel;Malus domestica;Borkh.;;12978
-Vanlig tall;Pinus sylvestris var. sylvestris;;;12532
-Vanlig rönn;Sorbus aucuparia subsp. aucuparia;;;11503
-Vanlig en;Juniperus communis var. communis;;NE;11446
-Dvärgbjörk;Betula nana;L.;;10047
-Jolster;Salix pentandra;L.;;9572
-Vanlig glasbjörk;Betula pubescens subsp. pubescens;;NE;9060
-Vanlig sälg;Salix caprea subsp. caprea;;;8808
-Avenbok;Carpinus betulus;L.;;8752
-Bindvide;Salix aurita;L.;;8608
-Gråal;Alnus incana;(L.) Moench;;8278
-Tysklönn;Acer pseudoplatanus;L.;;7964
-Obestämt trädslag;Arbores;;;7693
-Gråvide (aggregat);Salix cinerea agg.;;;6879
-Trubbhagtorn;Crataegus monogyna;Jacq.;;6700
-Vildapel;Malus sylvestris;(L.) Mill.;;6514
-Gråvide;Salix cinerea;L.;;5888
-Aplar;Malus;Mill.;;5250
-Lappvide;Salix lapponum;L.;;5178
-Svartvide;Salix myrsinifolia;Salisb.;;5161
-Lundalm;Ulmus minor;Mill.;EN;5103
-Idegran;Taxus baccata;L.;;5043
-Lärk;Larix decidua;Mill.;;4779
-Vanlig skogsalm;Ulmus glabra subsp. glabra;;NE;4484
-Grönvide;Salix phylicifolia;L.;;4405
-Rundhagtorn;Crataegus laevigata;(Poir.) DC.;;3990
-Popplar;Populus;L.;;3697
-Hundvide;Salix repens;L.;;3664
-Pil (aggregat);Salix alba agg.;;;3402
-Vanlig vårtbjörk;Betula pendula var. pendula;Roth;NE;3366
-Krypvide;Salix repens subsp. repens;;;3351
-Korgvide;Salix viminalis;L.;;2785
-Ripvide;Salix glauca;L.;;2433
-Garderönn;Sorbus atrata;Hedrén & J.Levin;VU;2343
-Knäckepil;Salix euxina;V. Belyaeva;;2311
-Naverlönn;Acer campestre;L.;CR;2175
-Parklind;Tilia × europaea;L.;;2104
-Spetshagtorn;Crataegus rhipidophylla var. rhipidophylla;;;1982
-Grönpil;Salix × fragilis;L.;;1952
-Bergek;Quercus petraea;(Matt.) Liebl.;;1939
-Viden;Salix;L.;;1933
-Vårtbjörk (aggregat);Betula pendula agg.;;;1880
-Dvärgvide;Salix herbacea;L.;;1847
-Vitpil;Salix alba;L.;;1810
-Lönnar;Acer;L.;;1738
-Odonvide;Salix myrtilloides;L.;;1720
-Svartvide × grönvide;Salix myrsinifolia × phylicifolia;;;1658
-Hagtornar;Crataegus;L.;;1594
-Ängsvide;Salix starkeana;Willd.;;1535
-Grönvide × ängsvide;Salix phylicifolia × starkeana;;;1532
-Fjällbjörk;Betula pubescens subsp. czerepanovii;(N. I. Orlova) Hämet-Ahti;;1419
-Vanlig gråal;Alnus incana subsp. incana;;;1363
-Rödek;Quercus rubra;L.;;1316
-Vanligt krypvide;Salix repens var. repens;;NE;1249
-Finnoxel;Sorbus hybrida;L.;;1238
-Nätvide;Salix reticulata;L.;;1217
-Vanligt svartvide;Salix myrsinifolia subsp. myrsinifolia;;;1124
-Balsampoppel;Populus balsamifera;L.;;1091
-Vanlig gråal;Alnus incana var. incana;;NE;1053
-Ginnalalönn;Acer tataricum subsp. ginnala;(Maxim.) Wesm.;;1044
-Vanligt ripvide;Salix glauca subsp. glauca;;;1017
-Ullvide;Salix lanata;L.;;1008
-Finngran;Picea abies subsp. × fennica;(Regel) Parfenov;;985
-Glansvide;Salix myrsinites;L.;;985
-Altajgran;Picea abies subsp. obovata;(Ledeb.) Domin;;948
-Europeisk lärk;Larix decidua subsp. decidua;;;905
-Bohuslind;Tilia platyphyllos;Scop.;CR;899
-Rödvide;Salix purpurea;L.;;841
-Vresalm;Ulmus laevis;Pall.;CR;793
-Finnblekvide;Salix hastata subsp. subintegrifolia;(Flod.) Flod.;;792
-Hybridlärk;Larix × marschlinsii;Coaz;;777
-Fjäll-en;Juniperus communis var. saxatilis;Pall.;NE;696
-Häckhagtorn;Crataegus flabellata var. grayana;(Eggl.) E. J. Palmer;;667
-Kanadapoppel;Populus × canadensis;Moench;;657
-Sälg × lappvide;Salix caprea × lapponum;;;651
-Lappvide × grönvide;Salix lapponum × phylicifolia;;;642
-Vitoxel;Sorbus aria;(L.) Crantz;;625
-Silverpoppel;Populus alba;L.;;616
-Klippoxel;Sorbus rupicola;(Syme) Hedl.;;599
-Häckvide;Salix × smithiana;Willd.;;597
-Asklönn;Acer negundo;L.;;557
-Dvärgbjörk × glasbjörk;Betula nana × pubescens;;;542
-Flikhagtorn;Crataegus rhipidophylla;Gand.;;499
-Finnvide;Salix bebbiana;Sarg.;;442
-Lärkar;Larix;Mill.;;441
-Daggvide;Salix daphnoides;Vill.;VU;427
-Jättepoppel;Populus trichocarpa;Torr. & A.Gray ex Hook.;;413
-Vanlig balsampoppel;Populus balsamifera 'Hortensis';;;411
-Korallhagtorn;Crataegus rhipidophylla var. lindmanii;(Hrabetova) K. I. Chr.;;410
-Vanligt ullvide;Salix lanata subsp. lanata;;;405
-Sätervide;Salix myrsinifolia subsp. borealis;(Fr.) Hyl.;;394
-Bindvide × odonvide;Salix aurita × myrtilloides;;;373
-Mandelpil;Salix triandra;L.;;372
-Dvärgbjörk × vårtbjörk;Betula nana × pendula;;;361
-Källblekvide;Salix hastata subsp. vegeta;(Andersson) Flod.;EN;346
-Blekvide;Salix hastata;L.;;332
-Fjällblekvide;Salix hastata subsp. hastata;;;331
-Gråpoppel;Populus × canescens;(Aiton) Sm.;;325
-Vanlig vitpil;Salix alba var. alba;;;323
-Rönnbärsapel;Malus toringo;(Siebold) de Vriese;;322
-Häckoxel;Sorbus mougeotii;Soy.-Will. & Godr.;;316
-Japansk lärk;Larix kaempferi;(Lamb.) Carrière;;299
-Risvide;Salix arbuscula;L.;;295
-Polarvide;Salix polaris;Wahlenb.;;293
-Svartpoppel;Populus nigra;L.;;291
-Sandvide;Salix repens var. argentea;(Sm.) Ser.;NE;288
-Bindvide × ängsvide;Salix aurita × starkeana;;;283
-Avarönn;Sorbus teodori;Liljef.;CR;274
-Ängsvide (aggregat);Salix starkeana agg.;;;271
-Rysk lönn;Acer tataricum subsp. tataricum;;;262
-Bergoxel;Sorbus latifolia;(Lam.) Pers.;;253
-Nordrönn;Sorbus aucuparia subsp. glabrata;(Wimm. & Grab.) Hedl.;;249
-Knäckepil (aggregat);Salix fragilis agg.;;;221
-Gråsälg;Salix caprea subsp. sphacelata;(Sm.) Macreight;;219
-Jämtlandspoppel;Populus balsamifera 'Elongata';;;218
-Norskoxel;Sorbus obtusifolia;(DC.) Hedl.;CR;217
-Hybridhagtorn;Crataegus × media;Bechst.;;214
-Silverpil;Salix alba var. sericea;Gaudin;;210
-Ontariopoppel;Populus × ontariensis;Loisel.;;206
-Trubbhagtorn × spetshagtorn;Crataegus × subsphaerica var. subsphaerica;;NE;204
-Lappal;Alnus incana subsp. kolaënsis;(N.I.Orlova) Á.Löve & D.Löve;NE;204
-Alar;Alnus;Mill.;;198
-Finnvide × ängsvide;Salix bebbiana × starkeana;;;195
-Bergek × skogsek;Quercus petraea × robur;;;190
-Purpurapel;Malus × purpurea;(Barbier) Rehder;;183
-Ripvide × grönvide;Salix glauca × phylicifolia;;;183
-Turkisk ek;Quercus cerris;L.;;176
-Tatarlönn;Acer tataricum;L.;;174
-Kanadahagtorn;Crataegus flabellata;(Spach) K. Koch;;164
-Balkanoxel;Sorbus graeca;(Spach) Schauer;;157
-Kinesisk poppel;Populus simonii;Carrière;;155
-Sibirisk lärk;Larix sibirica;Ledeb.;;154
-Bärapel;Malus baccata;(L.) Borkh.;;154
-Sammetsvide;Salix × dasyclados;Wimm.;;152
-Ripvide × svartvide × grönvide;Salix glauca × myrsinifolia × phylicifolia;;;148
-Vanlig grönpil;Salix × fragilis f. fragilis;;;145
-Avarönn (aggregat);Sorbus teodori agg.;;;144
-Svartvide × grönvide × ängsvide;Salix myrsinifolia × phylicifolia × starkeana;;;137
-Rosmarinvide;Salix repens subsp. rosmarinifolia;(L.) Andersson;;132
-Oxlar;Sorbus;L.;;123
-Odonvide × ängsvide;Salix myrtilloides × starkeana;;;123
-Klibbal × gråal;Alnus glutinosa × incana;;;120
-Rundhagtorn × spetshagtorn;Crataegus × macrocarpa var. macrocarpa;;;119
-Ryssvide;Salix glauca subsp. stipulifera;(Flod. ex Häyrén) Hiitonen;;118
-Bungerönn;Sorbus faohraei;Hedrén & J.Levin;CR;113
-Silverlönn;Acer saccharinum;L.;;113
-Mannaask;Fraxinus ornus;L.;;112
-Hybridalm;Ulmus x hollandica;Mill.;;109
-Gulpil;Salix × fragilis f. vitellina;I.V.Belyaeva;;108
-Kaskadpil;Salix × pendulina f. salamonii;(Carrière) I.V.Belyaeva;;107
-Sälg × grönvide;Salix caprea × phylicifolia;;;103
-Berlinerpoppel;Populus × berolinensis;K.Koch;;100
-Spetsdaggvide;Salix acutifolia;Willd.;;97
-Fyrisvide;Salix × mollissima;Hoffm. ex Elwert;;96
-Ripvide × svartvide;Salix glauca × myrsinifolia;;;92
-Äkta kanadahagtorn;Crataegus flabellata var. flabellata;;;91
-Finnvide × grönvide;Salix bebbiana × phylicifolia;;;89
-Lapptall;Pinus sylvestris var. lapponica;Fr. ex Hartm.;NE;87
-Ullungrönn;Sorbus ulleungensis;Chang & Gil;;85
-Bokar;Fagus;L.;;85
-Björkal;Alnus alnobetula;(Ehrh.) K. Koch;;84
-Kavelpil;Salix × alopecuroides;Tausch ex Opiz;;80
-Äkta svartpoppel;Populus nigra subsp. nigra;;;76
-Sälg × ängsvide;Salix caprea × starkeana;;;76
-Lagerpoppel;Populus laurifolia;Ledeb.;;75
-Karelsk gråal;Alnus incana var. argentata;Norrl.;NE;73
-Pelarpoppel;Populus nigra 'Plantierensis';;;69
-Gråvide × grönvide;Salix cinerea × phylicifolia;;;69
-Japansk lönn;Acer palmatum;Thunb.;;67
-Trubbhagtorn × flikhagtorn;Crataegus × subsphaerica;Gand.;;66
-Goliatpoppel;Populus × canadensis 'Robusta';;;65
-Skogsek (aggregat);Quercus robur agg.;;;64
-Italiensk al;Alnus cordata;(Loisel.) Duby;;64
-Hybridasp;Populus × wettsteinii;Hämet-Ahti;;64
-Fontänpil;Salix × pendulina;Wender.;;64
-Vanlig knäckepil;Salix euxina var. euxina;;;63
-Bergalm;Ulmus glabra subsp. montana;(Stokes) Hyl.;NE;60
-Bindvide × grönvide;Salix aurita × phylicifolia;;;57
-Trädhagtorn;Crataegus submollis;Sarg.;;55
-Pärlrönn;Sorbus koehneana;C.K.Schneid.;;51
-Rosenapel;Malus floribunda;Siebold ex Van Houtte;;50
-Kärrek;Quercus palustris;Münchh.;;50
-Dvärglönn;Acer monspessulanum;L.;;50
-Hybridbjörk;Betula pendula × pubescens;;;49
-Svartvide × ängsvide;Salix myrsinifolia × starkeana;;;49
-Pappersbjörk;Betula papyrifera;Marshall;;47
-Lappvide × odonvide;Salix lapponum × myrtilloides;;;47
-Hybridoxel;Sorbus × thuringiaca;(Ilse) Fritsch;;46
-Österrikisk oxel;Sorbus austriaca;(Beck) Prain;;45
-Balsampil;Salix × ehrhartiana;Sm.;;45
-Silverlind;Tilia tomentosa;Moench;;45
-Rundhagtorn × flikhagtorn;Crataegus × macrocarpa;Hegetschw.;;44
-Tyskoxel;Sorbus torminalis;(L.) Crantz;;44
-Tårpil;Salix babylonica;L.;;44
-Finnvide × odonvide;Salix bebbiana × myrtilloides;;;43
-Spjuthagtorn;Crataegus macracantha;Lodd. ex Loudon;;42
-Sibirisk hagtorn;Crataegus sanguinea;Pall.;;42
-Dvärgbjörk × fjällbjörk;Betula nana × pubescens subsp. czerepanovii;;;42
-Daggvide (aggregat);Salix daphnoides agg.;;;42
-Turkisk lönn;Acer cappadocicum;Gled.;;42
-Solfjäderslönn;Acer japonicum;Thunb.;;42
-Sibirisk apel;Malus prunifolia;(Willd.) Borkh.;;40
-Smalbladig ask;Fraxinus angustifolia;Vahl;;39
-Japansk rönn;Sorbus commixta;Hedl.;;38
-Bindvide × gråvide;Salix aurita × cinerea;;;37
-Bindvide × krypvide;Salix aurita × repens subsp. repens;;;37
-Kaskadlärk;Larix occidentalis;Nutt.;;36
-Vitoxel (aggregat);Sorbus aria agg.;;;36
-Lavendelvide;Salix eleagnos;Scop.;;36
-Italiensk pelarpoppel;Populus nigra 'Italica';;;34
-Rönn × finnoxel;Sorbus aucuparia × hybrida;;;33
-Askar;Fraxinus;L.;;33
-Glanshagtorn;Crataegus × lavallei;Hérincq ex Lavallée;;32
-Sylhagtorn;Crataegus × persimilis;Sarg.;;32
-Polsk lärk;Larix decidua subsp. polonica;(Racib. ex Wóycicki) Domin;;31
-Eukalyptusvide;Salix integra;Thunb.;;31
-Bindvide x odonvide x ängsvide;Salix aurita × myrtilloides × starkeana;;;31
-Höstpoppel;Populus × canadensis 'Serotina';;;30
-Axlönn;Acer spicatum;Lam.;;30
-Lappbjörk;Betula pendula var. lapponica;(Lindq.) Hämet-Ahti;NE;29
-Svartvide (aggregat);Salix myrsinifolia agg.;;;29
-Gråvide × svartvide;Salix cinerea × myrsinifolia;;;28
-Japansk körsbärsbjörk;Betula grossa;Siebold & Zucc.;;27
-Orientbok;Fagus orientalis;Lipsky;;26
-Bindvide × lappvide;Salix aurita × lapponum;;;26
-Kopparlönn;Acer griseum;(Franch.) Pax;;26
-Kanadalärk;Larix laricina;(Du Roi) K. Koch;;25
-Bindvide × sälg;Salix aurita × caprea;;;24
-Kurilerlärk;Larix gmelinii var. japonica;(Maxim. ex Regel) Pilg.;;23
-Virginiapoppel;Populus deltoides;W.Bartram ex Marshall;;23
-Rödask;Fraxinus pennsylvanica;Marshall;;23
-Marylandpoppel;Populus × canadensis 'Marilandica';;;22
-Furstepoppel;Populus × rasumowskiana;(R.I.Schröd. ex Regel) Dippel;;22
-Odonvide × grönvide;Salix myrtilloides × phylicifolia;;;22
-Körsbärsoxel;Sorbus alnifolia;(Siebold & Zucc.) K.Koch;;21
-Sälg × lappvide × grönvide;Salix caprea × lapponum × phyllicifolia;;;21
-Gråvide × vanligt svartvide;Salix cinerea × myrsinifolia subsp. myrsinifolia;;;20
-Guldlönn;Acer tschonoskii;Maxim.;;20
-;Alnus mandschurica;(Callier) Hand.-Mazz.;;19
-Storbladig poppel;Populus lasiocarpa;Oliv.;;19
-Ripvide × odonvide;Salix glauca × myrtilloides;;;19
-Balkanlönn;Acer heldreichii;Orph.;;19
-Finnvide × sälg;Salix bebbiana × caprea;;;18
-Sätervide × grönvide;Salix myrsinifolia subsp. borealis × phyllicifolia;;;18
-Gråvide × ängsvide;Salix cinerea × starkeana;;;17
-Lappvide × ängsvide;Salix lapponum × starkeana;;;17
-Äkta dahurlärk;Larix gmelinii var. gmelinii;;;16
-Bindvide × grönvide × ängsvide;Salix aurita × phylicifolia × starkeana;;;16
-Finnvide × ripvide;Salix bebbiana × glauca;;;16
-Apel × vildapel;Malus domestica × sylvestris;;;15
-Vitek;Quercus alba;L.;;15
-Cinnoberapel;Malus tschonoskii;(Maxim.) C.K.Schneid.;;14
-Shirasawalönn;Acer shirasawanum;Koidz.;;14
-Ussurilärk;Larix gmelinii var. olgensis;(A. Henry) Ostenf. & Syrach;;13
-Rundhagtorn × korallhagtorn;Crataegus × macrocarpa var. hadensis;(Hrabetova) K. I. Chr.;;12
-Amerikansk bok;Fagus grandifolia;Ehrh.;;12
-Kärrek × rödek;Quercus palustris × rubra;;;12
-Klotpil;Salix euxina ’Bullata’;;;12
-Amerikansk strimlönn;Acer pensylvanicum;L.;;12
-Svartlind;Tilia americana;L.;;12
-Sporrhagtorn;Crataegus crus-galli;L.;;11
-Dammvide;Salix × stipularis;Sm.;;11
-Odonvide × krypvide;Salix myrtilloides × repens subsp. repens;;;11
-Rödal;Alnus rubra;Bong.;;10
-Douglashagtorn;Crataegus douglasii;Lindl.;;9
-Glandelvide;Salix lanata subsp. glandulifera;(Flod.) Hiitonen;;9
-Bindvide × finnvide;Salix aurita × bebbiana;;;9
-Daggvide × korgvide;Salix daphnoides × viminalis;;;9
-Lappvide × grönvide × ängsvide;Salix lapponum × phylicifolia × starkeana;;;9
-Dahurlärk;Larix gmelinii;(Rupr.) Kuzen.;;8
-Sidenvide;Salix × holosericea;Willd.;;8
-Sälg × grönvide × ängsvide;Salix caprea × phyllicifolia × starkeana;;;8
-Grönvide × krypvide;Salix phylicifolia × repens subsp. repens;;;8
-Avenbokslönn;Acer carpinifolium;Siebold & Zucc.;;8
-Rönn × oxel;Sorbus × liljeforsii;T.C.G.Rich;;7
-Lagervide;Salix × laurina;Sm.;;7
-Flätvide;Salix × rubra;Huds.;;7
-Finnvide × lappvide;Salix bebbiana × lapponum;;;7
-Sälg × gråvide;Salix caprea × cinerea;;;7
-Gråvide × odonvide;Salix cinerea × myrtilloides;;;7
-Ripvide × grönvide × ängsvide;Salix glauca × phylicifolia × starkeana;;;7
-Krypvide × ängsvide;Salix repens subsp. repens × starkeana;;;7
-Sorgpoppel;Populus tristis;Fisch.;;6
-Bindvide × lappvide × odonvide;Salix aurita × lapponum × myrtilloides;;;6
-Bindvide × svartvide;Salix aurita × myrsinifolia;;;6
-Finnvide × svartvide;Salix bebbiana × myrsinifolia;;;6
-Vanlig sälg × krypvide;Salix caprea subsp. caprea × repens subsp. repens;;;6
-Ripvide × glansvide;Salix glauca × myrsinites;;;6
-Smalvide;Salix repens subsp. repens × viminalis;;;6
-Hybridpil;Salix × meyeriana;Rostk. ex Willd.;;5
-Bindvide × svartvide × grönvide;Salix aurita × myrsinifolia × phylicifolia;;;5
-Finnvide × lappvide × grönvide;Salix bebbiana × lapponum × phylicifolia;;;5
-Sälg × svartvide;Salix caprea × myrsinifolia;;;5
-Lappvide × krypvide;Salix lapponum × repens subsp. repens;;;5
-Odonvide × grönvide × ängsvide;Salix myrtilloides × phylicifolia × starkeana;;;5
-Ungersk ek;Quercus frainetto;Ten.;;4
-Glandelvide × ullvide;Salix lanata subsp. glandulifera × subsp. lanata;;;4
-Sälg × krypvide;Salix caprea × repens subsp. repens;;;4
-Svartvide × odonvide;Salix myrsinifolia × myrtilloides;;;4
-Trubbhagtorn × korallhagtorn;Crataegus × subsphaerica var. domicensis;(Hrabětová) K.I.Chr.;;3
-Bukettapel;Malus toringo var. sargentii;(Rehder) C. K. Schneid.;;3
-Praktpärlrönn;Sorbus prattii;Koehne;;3
-Dvärgbjörk × vanlig glasbjörk;Betula nana × pubescens subsp. pubescens;;;3
-Trippelvide;Salix × arctogena;Flod.;;3
-Bindvide × korgvide;Salix aurita × viminalis;;;3
-Sälg × odonvide;Salix caprea × myrtilloides;;;3
-Vanlig sälg × lappvide;Salix caprea subsp. caprea × lapponum;;;3
-Gråvide × lappvide;Salix cinerea × lapponum;;;3
-Blekvide × vanligt ullvide;Salix hastata × lanata subsp. lanata;;;3
-Dvärgvide × polarvide;Salix herbacea × polaris;;;3
-Luddhagtorn;Crataegus orientalis;M. Bieb.;;2
-Karminapel;Malus × atrosanguinea;(Späth) C. K. Schneid.;;2
-Manchurisk bärapel;Malus baccata var. mandshurica;(Maxim.) C.K.Schneid.;;2
-Finnoxel × oxel;Sorbus hybrida × intermedia;;;2
-Vanlig fontänpil;Salix × pendulina f. pendulina;;;2
-Krypvide × rosmarinvide;Salix repens subsp. repens × subsp. rosmarinifolia;;;2
-Bindvide × vanlig sälg;Salix aurita × caprea subsp. caprea;;;2
-Bindvide × odonvide × krypvide;Salix aurita × myrtilloides × repens subsp. repens;;;2
-Sälg × ullvide;Salix caprea × lanata;;;2
-Gråsälg × ullvide;Salix caprea subsp. sphacelata × lanata;;;2
-Gråvide × svartvide × grönvide;Salix cinerea × myrsinifolia × phylicifolia;;;2
-Gråvide × vanligt svartvide × grönvide;Salix cinerea × myrsinifolia subsp. myrsinifolia × phylicifolia;;;2
-Dvärgvide × glansvide;Salix herbacea × myrsinites;;;2
-Svartvide × glansvide;Salix myrsinifolia × myrsinites;;;2
-Naverlönn × dvärglönn;Acer × bornmuelleri;Borbás;;2
-;Malus toringo var. toringo;;;1
-Bergek (aggregat);Quercus petraea agg.;;;1
-Sibirisk björkal;Alnus alnobetula subsp. fruticosa;(Rupr.) Raus;;1
-Hasselal;Alnus incana subsp. rugosa;(Du Roi) R.T.Clausen;;1
-Rostvide;Salix atrocinerea;Brot.;;1
-Alpdaggvide;Salix daphnoides var. daphnoides;;;1
-Risvide × lappvide;Salix arbuscula × lapponum;;;1
-Bindvide × finnvide × odonvide;Salix aurita × bebbiana × myrtilloides;;;1
-Bindvide × krypvide × ängsvide;Salix aurita × repens subsp. repens × starkeana;;;1
-Finnvide × odonvide × ängsvide;Salix bebbiana × myrtilloides × starkeana;;;1
-Gråvide × krypvide;Salix cinerea × repens subsp. repens;;;1
-Blekvide × odonvide;Salix hastata × myrtilloides;;;1
-Källblekvide × krypvide;Salix hastata subsp. vegeta × repens subsp. repens;;;1
-Dvärgvide × lappvide;Salix herbacea × lapponum;;;1
-Dvärgvide × nätvide;Salix herbacea × reticulata;;;1
-Svartvide × krypvide;Salix myrsinifolia × repens subsp. repens;;;1
-Bohuslind × silverlind;Tilia × haynaldiana;Simonk.;;1
-Vitask;Fraxinus americana;L.;;1
+﻿artnamn;scientificName;author;redlistCategory;observationCount25y
+Ekar;Quercus;L.;;181580
+Skogsek;Quercus robur;L.;;130008
+Ask;Fraxinus excelsior;L.;EN;88289
+Lindar;Tilia;L.;;65932
+Skogslönn;Acer platanoides;L.;;62315
+Björkar;Betula;L.;;52565
+Asp;Populus tremula;L.;;51952
+Bok;Fagus sylvatica;L.;;43799
+Tall;Pinus sylvestris;L.;;24835
+Almar;Ulmus;L.;;16994
+Klibbal;Alnus glutinosa;(L.) Gaertn.;;16928
+Gran;Picea abies;(L.) H. Karst.;;15646
+Skogsalm;Ulmus glabra;Huds.;EN;15160
+Oxel;Sorbus intermedia;(Ehrh.) Pers.;;12577
+Sälg;Salix caprea;L.;;11720
+Skogslind;Tilia cordata;Mill.;;11005
+Sötkörsbär;Prunus avium;(L.) L.;;9089
+Obestämt trädslag;Arbores;;;7524
+Vårtbjörk;Betula pendula;Roth;;5881
+Aplar;Malus;Mill.;;5069
+Rönn;Sorbus aucuparia;L.;;4326
+Glasbjörk;Betula pubescens;Ehrh.;;3703
+Lundalm;Ulmus minor;Mill.;EN;3570
+Popplar;Populus;L.;;3404
+Pil (aggregat);Salix alba agg.;;;3269
+Avenbok;Carpinus betulus;L.;;2800
+Apel;Malus domestica;Borkh.;;2258
+Vårtbjörk (aggregat);Betula pendula agg.;;;1854
+Lönnar;Acer;L.;;1509
+Lärk;Larix decidua;Mill.;;1033
+Parklind;Tilia × europaea;L.;;849
+Tysklönn;Acer pseudoplatanus;L.;;584
+Vildapel;Malus sylvestris;(L.) Mill.;;555
+Bergek;Quercus petraea;(Matt.) Liebl.;;437
+Viden;Salix;L.;;425
+Gråal;Alnus incana;(L.) Moench;;374
+Vitpil;Salix alba;L.;;315
+Knäckepil;Salix euxina;V. Belyaeva;;301
+Hassel;Corylus avellana;L.;;274
+En;Juniperus communis;L.;;228
+Hagtornar;Crataegus;L.;;220
+Vanlig gran;Picea abies subsp. abies;;;137
+Lärkar;Larix;Mill.;;124
+Alar;Alnus;Mill.;;112
+Vresalm;Ulmus laevis;Pall.;CR;83
+Idegran;Taxus baccata;L.;;77
+Vanlig tall;Pinus sylvestris var. sylvestris;;;67
+Knäckepil (aggregat);Salix fragilis agg.;;;44
+Bohuslind;Tilia platyphyllos;Scop.;CR;43
+Oxlar;Sorbus;L.;;34
+Skogsek (aggregat);Quercus robur agg.;;;34
+Europeisk lärk;Larix decidua subsp. decidua;;;19
+Jolster;Salix pentandra;L.;;14
+Balsampoppel;Populus balsamifera;L.;;12
+Vanlig sälg;Salix caprea subsp. caprea;;;12
+Svartpoppel;Populus nigra;L.;;11
+Kanadapoppel;Populus × canadensis;Moench;;10
+Vanlig vårtbjörk;Betula pendula var. pendula;Roth;NE;9
+Silverpoppel;Populus alba;L.;;9
+Bokar;Fagus;L.;;8
+Rödek;Quercus rubra;L.;;8
+Vanlig skogsalm;Ulmus glabra subsp. glabra;;NE;7
+Naverlönn;Acer campestre;L.;CR;7
+Grönpil;Salix × fragilis;L.;;6
+Vanlig en;Juniperus communis var. communis;;NE;5
+Trubbhagtorn;Crataegus monogyna;Jacq.;;4
+Askar;Fraxinus;L.;;4
+Silverpil;Salix alba var. sericea;Gaudin;;3
+Silverlönn;Acer saccharinum;L.;;3
+Mannaask;Fraxinus ornus;L.;;3
+Bergek × skogsek;Quercus petraea × robur;;;2
+Gulpil;Salix × fragilis f. vitellina;I.V.Belyaeva;;2
+Vitoxel;Sorbus aria;(L.) Crantz;;1
+Turkisk ek;Quercus cerris;L.;;1
+Vanlig glasbjörk;Betula pubescens subsp. pubescens;;NE;1
+Gråpoppel;Populus × canescens;(Aiton) Sm.;;1

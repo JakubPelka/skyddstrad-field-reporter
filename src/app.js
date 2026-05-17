@@ -1,15 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260517-municipality-intersect-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-municipality-intersect-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260517-municipality-intersect-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-municipality-intersect-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-municipality-intersect-v1";
-import { getCurrentPosition } from "./gps.js?v=20260517-municipality-intersect-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-municipality-intersect-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-municipality-intersect-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-municipality-intersect-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-municipality-intersect-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-municipality-intersect-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-municipality-intersect-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-taxon-autocomplete-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-taxon-autocomplete-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260517-taxon-autocomplete-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-taxon-autocomplete-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-taxon-autocomplete-v1";
+import { getCurrentPosition } from "./gps.js?v=20260517-taxon-autocomplete-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-taxon-autocomplete-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-taxon-autocomplete-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-taxon-autocomplete-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-taxon-autocomplete-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-taxon-autocomplete-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-taxon-autocomplete-v1";
 
 let existingTrees = [];
 let selectedPoint = null;

@@ -1,4 +1,8 @@
+import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-taxon-autocomplete-v1";
 import { asNumber, nowISO, todayISO, uuid } from "./util.js";
+
+let taxonList = [];
+let taxonSyncing = false;
 
 function fillSelect(select, options, placeholder = "Välj") {
   if (!select) {
@@ -16,11 +20,6 @@ function fillSelect(select, options, placeholder = "Välj") {
     const item = document.createElement("option");
     item.value = option.value ?? option.label ?? option;
     item.textContent = option.label ?? option.value ?? option;
-
-    if (option.scientificName) {
-      item.dataset.scientificName = option.scientificName;
-    }
-
     select.appendChild(item);
   }
 }
@@ -74,6 +73,130 @@ function setupCircumferenceDiameterSync() {
   });
 }
 
+function setTaxonStatus(message, variant = "info") {
+  const status = document.querySelector("#taxon-status");
+
+  if (!status) {
+    return;
+  }
+
+  status.textContent = message;
+  status.dataset.variant = variant;
+}
+
+function fillTaxonDatalists(taxa) {
+  const artDatalist = document.querySelector("#taxon-art-options");
+  const scientificDatalist = document.querySelector("#taxon-scientific-options");
+
+  if (artDatalist) {
+    artDatalist.innerHTML = "";
+  }
+
+  if (scientificDatalist) {
+    scientificDatalist.innerHTML = "";
+  }
+
+  for (const item of taxa) {
+    if (artDatalist) {
+      const option = document.createElement("option");
+      option.value = item.artName;
+      option.label = item.scientificName;
+      artDatalist.appendChild(option);
+    }
+
+    if (scientificDatalist) {
+      const option = document.createElement("option");
+      option.value = item.scientificName;
+      option.label = item.artName;
+      scientificDatalist.appendChild(option);
+    }
+  }
+}
+
+function applyTaxonMatch(match, source) {
+  const artInput = document.querySelector("#species");
+  const scientificInput = document.querySelector("#scientificName");
+
+  if (!match || !artInput || !scientificInput) {
+    return;
+  }
+
+  taxonSyncing = true;
+
+  if (source === "art") {
+    scientificInput.value = match.scientificName;
+  } else if (source === "scientific") {
+    artInput.value = match.artName;
+  }
+
+  taxonSyncing = false;
+
+  const countText = match.observationCount
+    ? ` · ${match.observationCount} rapporter i underlaget`
+    : "";
+
+  const redlistText = match.redlistCategory
+    ? ` · rödlista: ${match.redlistCategory}`
+    : "";
+
+  setTaxonStatus(`Matchad: ${match.artName} / ${match.scientificName}${redlistText}${countText}.`, "ok");
+}
+
+function setupTaxonSync() {
+  const artInput = document.querySelector("#species");
+  const scientificInput = document.querySelector("#scientificName");
+
+  if (!artInput || !scientificInput) {
+    return;
+  }
+
+  artInput.addEventListener("input", () => {
+    if (taxonSyncing) {
+      return;
+    }
+
+    const value = artInput.value.trim();
+
+    if (!value) {
+      scientificInput.value = "";
+      setTaxonStatus("Ange artnamn eller vetenskapligt namn. Fältet använder lokal TaxonList.csv.", "info");
+      return;
+    }
+
+    const match = findByArtName(taxonList, value);
+
+    if (match) {
+      applyTaxonMatch(match, "art");
+    } else {
+      scientificInput.value = "";
+      setTaxonStatus("Artnamnet finns inte i lokal TaxonList.csv. Kontrollera innan import.", "warning");
+    }
+  });
+
+  scientificInput.addEventListener("input", () => {
+    if (taxonSyncing) {
+      return;
+    }
+
+    const value = scientificInput.value.trim();
+
+    if (!value) {
+      artInput.value = "";
+      setTaxonStatus("Ange artnamn eller vetenskapligt namn. Fältet använder lokal TaxonList.csv.", "info");
+      return;
+    }
+
+    const match = findByScientificName(taxonList, value);
+
+    if (match) {
+      applyTaxonMatch(match, "scientific");
+    } else {
+      artInput.value = "";
+      setTaxonStatus("Vetenskapligt namn finns inte i lokal TaxonList.csv. Kontrollera innan import.", "warning");
+    }
+  });
+}
+
 function validatePercent(value, label) {
   if (value === null) {
     return;
@@ -84,16 +207,26 @@ function validatePercent(value, label) {
   }
 }
 
-export async function initForm() {
-  const [speciesResponse, valuesResponse] = await Promise.all([
-    fetch("data/species.json"),
-    fetch("data/form-values.json")
-  ]);
+async function initTaxonList() {
+  try {
+    taxonList = await loadTaxonList();
+    fillTaxonDatalists(taxonList);
+    setTaxonStatus(`Artlistan laddad: ${taxonList.length} poster från TaxonList.csv.`, "ok");
+  } catch (error) {
+    console.error(error);
+    taxonList = [];
+    setTaxonStatus("Kunde inte ladda TaxonList.csv. Art kan fortfarande skrivas manuellt men måste kontrolleras.", "warning");
+  }
 
-  const species = await speciesResponse.json();
+  setupTaxonSync();
+}
+
+export async function initForm() {
+  const valuesResponse = await fetch("data/form-values.json");
   const values = await valuesResponse.json();
 
-  fillSelect(document.querySelector("#species"), species, "Välj art");
+  await initTaxonList();
+
   fillSelect(document.querySelector("#treeStatus"), values.treeStatus, "Välj trädstatus");
   fillSelect(document.querySelector("#hollowStage"), values.hollowStage, "Välj hålstadium");
   fillSelect(document.querySelector("#managementNeed"), values.managementNeed, "Välj åtgärdsbehov");
@@ -147,8 +280,6 @@ export function setLocalName(localName, localityId = "") {
 
 export function getDraftFromForm(form) {
   const formData = new FormData(form);
-  const speciesSelect = document.querySelector("#species");
-  const selectedSpecies = speciesSelect.selectedOptions[0];
 
   const latitude = getNumber(formData, "latitude");
   const longitude = getNumber(formData, "longitude");
@@ -166,7 +297,7 @@ export function getDraftFromForm(form) {
     localName: getText(formData, "localName"),
     localityId: getText(formData, "localityId"),
     species: getText(formData, "species"),
-    scientificName: selectedSpecies?.dataset?.scientificName || "",
+    scientificName: getText(formData, "scientificName"),
     latitude,
     longitude,
     coordinateAccuracyM: getNumber(formData, "coordinateAccuracyM"),
@@ -215,4 +346,6 @@ export function resetTreeForm(form) {
   if (localityId) {
     localityId.value = "";
   }
+
+  setTaxonStatus(`Artlistan laddad: ${taxonList.length} poster från TaxonList.csv.`, "ok");
 }

@@ -12,9 +12,10 @@ This project is an experimental mobile field helper for recording potential **s�
 It is intended to help with:
 
 - GPS-based field positioning,
-- showing existing/sample tree points on a map,
+- showing existing tree records from public tree layers,
 - recording tree observations in a Swedish UI,
-- warning about possible duplicates,
+- suggesting existing `Lokalnamn` candidates,
+- using municipality name as a fallback locality candidate,
 - saving local drafts in the browser,
 - exporting drafts as XLSX and GeoJSON.
 
@@ -32,9 +33,11 @@ The app currently uses:
 
 - MapLibre GL JS for the map,
 - OpenStreetMap raster tiles for the background map,
-- local sample GeoJSON for existing tree records,
+- public ArcGIS tree layers from SLU as context data,
+- local SCB municipality boundaries as fallback for locality names,
 - localStorage for drafts,
-- SheetJS/xlsx for XLSX export.
+- SheetJS/xlsx for XLSX export,
+- `data/TaxonList.csv` as the local taxon/autocomplete source.
 
 ## Field workflow
 
@@ -44,6 +47,32 @@ The form is intentionally split into two parts:
 2. **Ytterligare attribut** – optional project parameters in a collapsible section.
 
 This keeps the mobile UI usable in the field while still supporting Artportalen project parameters when needed.
+
+## Art and scientific name
+
+The app uses:
+
+```text
+data/TaxonList.csv
+```
+
+as the local source for the `Artnamn` and `Vetenskapligt namn` autocomplete fields.
+
+Current UI behavior:
+
+- typing `Skogsek` fills `Quercus robur`,
+- typing `Quercus robur` fills `Skogsek`,
+- if the value is not found in the local taxon list, the app warns the user to check before import.
+
+The user is still responsible for identifying the species. The app should not infer species from nearby tree records.
+
+The parser supports both the current legacy CSV format without header and a future header-based format.
+
+Recommended future header:
+
+```text
+artnamn;scientificName;author;redlistCategory;observationCount25y
+```
 
 ## Artportalen template mapping
 
@@ -66,12 +95,51 @@ Known uncertainties:
 - `Lokalnamn` must refer to an existing Artportalen locality/fyndplats.
 - observer/med-observer handling is not finalized.
 - Excel validation rules from the original template are not fully reproduced.
+- `Vetenskapligt namn` is kept in the form/local draft only and is **not exported** to the Artportalen XLSX template.
+
+## Real tree data
+
+The public ArcGIS item contains two point layers and both are queried:
+
+- layer `0`: `SLU Skyddsvärda träd - Artportalen`
+- layer `1`: `SLU Skyddsvärda träd - f.d. Trädportalen`
+
+The app loads/refreshes tree records manually with the button:
+
+```text
+Ladda/uppdatera trädposter
+```
+
+It does not automatically reload after every map movement, to avoid repeated network requests on mobile devices.
 
 ## Lokalnamn
 
 `Lokalnamn` should not be invented by the app.
 
-The field is currently manual. A future step should investigate whether Artportalen exposes a usable locality/fyndplats lookup endpoint that can be queried from the app.
+Current candidate logic:
+
+1. nearby `lokalnamn` from loaded tree records,
+2. municipality name from local boundary intersect as the last fallback candidate.
+
+The municipality fallback is not a preferred locality. It should only be used when no better nearby `Lokalnamn` is available.
+
+## SCB municipality boundaries
+
+Municipality fallback is configured to load:
+
+```text
+data/municipalities.scb.geojson
+```
+
+If that file is missing, the app falls back to:
+
+```text
+data/municipalities.sample.geojson
+```
+
+The SCB boundary file was prepared manually from SCB Digitala gränser, converted from Shapefile to GeoJSON, transformed to EPSG:4326 and simplified before being added to the app.
+
+SCB boundaries are simplified and suitable here only as a fallback for municipality name, not for precise geospatial analysis.
 
 ## Running locally
 
@@ -92,66 +160,3 @@ For GPS testing on iPad/iPhone, GitHub Pages over HTTPS is usually easier.
 ## License
 
 MIT.
-
-
-## Real data and Lokalnamn candidates
-
-The app can now try to load real existing tree records from the public ArcGIS item:
-
-```text
-Skyddsvärda Träd @ Sveriges Lantbruksuniversitet
-```
-
-The first MVP for `Lokalnamn` suggestions derives candidate names from loaded existing tree records near the selected point.
-
-This is useful but incomplete: many tree records may not have `Lokalnamn`. A later step should use the open SLU Species Observation System API to search **all nearby public Artportalen observations**, not only tree-project records, and derive a better list of nearby locality/fyndplats names.
-
-
-## Tree data layers
-
-The public ArcGIS item contains two point layers and both are queried:
-
-- layer `0`: `SLU Skyddsvärda träd - Artportalen`
-- layer `1`: `SLU Skyddsvärda träd - f.d. Trädportalen`
-
-The app loads/refreshes tree records manually with the button `Ladda/uppdatera trädposter`. It does not automatically reload after every map movement, to avoid repeated network requests on mobile devices.
-
-
-## Municipality boundary fallback
-
-The app can add the municipality name as the last `Lokalnamn` candidate by intersecting the selected point with a local GeoJSON boundary file.
-
-Current sample file:
-
-```text
-data/municipalities.sample.geojson
-```
-
-This is only a test sample. Replace with simplified SCB/Lantmäteriet municipal boundaries before broader use.
-
-
-## SCB municipality boundaries
-
-Municipality fallback is configured to load generated SCB municipality boundaries from:
-
-```text
-data/municipalities.scb.geojson
-```
-
-If that file is missing, the app falls back to:
-
-```text
-data/municipalities.sample.geojson
-```
-
-Generate the SCB file with:
-
-```bash
-python scripts/build_scb_municipalities.py
-```
-
-Source: SCB Digitala gränser, ArcView-shape ZIP:
-
-```text
-https://www.scb.se/contentassets/3443fea3fa6640f7a57ea15d9a372d33/shape_svenska_260225.zip
-```

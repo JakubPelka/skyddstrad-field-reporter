@@ -432,3 +432,17 @@ button.danger {
 .municipality-result:focus {
   background: #dceee0;
 }
+
+
+.taxon-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+#taxon-status[data-variant="ok"] {
+  color: #315f3d;
+}
+
+#taxon-status[data-variant="warning"] {
+  color: #9b5f00;
+}
