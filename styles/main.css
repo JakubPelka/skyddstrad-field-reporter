@@ -446,3 +446,25 @@ button.danger {
 #taxon-status[data-variant="warning"] {
   color: #9b5f00;
 }
+
+
+.was-validated input:invalid,
+.was-validated select:invalid,
+.was-validated textarea:invalid {
+  border-color: #b3261e;
+  background: #fff7f7;
+  box-shadow: 0 0 0 2px rgba(179, 38, 30, 0.12);
+}
+
+.was-validated input:invalid:focus,
+.was-validated select:invalid:focus,
+.was-validated textarea:invalid:focus {
+  outline: 2px solid rgba(179, 38, 30, 0.35);
+  outline-offset: 2px;
+}
+
+.was-validated label:has(input:invalid),
+.was-validated label:has(select:invalid),
+.was-validated label:has(textarea:invalid) {
+  color: #b3261e;
+}

@@ -1,4 +1,4 @@
-import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-taxon-autocomplete-v1";
+import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-save-required-popup-date-v1";
 import { asNumber, nowISO, todayISO, uuid } from "./util.js";
 
 let taxonList = [];
@@ -207,6 +207,26 @@ function validatePercent(value, label) {
   }
 }
 
+function requireText(formData, name, label) {
+  const value = getText(formData, name).trim();
+
+  if (!value) {
+    throw new Error(`${label} måste fyllas i.`);
+  }
+
+  return value;
+}
+
+function requireNumber(formData, name, label) {
+  const value = getNumber(formData, name);
+
+  if (!Number.isFinite(value)) {
+    throw new Error(`${label} måste fyllas i.`);
+  }
+
+  return value;
+}
+
 async function initTaxonList() {
   try {
     taxonList = await loadTaxonList();
@@ -281,34 +301,38 @@ export function setLocalName(localName, localityId = "") {
 export function getDraftFromForm(form) {
   const formData = new FormData(form);
 
-  const latitude = getNumber(formData, "latitude");
-  const longitude = getNumber(formData, "longitude");
-  const vitalityPercent = getNumber(formData, "vitalityPercent");
-
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-    throw new Error("Norr/latitud och Öst/longitud måste anges.");
-  }
+  const species = requireText(formData, "species", "Artnamn");
+  const observationDate = requireText(formData, "observationDate", "Observationsdatum");
+  const localName = requireText(formData, "localName", "Lokalnamn i Artportalen");
+  const latitude = requireNumber(formData, "latitude", "Norr/latitud");
+  const longitude = requireNumber(formData, "longitude", "Öst/longitud");
+  const coordinateAccuracyM = requireNumber(formData, "coordinateAccuracyM", "Noggrannhet");
+  const stemCircumferenceCm = requireNumber(formData, "stemCircumferenceCm", "Stamomkrets");
+  const treeStatus = requireText(formData, "treeStatus", "Trädstatus");
+  const hollowStage = requireText(formData, "hollowStage", "Hålstadium");
+  const managementNeed = requireText(formData, "managementNeed", "Åtgärdsbehov");
+  const vitalityPercent = requireNumber(formData, "vitalityPercent", "Vitalitet levande träd (%)");
 
   validatePercent(vitalityPercent, "Vitalitet levande träd (%)");
 
   return {
     id: uuid(),
-    observationDate: getText(formData, "observationDate") || todayISO(),
-    localName: getText(formData, "localName"),
+    observationDate,
+    localName,
     localityId: getText(formData, "localityId"),
-    species: getText(formData, "species"),
+    species,
     scientificName: getText(formData, "scientificName"),
     latitude,
     longitude,
-    coordinateAccuracyM: getNumber(formData, "coordinateAccuracyM"),
-    stemCircumferenceCm: getNumber(formData, "stemCircumferenceCm"),
+    coordinateAccuracyM,
+    stemCircumferenceCm,
     stemDiameterCm: getNumber(formData, "stemDiameterCm"),
-    treeStatus: getText(formData, "treeStatus"),
+    treeStatus,
     vitalityPercent,
-    hollowStage: getText(formData, "hollowStage"),
+    hollowStage,
     holeSpecification: getText(formData, "holeSpecification"),
     mulmVolume: getText(formData, "mulmVolume"),
-    managementNeed: getText(formData, "managementNeed"),
+    managementNeed,
     characteristic1: getText(formData, "characteristic1"),
     characteristic2: getText(formData, "characteristic2"),
     characteristic3: getText(formData, "characteristic3"),
@@ -337,6 +361,7 @@ export function resetTreeForm(form) {
   const accuracy = document.querySelector("#coordinateAccuracyM").value;
 
   form.reset();
+  form.classList.remove("was-validated");
   document.querySelector("#observationDate").value = todayISO();
   document.querySelector("#latitude").value = lat;
   document.querySelector("#longitude").value = lng;

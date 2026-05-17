@@ -1,15 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260517-taxon-autocomplete-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-taxon-autocomplete-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260517-taxon-autocomplete-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-taxon-autocomplete-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-taxon-autocomplete-v1";
-import { getCurrentPosition } from "./gps.js?v=20260517-taxon-autocomplete-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-taxon-autocomplete-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-taxon-autocomplete-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-taxon-autocomplete-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-taxon-autocomplete-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-taxon-autocomplete-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-taxon-autocomplete-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-save-required-popup-date-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-save-required-popup-date-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260517-save-required-popup-date-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-save-required-popup-date-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-save-required-popup-date-v1";
+import { getCurrentPosition } from "./gps.js?v=20260517-save-required-popup-date-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-save-required-popup-date-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-save-required-popup-date-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-save-required-popup-date-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-save-required-popup-date-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-save-required-popup-date-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-save-required-popup-date-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -249,6 +249,21 @@ function bindEvents() {
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
 
+    elements.form.classList.add("was-validated");
+
+    if (!elements.form.checkValidity()) {
+      const firstInvalid = elements.form.querySelector(":invalid");
+      firstInvalid?.scrollIntoView({
+        block: "center",
+        behavior: "smooth"
+      });
+      firstInvalid?.focus({
+        preventScroll: true
+      });
+      elements.form.reportValidity();
+      return;
+    }
+
     try {
       const draft = getDraftFromForm(elements.form);
       addDraft(draft);
@@ -257,6 +272,7 @@ function bindEvents() {
         lng: draft.longitude
       };
       resetTreeForm(elements.form);
+      elements.form.classList.remove("was-validated");
       renderDrafts();
       updateDuplicateWarning();
       void renderLocalityCandidates();

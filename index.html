@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260517-taxon-autocomplete-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-save-required-popup-date-v1">
 </head>
 <body>
   <header class="app-header">
@@ -46,7 +46,7 @@
         <div class="field-grid">
           <div class="form-section full-width">
             <h3>Grunduppgifter</h3>
-            <p>Fyll i de viktigaste uppgifterna först. Lägg bara till extra projektparametrar när de behövs. Trädposter laddas manuellt för aktuell kartvy.</p>
+            <p>Fyll i de obligatoriska fälten först. Om något saknas markeras fältet när du försöker spara utkast.</p>
           </div>
 
           <div class="taxon-field full-width">
@@ -73,7 +73,7 @@
 
           <div class="field-group full-width">
             <label for="localName">Lokalnamn i Artportalen</label>
-            <input id="localName" name="localName" type="text" autocomplete="off" placeholder="Välj från förslag eller skriv exakt lokalnamn">
+            <input id="localName" name="localName" type="text" autocomplete="off" required placeholder="Välj från förslag eller skriv exakt lokalnamn">
             <input id="localityId" name="localityId" type="hidden">
             <div class="button-row compact-row">
               <button id="btn-refresh-localities" type="button" class="secondary">Uppdatera lokalnamnsförslag</button>
@@ -94,12 +94,12 @@
 
           <label>
             Noggrannhet, m
-            <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" step="0.1" placeholder="GPS-noggrannhet">
+            <input id="coordinateAccuracyM" name="coordinateAccuracyM" type="number" inputmode="decimal" min="0" required step="0.1" placeholder="GPS-noggrannhet">
           </label>
 
           <label>
             Stamomkrets (cm)
-            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="t.ex. 320">
+            <input id="stemCircumferenceCm" name="stemCircumferenceCm" type="number" inputmode="decimal" min="0" required step="0.1" placeholder="t.ex. 320">
           </label>
 
           <label>
@@ -109,22 +109,22 @@
 
           <label>
             Trädstatus
-            <select id="treeStatus" name="treeStatus"></select>
+            <select id="treeStatus" name="treeStatus" required></select>
           </label>
 
           <label>
             Hålstadium
-            <select id="hollowStage" name="hollowStage"></select>
+            <select id="hollowStage" name="hollowStage" required></select>
           </label>
 
           <label>
             Åtgärdsbehov
-            <select id="managementNeed" name="managementNeed"></select>
+            <select id="managementNeed" name="managementNeed" required></select>
           </label>
 
           <label>
             Vitalitet levande träd (%)
-            <input id="vitalityPercent" name="vitalityPercent" type="number" inputmode="decimal" min="0" max="100" step="1" placeholder="0-100">
+            <input id="vitalityPercent" name="vitalityPercent" type="number" inputmode="decimal" min="0" max="100" required step="1" placeholder="0-100">
           </label>
         </div>
 
@@ -284,6 +284,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260517-taxon-autocomplete-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-save-required-popup-date-v1"></script>
 </body>
 </html>

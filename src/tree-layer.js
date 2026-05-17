@@ -166,6 +166,63 @@ async function loadArcgisTrees(bounds) {
   return trees;
 }
 
+function firstNonEmpty(...values) {
+  for (const value of values) {
+    if (value !== null && value !== undefined && String(value).trim() !== "") {
+      return value;
+    }
+  }
+
+  return "";
+}
+
+function formatTreeDate(value) {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+
+  if (typeof value === "number") {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+  }
+
+  const text = String(value).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
+    return text.slice(0, 10);
+  }
+
+  if (/^\d{8}$/.test(text)) {
+    return `${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}`;
+  }
+
+  const parsed = new Date(text);
+  return Number.isNaN(parsed.getTime()) ? text : parsed.toISOString().slice(0, 10);
+}
+
+function getTreeDate(properties = {}) {
+  return formatTreeDate(firstNonEmpty(
+    properties.startdatum,
+    properties.Startdatum,
+    properties.STARTDATUM,
+    properties.observationsdatum,
+    properties.Observationsdatum,
+    properties.OBSERVATIONSDATUM,
+    properties.fynddatum,
+    properties.Fynddatum,
+    properties.FyndDatum,
+    properties.datum,
+    properties.Datum,
+    properties.DATUM,
+    properties.inventeringsdatum,
+    properties.Inventeringsdatum,
+    properties.rapportdatum,
+    properties.Rapportdatum,
+    properties.eventDate,
+    properties.EventDate
+  ));
+}
+
 function propertiesToPopup(properties) {
   const species = properties.artnamn || properties.species || properties.vernacularName || "Befintligt träd";
   const localName = properties.lokalnamn || "";
@@ -176,9 +233,11 @@ function propertiesToPopup(properties) {
   const id = properties.id_artportalen || properties.OBJECTID || "";
   const accuracy = properties.noggrannhet || "";
   const project = properties._sourceProject || "";
+  const date = getTreeDate(properties);
 
   const rows = [
     ["Art", species],
+    ["Datum", date],
     ["Projekt/lager", project],
     ["Lokalnamn", localName],
     ["Omkrets", circumference ? `${circumference} cm` : ""],

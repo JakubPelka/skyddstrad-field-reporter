@@ -160,3 +160,26 @@ For GPS testing on iPad/iPhone, GitHub Pages over HTTPS is usually easier.
 ## License
 
 MIT.
+
+
+## Required core fields
+
+The app does not save a draft until all core fields in `Grunduppgifter` are filled in.
+
+If a required field is missing, the field is highlighted in red and the browser focuses the first missing value.
+
+Required core fields currently include:
+
+- Artnamn
+- Observationsdatum
+- Lokalnamn i Artportalen
+- Norr / latitud
+- Öst / longitud
+- Noggrannhet
+- Stamomkrets
+- Trädstatus
+- Hålstadium
+- Åtgärdsbehov
+- Vitalitet levande träd (%)
+
+Existing tree popups also show date information when a recognizable date field is present in the loaded source attributes.
