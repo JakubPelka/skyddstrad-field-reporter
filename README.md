@@ -210,3 +210,17 @@ The app currently accepts:
 - `Grovt hålträd`: stem circumference above about 126 cm, corresponding to diameter above 40 cm, and a visible/developed cavity.
 
 The age criterion is intentionally not checked in the app.
+
+
+## GPS tracking and locked tree point
+
+The app separates two positions:
+
+- the user's current GPS position,
+- the reported tree point.
+
+`GPS på` can continue updating the user's current position.
+
+When the user clicks the map, drags the tree marker, or uses `Använd GPS som trädpunkt`, the reported tree point is locked. After that, continued GPS updates do not overwrite `Norr`, `Öst` or `Noggrannhet` in the form.
+
+After `Spara utkast`, the tree point is unlocked for the next record.

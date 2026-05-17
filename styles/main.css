@@ -484,3 +484,8 @@ button.is-active {
   color: #9b5f00;
   font-weight: 650;
 }
+
+
+#tree-position-status {
+  font-size: 0.86rem;
+}

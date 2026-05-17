@@ -192,7 +192,6 @@ export function showCurrentPosition(lat, lng, accuracyM = null) {
     positionMarker.setPopup(makePopup(popup));
   }
 
-  setSelectedPoint(lat, lng);
   map.easeTo({
     center: [lng, lat],
     zoom: Math.max(map.getZoom(), 17),

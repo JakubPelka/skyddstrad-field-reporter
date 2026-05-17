@@ -1,4 +1,5 @@
-import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-share-gps-sst-validation-v1";
+import { evaluateSstCandidate, sstStatusText } from "./sst-validation.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { findByArtName, findByScientificName, loadTaxonList } from "./taxon-list.js?v=20260517-gps-treepoint-lock-fix-v1";
 import { asNumber, nowISO, todayISO, uuid } from "./util.js";
 
 let taxonList = [];

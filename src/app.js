@@ -1,29 +1,33 @@
-import { APP_CONFIG } from "./config.js?v=20260517-share-gps-sst-validation-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-share-gps-sst-validation-v1";
-import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-share-gps-sst-validation-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-share-gps-sst-validation-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-share-gps-sst-validation-v1";
-import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-share-gps-sst-validation-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260517-share-gps-sst-validation-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-share-gps-sst-validation-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-share-gps-sst-validation-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-share-gps-sst-validation-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-share-gps-sst-validation-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-share-gps-sst-validation-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-gps-treepoint-lock-fix-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-gps-treepoint-lock-fix-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
+let currentGpsPoint = null;
+let treePositionLocked = false;
 let loadingExistingTrees = false;
 let stopGpsWatch = null;
 
 const elements = {
   form: document.querySelector("#tree-form"),
   gpsStatus: document.querySelector("#gps-status"),
+  treePositionStatus: document.querySelector("#tree-position-status"),
   duplicateWarning: document.querySelector("#duplicate-warning"),
   draftCount: document.querySelector("#draft-count"),
   draftList: document.querySelector("#draft-list"),
   draftTemplate: document.querySelector("#draft-item-template"),
   useGpsButton: document.querySelector("#btn-use-gps"),
+  useGpsTreeButton: document.querySelector("#btn-use-gps-tree"),
   watchGpsButton: document.querySelector("#btn-watch-gps"),
   loadExistingButton: document.querySelector("#btn-load-existing"),
   resetFormButton: document.querySelector("#btn-reset-form"),
@@ -38,6 +42,12 @@ const elements = {
 
 function setStatus(message) {
   elements.gpsStatus.textContent = message;
+}
+
+function setTreePositionStatus(message) {
+  if (elements.treePositionStatus) {
+    elements.treePositionStatus.textContent = message;
+  }
 }
 
 function updateDuplicateWarning() {
@@ -70,7 +80,7 @@ async function renderLocalityCandidates() {
   elements.localityResults.innerHTML = "";
 
   if (!selectedPoint) {
-    elements.localityStatus.textContent = "Välj punkt i kartan eller använd GPS för att föreslå lokalnamn.";
+    elements.localityStatus.textContent = "Välj punkt i kartan eller använd GPS som trädpunkt för att föreslå lokalnamn.";
     return;
   }
 
@@ -169,7 +179,6 @@ async function loadAndRenderExistingTrees() {
   }
 }
 
-
 function renderDrafts() {
   const drafts = loadDrafts();
 
@@ -205,31 +214,87 @@ function renderDrafts() {
   renderDraftMarkers(drafts);
 }
 
-function updateSelectedPoint(point) {
-  selectedPoint = point;
-  setFormPosition(point);
+function setTreePoint(point, { lock = true, reason = "Trädpunkt vald" } = {}) {
+  selectedPoint = {
+    lat: point.lat,
+    lng: point.lng
+  };
+
+  treePositionLocked = lock;
+  setSelectedPoint(selectedPoint.lat, selectedPoint.lng, lock ? "Låst trädpunkt" : "GPS-baserad trädpunkt");
+  setFormPosition({
+    lat: selectedPoint.lat,
+    lng: selectedPoint.lng,
+    accuracyM: point.accuracyM ?? null
+  });
   updateDuplicateWarning();
   void renderLocalityCandidates();
+
+  setTreePositionStatus(lock
+    ? `${reason}. GPS-följning kan fortsätta utan att skriva över trädets koordinater.`
+    : "Trädpunkt följer GPS tills du klickar i kartan eller låser GPS som trädpunkt.");
+}
+
+function unlockTreePointForNextRecord() {
+  treePositionLocked = false;
+
+  if (currentGpsPoint) {
+    setTreePoint(currentGpsPoint, {
+      lock: false,
+      reason: "Ny post kan använda aktuell GPS"
+    });
+  } else {
+    selectedPoint = null;
+    setTreePositionStatus("Trädpunkt är inte låst.");
+    void renderLocalityCandidates();
+  }
 }
 
 function applyGpsPosition(position, modeLabel = "GPS-position") {
   const { latitude, longitude, accuracy } = position.coords;
 
-  selectedPoint = {
-    lat: latitude,
-    lng: longitude
-  };
-
-  showCurrentPosition(latitude, longitude, accuracy);
-  setFormPosition({
+  currentGpsPoint = {
     lat: latitude,
     lng: longitude,
     accuracyM: accuracy
-  });
+  };
 
-  updateDuplicateWarning();
-  void renderLocalityCandidates();
-  setStatus(`${modeLabel}. Noggrannhet: ${Math.round(accuracy)} m.`);
+  showCurrentPosition(latitude, longitude, accuracy);
+
+  if (!treePositionLocked) {
+    setTreePoint(currentGpsPoint, {
+      lock: false,
+      reason: "GPS uppdaterade trädpunkt"
+    });
+  }
+
+  const lockText = treePositionLocked
+    ? " Trädpunkt är låst och ändras inte."
+    : " Trädpunkt följer GPS.";
+  setStatus(`${modeLabel}. Noggrannhet: ${Math.round(accuracy)} m.${lockText}`);
+}
+
+async function useGpsAsTreePoint() {
+  try {
+    if (!currentGpsPoint) {
+      setStatus("Läser GPS-position...");
+      const position = await getCurrentPosition();
+      applyGpsPosition(position, "GPS-position hämtad");
+    }
+
+    if (!currentGpsPoint) {
+      throw new Error("Ingen GPS-position tillgänglig.");
+    }
+
+    setTreePoint(currentGpsPoint, {
+      lock: true,
+      reason: "GPS-position används som trädpunkt"
+    });
+    setStatus(`GPS används som låst trädpunkt. Noggrannhet: ${Math.round(currentGpsPoint.accuracyM)} m.`);
+  } catch (error) {
+    console.error(error);
+    setStatus(`GPS-fel: ${error.message}`);
+  }
 }
 
 function setGpsWatchActive(isActive) {
@@ -275,12 +340,14 @@ function bindEvents() {
 
     try {
       const position = await getCurrentPosition();
-      applyGpsPosition(position, "GPS-position satt");
+      applyGpsPosition(position, "GPS-position hämtad");
     } catch (error) {
       console.error(error);
       setStatus(`GPS-fel: ${error.message}`);
     }
   });
+
+  elements.useGpsTreeButton?.addEventListener("click", useGpsAsTreePoint);
 
   elements.watchGpsButton?.addEventListener("click", () => {
     if (stopGpsWatch) {
@@ -296,7 +363,7 @@ function bindEvents() {
 
   elements.resetFormButton.addEventListener("click", () => {
     resetTreeForm(elements.form);
-    void renderLocalityCandidates();
+    unlockTreePointForNextRecord();
   });
 
   elements.form.addEventListener("submit", (event) => {
@@ -320,15 +387,10 @@ function bindEvents() {
     try {
       const draft = getDraftFromForm(elements.form);
       addDraft(draft);
-      selectedPoint = {
-        lat: draft.latitude,
-        lng: draft.longitude
-      };
       resetTreeForm(elements.form);
       elements.form.classList.remove("was-validated");
       renderDrafts();
-      updateDuplicateWarning();
-      void renderLocalityCandidates();
+      unlockTreePointForNextRecord();
     } catch (error) {
       alert(error.message);
     }
@@ -385,7 +447,10 @@ function bindEvents() {
   });
 
   window.addEventListener("selected-point-moved", (event) => {
-    updateSelectedPoint(event.detail);
+    setTreePoint(event.detail, {
+      lock: true,
+      reason: "Trädpunkt flyttad manuellt"
+    });
   });
 
   window.addEventListener("pagehide", stopGpsTracking);
@@ -395,11 +460,17 @@ async function main() {
   await initForm();
 
   initMap({
-    onMapClick: updateSelectedPoint
+    onMapClick: (point) => {
+      setTreePoint(point, {
+        lock: true,
+        reason: "Trädpunkt vald i kartan"
+      });
+    }
   });
 
   bindEvents();
   renderDrafts();
+  setTreePositionStatus("Trädpunkt är inte låst.");
   await loadAndRenderExistingTrees();
 }
 

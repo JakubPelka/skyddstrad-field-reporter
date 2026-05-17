@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260517-share-gps-sst-validation-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-gps-treepoint-lock-fix-v1">
 </head>
 <body>
   <header class="app-header">
@@ -33,11 +33,13 @@
       <div class="card position-card">
         <h2>1. Position</h2>
         <div class="button-row">
-          <button id="btn-use-gps" type="button">Använd GPS</button>
+          <button id="btn-use-gps" type="button">Hämta GPS</button>
+          <button id="btn-use-gps-tree" type="button" class="secondary">Använd GPS som trädpunkt</button>
           <button id="btn-watch-gps" type="button" class="secondary" aria-pressed="false">GPS på</button>
           <button id="btn-load-existing" type="button">Ladda/uppdatera trädposter</button>
         </div>
         <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
+        <p id="tree-position-status" class="status-text">Trädpunkt är inte låst.</p>
         <p id="duplicate-warning" class="warning" hidden></p>
       </div>
 
@@ -288,6 +290,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260517-share-gps-sst-validation-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-gps-treepoint-lock-fix-v1"></script>
 </body>
 </html>
