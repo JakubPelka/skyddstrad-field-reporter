@@ -115,3 +115,10 @@ The public ArcGIS item contains two point layers and both are queried:
 - layer `1`: `SLU Skyddsvärda träd - f.d. Trädportalen`
 
 The app loads/refreshes tree records manually with the button `Ladda/uppdatera trädposter`. It does not automatically reload after every map movement, to avoid repeated network requests on mobile devices.
+
+
+## Municipality fallback for Lokalnamn
+
+If no locality candidate is found from nearby tree records, the app can suggest the municipality name from the selected point, for example `Halmstads kommun`.
+
+This is a manual fallback, not an automatic request. It uses reverse geocoding and should only be used when no better `Lokalnamn` is available.

@@ -1,14 +1,14 @@
-import { APP_CONFIG } from "./config.js?v=20260516-tree-layers-reload-fix-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260516-tree-layers-reload-fix-v1";
-import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-tree-layers-reload-fix-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-tree-layers-reload-fix-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260516-tree-layers-reload-fix-v1";
-import { getCurrentPosition } from "./gps.js?v=20260516-tree-layers-reload-fix-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-tree-layers-reload-fix-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-tree-layers-reload-fix-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-tree-layers-reload-fix-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260516-tree-layers-reload-fix-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260516-tree-layers-reload-fix-v1";
+import { APP_CONFIG } from "./config.js?v=20260516-municipality-fallback-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260516-municipality-fallback-v1";
+import { exportDraftsAsXlsx } from "./export-xlsx.js?v=20260516-municipality-fallback-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260516-municipality-fallback-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260516-municipality-fallback-v1";
+import { getCurrentPosition } from "./gps.js?v=20260516-municipality-fallback-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, showCurrentPosition } from "./map.js?v=20260516-municipality-fallback-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260516-municipality-fallback-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260516-municipality-fallback-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260516-municipality-fallback-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260516-municipality-fallback-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -29,7 +29,10 @@ const elements = {
   clearDraftsButton: document.querySelector("#btn-clear-drafts"),
   localityStatus: document.querySelector("#locality-status"),
   localityResults: document.querySelector("#locality-results"),
-  refreshLocalitiesButton: document.querySelector("#btn-refresh-localities")
+  refreshLocalitiesButton: document.querySelector("#btn-refresh-localities"),
+  municipalityFallbackButton: document.querySelector("#btn-municipality-fallback"),
+  municipalityStatus: document.querySelector("#municipality-status"),
+  municipalityResults: document.querySelector("#municipality-results")
 };
 
 function setStatus(message) {
@@ -58,6 +61,52 @@ function updateDuplicateWarning() {
   elements.duplicateWarning.textContent = `Möjlig dubblett: ${nearby.length} befintlig(a) post(er) inom ${APP_CONFIG.duplicateDistanceM} m. Närmast: ${species}, ${formatDistance(closest.distanceM)} bort.`;
 }
 
+function renderMunicipalityCandidate(candidate) {
+  if (!elements.municipalityResults || !elements.municipalityStatus) {
+    return;
+  }
+
+  elements.municipalityResults.innerHTML = "";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "locality-result municipality-result";
+  button.innerHTML = `
+    <strong>${escapeHtml(candidate.localName)}</strong>
+    <span>fallback från kommunnamn · ${escapeHtml(candidate.source)}</span>
+    <small>Kontrollera att namnet accepteras som Lokalnamn i Artportalen.</small>
+  `;
+  button.addEventListener("click", () => {
+    setLocalName(candidate.localName, "");
+    elements.municipalityStatus.textContent = `Valt kommunförslag: ${candidate.localName}`;
+  });
+
+  elements.municipalityResults.appendChild(button);
+  elements.municipalityStatus.textContent = "Kommunförslag hittat.";
+}
+
+async function fetchAndRenderMunicipalityFallback() {
+  if (!selectedPoint) {
+    elements.municipalityStatus.textContent = "Välj en punkt i kartan eller använd GPS först.";
+    return;
+  }
+
+  elements.municipalityFallbackButton.disabled = true;
+  elements.municipalityFallbackButton.textContent = "Hämtar...";
+
+  try {
+    const candidate = await fetchMunicipalityFallback(selectedPoint);
+    renderMunicipalityCandidate(candidate);
+  } catch (error) {
+    console.error(error);
+    elements.municipalityStatus.textContent = error.message;
+    elements.municipalityResults.innerHTML = "";
+  } finally {
+    elements.municipalityFallbackButton.disabled = false;
+    elements.municipalityFallbackButton.textContent = "Föreslå kommunnamn";
+  }
+}
+
 function renderLocalityCandidates() {
   if (!elements.localityResults || !elements.localityStatus) {
     return;
@@ -78,7 +127,7 @@ function renderLocalityCandidates() {
   const candidates = findLocalityCandidates(selectedPoint, existingTrees);
 
   if (candidates.length === 0) {
-    elements.localityStatus.textContent = `Inga lokalnamn hittades inom ${APP_CONFIG.localityCandidates.searchRadiusM} m.`;
+    elements.localityStatus.textContent = `Inga lokalnamn hittades inom ${APP_CONFIG.localityCandidates.searchRadiusM} m. Använd kommunförslag som fallback eller skriv exakt lokalnamn manuellt.`;
     return;
   }
 
@@ -207,6 +256,7 @@ function bindEvents() {
 
   elements.loadExistingButton.addEventListener("click", loadAndRenderExistingTrees);
   elements.refreshLocalitiesButton?.addEventListener("click", renderLocalityCandidates);
+  elements.municipalityFallbackButton?.addEventListener("click", fetchAndRenderMunicipalityFallback);
 
   elements.resetFormButton.addEventListener("click", () => {
     resetTreeForm(elements.form);
