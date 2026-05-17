@@ -504,8 +504,19 @@ button.is-active {
   background: #9b5f00;
 }
 
-@media (min-width: 720px) {
-  .position-actions {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+
+
+/* Position panel: keep stable 3-row layout.
+   Button labels may change, but the buttons should not jump between rows. */
+.position-actions {
+  display: grid;
+  grid-template-columns: 1fr !important;
+  gap: 0.55rem;
+}
+
+.position-actions button {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  white-space: normal;
 }
