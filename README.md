@@ -5,6 +5,14 @@
 **Map engine:** MapLibre GL JS  
 **Primary use case:** Field recording of potential *särskilt skyddsvärda träd* and export of draft observations for later review/import into Artportalen.
 
+## Web app
+
+Use the current proof-of-concept web app here:
+
+```text
+https://jakubpelka.github.io/skyddstrad-field-reporter/
+```
+
 ## Purpose
 
 This project is an experimental mobile field helper for recording potential **särskilt skyddsvärda träd**.
