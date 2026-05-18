@@ -1,15 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260517-position-three-buttons-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-position-three-buttons-v1";
-import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-position-three-buttons-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-position-three-buttons-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-position-three-buttons-v1";
-import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-position-three-buttons-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-position-three-buttons-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-position-three-buttons-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-position-three-buttons-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-position-three-buttons-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-position-three-buttons-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-position-three-buttons-v1";
+import { APP_CONFIG } from "./config.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { findNearbyTrees } from "./duplicate-check.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260517-position-fixed-snap-accuracy-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -17,6 +17,8 @@ let currentGpsPoint = null;
 let treePositionLocked = false;
 let loadingExistingTrees = false;
 let stopGpsWatch = null;
+
+const SNAP_TO_EXISTING_TREE_DISTANCE_M = 5;
 
 const elements = {
   form: document.querySelector("#tree-form"),
@@ -47,6 +49,72 @@ function setTreePositionStatus(message) {
   if (elements.treePositionStatus) {
     elements.treePositionStatus.textContent = message;
   }
+}
+
+function numberFromAny(...values) {
+  for (const value of values) {
+    if (value === null || value === undefined || value === "") {
+      continue;
+    }
+
+    const number = Number(String(value).replace(",", ".").replace(/[^\d.-]/g, ""));
+    if (Number.isFinite(number)) {
+      return number;
+    }
+  }
+
+  return null;
+}
+
+function getTreeAccuracyM(tree) {
+  return numberFromAny(
+    tree?.properties?.noggrannhet,
+    tree?.properties?.Noggrannhet,
+    tree?.properties?.NOGGRANNHET,
+    tree?.properties?.accuracy,
+    tree?.properties?.coordinateAccuracyM
+  );
+}
+
+function getTreeSpecies(tree) {
+  return tree?.properties?.artnamn ||
+    tree?.properties?.species ||
+    tree?.properties?.vernacularName ||
+    "befintligt träd";
+}
+
+function findSnapCandidate(point) {
+  if (!point || !Array.isArray(existingTrees) || existingTrees.length === 0) {
+    return null;
+  }
+
+  const nearby = findNearbyTrees(point, existingTrees, SNAP_TO_EXISTING_TREE_DISTANCE_M);
+  return nearby.length > 0 ? nearby[0] : null;
+}
+
+function applyMicroSnap(point) {
+  const candidate = findSnapCandidate(point);
+
+  if (!candidate) {
+    return {
+      point,
+      snapped: false,
+      message: ""
+    };
+  }
+
+  const sourceAccuracyM = getTreeAccuracyM(candidate);
+  const snappedPoint = {
+    lat: candidate.lat,
+    lng: candidate.lng,
+    accuracyM: Number.isFinite(point.accuracyM) ? point.accuracyM : sourceAccuracyM
+  };
+
+  return {
+    point: snappedPoint,
+    snapped: true,
+    message: `Trädpunkt snappad till närliggande rapporterat träd (${getTreeSpecies(candidate)}, ${Math.round(candidate.distanceM)} m).`
+  };
 }
 
 function updateDuplicateWarning() {
@@ -213,10 +281,17 @@ function renderDrafts() {
   renderDraftMarkers(drafts);
 }
 
-function setTreePoint(point, { lock = true, reason = "Trädpunkt vald" } = {}) {
+function setTreePoint(point, { lock = true, reason = "Trädpunkt vald", allowSnap = true } = {}) {
+  const snapResult = allowSnap ? applyMicroSnap(point) : {
+    point,
+    snapped: false,
+    message: ""
+  };
+  const finalPoint = snapResult.point;
+
   selectedPoint = {
-    lat: point.lat,
-    lng: point.lng
+    lat: finalPoint.lat,
+    lng: finalPoint.lng
   };
 
   treePositionLocked = lock;
@@ -224,14 +299,16 @@ function setTreePoint(point, { lock = true, reason = "Trädpunkt vald" } = {}) {
   setFormPosition({
     lat: selectedPoint.lat,
     lng: selectedPoint.lng,
-    accuracyM: point.accuracyM ?? null
+    accuracyM: finalPoint.accuracyM ?? null
   });
   updateDuplicateWarning();
   void renderLocalityCandidates();
 
+  const snapText = snapResult.snapped ? ` ${snapResult.message}` : "";
+
   setTreePositionStatus(lock
-    ? `${reason}. GPS-följning kan fortsätta utan att skriva över trädets koordinater.`
-    : "Trädpunkt följer GPS tills du klickar i kartan eller låser GPS som trädpunkt.");
+    ? `${reason}.${snapText} GPS-följning kan fortsätta utan att skriva över trädets koordinater.`
+    : `Trädpunkt följer GPS tills du klickar i kartan eller låser GPS som trädpunkt.${snapText}`);
 }
 
 function unlockTreePointForNextRecord() {
@@ -240,7 +317,8 @@ function unlockTreePointForNextRecord() {
   if (currentGpsPoint) {
     setTreePoint(currentGpsPoint, {
       lock: false,
-      reason: "Ny post kan använda aktuell GPS"
+      reason: "Ny post kan använda aktuell GPS",
+      allowSnap: false
     });
   } else {
     selectedPoint = null;
@@ -263,7 +341,8 @@ function applyGpsPosition(position, modeLabel = "GPS-position") {
   if (!treePositionLocked) {
     setTreePoint(currentGpsPoint, {
       lock: false,
-      reason: "GPS uppdaterade trädpunkt"
+      reason: "GPS uppdaterade trädpunkt",
+      allowSnap: false
     });
   }
 
@@ -287,7 +366,8 @@ async function useGpsAsTreePoint() {
 
     setTreePoint(currentGpsPoint, {
       lock: true,
-      reason: "GPS-position används som trädpunkt"
+      reason: "GPS-position används som trädpunkt",
+      allowSnap: true
     });
     setStatus(`GPS används som låst trädpunkt. Noggrannhet: ${Math.round(currentGpsPoint.accuracyM)} m.`);
   } catch (error) {
@@ -437,7 +517,8 @@ function bindEvents() {
   window.addEventListener("selected-point-moved", (event) => {
     setTreePoint(event.detail, {
       lock: true,
-      reason: "Trädpunkt flyttad manuellt"
+      reason: "Trädpunkt flyttad manuellt",
+      allowSnap: true
     });
   });
 
@@ -451,7 +532,8 @@ async function main() {
     onMapClick: (point) => {
       setTreePoint(point, {
         lock: true,
-        reason: "Trädpunkt vald i kartan"
+        reason: "Trädpunkt vald i kartan",
+        allowSnap: true
       });
     }
   });

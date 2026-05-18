@@ -520,3 +520,32 @@ button.is-active {
   min-height: 2.75rem;
   white-space: normal;
 }
+
+
+/* Position panel: stable 3-row layout.
+   The order must stay:
+   1. GPS på / Stoppa GPS
+   2. Använd GPS som trädpunkt
+   3. Ladda/uppdatera trädposter */
+.position-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+}
+
+.position-action-row {
+  display: block;
+  width: 100%;
+}
+
+.position-action-row button {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  white-space: normal;
+}
+
+#btn-watch-gps.is-active {
+  background: #9b5f00;
+}

@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://unpkg.com">
   <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=20260517-position-three-buttons-v1">
+  <link rel="stylesheet" href="styles/main.css?v=20260517-position-fixed-snap-accuracy-v1">
 </head>
 <body>
   <header class="app-header">
@@ -32,10 +32,16 @@
     <section class="workflow-grid" aria-label="Fältflöde">
       <div class="card position-card">
         <h2>1. Position</h2>
-        <div class="button-row">
-          <button id="btn-use-gps-tree" type="button" class="secondary">Använd GPS som trädpunkt</button>
-          <button id="btn-watch-gps" type="button" class="secondary" aria-pressed="false">GPS på</button>
-          <button id="btn-load-existing" type="button">Ladda/uppdatera trädposter</button>
+        <div class="position-actions" aria-label="Positionsåtgärder">
+          <div class="position-action-row">
+            <button id="btn-watch-gps" type="button" aria-pressed="false">GPS på</button>
+          </div>
+          <div class="position-action-row">
+            <button id="btn-use-gps-tree" type="button" class="secondary">Använd GPS som trädpunkt</button>
+          </div>
+          <div class="position-action-row">
+            <button id="btn-load-existing" type="button">Ladda/uppdatera trädposter</button>
+          </div>
         </div>
         <p id="gps-status" class="status-text">GPS har inte använts ännu.</p>
         <p id="tree-position-status" class="status-text">Trädpunkt är inte låst.</p>
@@ -272,6 +278,7 @@
         <h2>Obs</h2>
         <ul>
           <li>Detta är inte en officiell Artportalen-/SLU-applikation.</li>
+          <li>Kod och ärenden finns på <a href="https://github.com/JakubPelka/skyddstrad-field-reporter" target="_blank" rel="noopener noreferrer">GitHub</a>. Issues är välkomna via <a href="https://github.com/JakubPelka/skyddstrad-field-reporter/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a> – jag försöker titta på dem utan onödigt dröjsmål.</li>
           <li>XLSX-exporten använder huvudkolumner från Artportalens trädmall, men måste testas i Artportalen innan verklig användning.</li>
           <li>Lokalnamn måste komma från Artportalen/fyndplatsflödet och ska inte hittas på fritt.</li>
         </ul>
@@ -289,6 +296,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="src/app.js?v=20260517-position-three-buttons-v1"></script>
+  <script type="module" src="src/app.js?v=20260517-position-fixed-snap-accuracy-v1"></script>
 </body>
 </html>

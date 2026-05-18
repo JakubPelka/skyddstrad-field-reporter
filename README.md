@@ -25,6 +25,13 @@ The project is not a replacement for Artportalen and does not publish observatio
 
 This is **not an official SLU, ArtDatabanken, Artportalen or Länsstyrelsen application**.
 
+Code and issue tracking are available on GitHub:
+
+- Repository: https://github.com/JakubPelka/skyddstrad-field-reporter
+- Issues: https://github.com/JakubPelka/skyddstrad-field-reporter/issues
+
+Issues are welcome. I will try to look at them without unnecessary delay.
+
 All exported data must be reviewed before import into Artportalen.
 
 ## Current implementation
@@ -235,3 +242,18 @@ The Position section uses three main actions:
 3. `Ladda/uppdatera trädposter` – load existing tree records for the current map view.
 
 This keeps GPS tracking, tree-point locking and context-data loading separate.
+
+
+## Micro-snapping to existing tree records
+
+When existing tree records are loaded, the app can micro-snap a newly selected tree point to an already reported tree if the selected point is within 5 metres.
+
+This is only applied when the user explicitly sets or locks a tree point:
+
+- clicking the map,
+- dragging the tree marker,
+- using `Använd GPS som trädpunkt`.
+
+Continuous GPS tracking does not repeatedly snap the tree point while the user is moving.
+
+When `Använd GPS som trädpunkt` is used, the GPS accuracy value is written to `Noggrannhet` in the form.
