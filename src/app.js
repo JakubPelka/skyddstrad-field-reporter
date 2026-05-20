@@ -1,15 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { findNearbyTrees } from "./duplicate-check.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { getBounds, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260517-position-fixed-snap-accuracy-v1";
-import { escapeHtml, formatDistance } from "./util.js?v=20260517-position-fixed-snap-accuracy-v1";
+import { APP_CONFIG } from "./config.js?v=20260520-issues-5-6-v1";
+import { distanceM, findNearbyTrees } from "./duplicate-check.js?v=20260520-issues-5-6-v1";
+import { exportDraftsAsXlsx, shareDraftsAsXlsx } from "./export-xlsx.js?v=20260520-issues-5-6-v1";
+import { exportDraftsAsGeoJson } from "./export-geojson.js?v=20260520-issues-5-6-v1";
+import { getDraftFromForm, initForm, resetTreeForm, setFormPosition, setLocalName } from "./form.js?v=20260520-issues-5-6-v1";
+import { getCurrentPosition, watchCurrentPosition } from "./gps.js?v=20260520-issues-5-6-v1";
+import { getBounds, getMap, initMap, renderDraftMarkers, setExistingLayer, setSelectedPoint, showCurrentPosition } from "./map.js?v=20260520-issues-5-6-v1";
+import { addDraft, clearDrafts, deleteDraft, loadDrafts } from "./storage.js?v=20260520-issues-5-6-v1";
+import { createExistingTreesLayer, loadExistingTrees } from "./tree-layer.js?v=20260520-issues-5-6-v1";
+import { candidateStatusText, findLocalityCandidates } from "./locality-candidates.js?v=20260520-issues-5-6-v1";
+import { findMunicipalityCandidate } from "./municipality-boundaries.js?v=20260520-issues-5-6-v1";
+import { escapeHtml, formatDistance } from "./util.js?v=20260520-issues-5-6-v1";
 
 let existingTrees = [];
 let selectedPoint = null;
@@ -18,7 +18,7 @@ let treePositionLocked = false;
 let loadingExistingTrees = false;
 let stopGpsWatch = null;
 
-const SNAP_TO_EXISTING_TREE_DISTANCE_M = 5;
+const SNAP_TO_EXISTING_TREE_DISTANCE_PX = 12;
 
 const elements = {
   form: document.querySelector("#tree-form"),
@@ -88,8 +88,41 @@ function findSnapCandidate(point) {
     return null;
   }
 
-  const nearby = findNearbyTrees(point, existingTrees, SNAP_TO_EXISTING_TREE_DISTANCE_M);
-  return nearby.length > 0 ? nearby[0] : null;
+  const map = getMap();
+
+  if (!map) {
+    return null;
+  }
+
+  const selectedScreenPoint = map.project([point.lng, point.lat]);
+  let bestCandidate = null;
+
+  for (const tree of existingTrees) {
+    if (!Number.isFinite(tree.lat) || !Number.isFinite(tree.lng)) {
+      continue;
+    }
+
+    const treeScreenPoint = map.project([tree.lng, tree.lat]);
+    const dx = selectedScreenPoint.x - treeScreenPoint.x;
+    const dy = selectedScreenPoint.y - treeScreenPoint.y;
+    const pixelDistance = Math.hypot(dx, dy);
+
+    if (pixelDistance > SNAP_TO_EXISTING_TREE_DISTANCE_PX) {
+      continue;
+    }
+
+    const metreDistance = distanceM(point, tree);
+
+    if (!bestCandidate || pixelDistance < bestCandidate.pixelDistance) {
+      bestCandidate = {
+        ...tree,
+        pixelDistance,
+        distanceM: metreDistance
+      };
+    }
+  }
+
+  return bestCandidate;
 }
 
 function applyMicroSnap(point) {
@@ -113,7 +146,7 @@ function applyMicroSnap(point) {
   return {
     point: snappedPoint,
     snapped: true,
-    message: `Trädpunkt snappad till närliggande rapporterat träd (${getTreeSpecies(candidate)}, ${Math.round(candidate.distanceM)} m).`
+    message: `Trädpunkt snappad till närliggande rapporterat träd (${getTreeSpecies(candidate)}, ${Math.round(candidate.pixelDistance)} px / ${Math.round(candidate.distanceM)} m).`
   };
 }
 

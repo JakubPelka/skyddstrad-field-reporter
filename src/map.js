@@ -23,9 +23,40 @@ function makePopup(html) {
   }).setHTML(html);
 }
 
+function disableMapRotation() {
+  if (!map) {
+    return;
+  }
+
+  map.dragRotate?.disable?.();
+  map.touchPitch?.disable?.();
+  map.touchZoomRotate?.disableRotation?.();
+
+  map.setBearing(0);
+  map.setPitch(0);
+
+  map.on("rotate", () => {
+    if (map.getBearing() !== 0) {
+      map.setBearing(0);
+    }
+  });
+
+  map.on("pitch", () => {
+    if (map.getPitch() !== 0) {
+      map.setPitch(0);
+    }
+  });
+}
+
 export function initMap({ onMapClick }) {
   map = new maplibregl.Map({
     container: "map",
+    bearing: 0,
+    pitch: 0,
+    maxPitch: 0,
+    dragRotate: false,
+    pitchWithRotate: false,
+    touchPitch: false,
     center: [APP_CONFIG.defaultMapCenter[1], APP_CONFIG.defaultMapCenter[0]],
     zoom: APP_CONFIG.defaultZoom,
     attributionControl: true,
@@ -48,6 +79,8 @@ export function initMap({ onMapClick }) {
       ]
     }
   });
+
+  disableMapRotation();
 
   map.addControl(new maplibregl.NavigationControl({
     showCompass: false,
