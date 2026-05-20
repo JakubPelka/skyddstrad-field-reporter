@@ -89,11 +89,37 @@ function valueOrBlank(value) {
   return value;
 }
 
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
+function timestampForFilename(date = new Date()) {
+  const datePart = [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate())
+  ].join("");
+
+  const timePart = [
+    pad(date.getHours()),
+    pad(date.getMinutes()),
+    pad(date.getSeconds())
+  ].join("");
+
+  return `${datePart}_${timePart}`;
+}
+
+function xlsxFileName() {
+  return `skyddsvarda_trad_artportalen_observationer_${timestampForFilename()}.xlsx`;
+}
+
 function buildObservationTopRow() {
   const row = new Array(ARTPORTALEN_OBSERVATION_HEADERS.length).fill("");
+
   row[3] = ARTPORTALEN_TEMPLATE.projectName;
   row[6] = ARTPORTALEN_TEMPLATE.version;
   row[27] = "Projektparametrar";
+
   return row;
 }
 
@@ -175,11 +201,6 @@ function buildWorkbook(drafts) {
   window.XLSX.utils.book_append_sheet(workbook, parameterWorksheet, ARTPORTALEN_TEMPLATE.parameterSheetName);
 
   return workbook;
-}
-
-function xlsxFileName() {
-  const date = new Date().toISOString().slice(0, 10);
-  return `skyddsvarda_trad_artportalen_observationer_${date}.xlsx`;
 }
 
 export function buildDraftsXlsxBlob(drafts) {
